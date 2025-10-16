@@ -1,13 +1,5 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-@* <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ComplaignManagementSystem.PresentationLayer</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ComplaignManagementSystem.PresentationLayer.styles.css" asp-append-version="true" />
-</head> *@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -17,9 +9,9 @@
     <meta name="keywords" content="admin template, Chameleon admin template, dashboard template, gradient admin template, responsive admin template, webapp, eCommerce dashboard, analytic dashboard">
     <meta name="author" content="ThemeSelect">
     <title>@ViewData["Title"] - ComplaignManagementSystem.PresentationLayer</title>
-    <link rel="apple-touch-icon" href="../../../app-assets/images/ico/apple-icon-120.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
-    <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
+    <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
+    @* <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico"> *@
+    @* <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet"> *@
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/vendors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/toggle/switchery.min.css" rel="stylesheet" />
@@ -33,7 +25,7 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-gradient.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/assets/css/style.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/line-awesome/css/line-awesome.min.css" rel="stylesheet" />
-
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/feather/style.min.css" rel="stylesheet" />
 </head>
 <body class="vertical-layout vertical-menu 2-columns fixed-navbar pace-done menu-expanded" data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="2-columns">
     <div class="pace  pace-inactive">
@@ -131,7 +123,13 @@
                     <li class="nav-item d-md-none"><a class="nav-link close-navbar"><i class="ft-x"></i></a></li>
                 </ul>
             </div>
-            <div class="navigation-background" style="background-image: url(&quot;~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg&quot;);"></div>
+            @* <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg" /> *@
+            @* <div class="navigation-background" style="background-image: url("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg");"></div> *@
+@*             <div class="navigation-background" style="background-image: url("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg");"></div> *@
+            <div class="navigation-background" style="background-image: url('@Url.Content("~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg")');" !important;></div>
+            @* <div class="navigation-background" style="background-image: url('/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg');"></div> *@
+
+            @* <div class="navigation-background" style="background-image: url("~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg");"></div> *@
             <div class="main-menu-content ps ps--active-y" style="height: 704px;">
                 <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                     <li class="nav-item has-sub open">
@@ -170,7 +168,7 @@
     @await RenderSectionAsync("Scripts", required: false)
 
 
-
+    <script src="~/js/feather.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/vendors.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/forms/toggle/switchery.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/switch.min.js"></script>
@@ -181,7 +179,10 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
 
-
 </body>
 </html>
+
+<script>
+    feather.replace();
+</script>
 

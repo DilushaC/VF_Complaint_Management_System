@@ -496,7 +496,17 @@
     <PackageReference Include="log4net" Version="3.2.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ComplaignManagementSystem.Data\ComplaignManagementSystem.Data.csproj" />
+    <ProjectReference Include="..\ComplaintManagementSystem.Business\ComplaintManagementSystem.Business.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Icons\" />
   </ItemGroup>
 
 </Project>
