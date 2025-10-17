@@ -203,6 +203,12 @@
     <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\js\scripts\tooltip\tooltip.min.js" />
     <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\js\scripts\ui\compact-menu.js" />
     <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\js\scripts\ui\compact-menu.min.js" />
+    <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Select2\css\select2.css" />
+    <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Select2\css\select2.min.css" />
+    <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Select2\js\select2.full.js" />
+    <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Select2\js\select2.full.min.js" />
+    <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Select2\js\select2.js" />
+    <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Select2\js\select2.min.js" />
     <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\vendors\css\calendars\fullcalendar.min.css" />
     <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\vendors\css\charts\chartist-plugin-tooltip.css" />
     <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\vendors\css\charts\chartist.css" />
