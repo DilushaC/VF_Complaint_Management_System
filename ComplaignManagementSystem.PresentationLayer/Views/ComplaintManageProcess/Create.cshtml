@@ -16,101 +16,108 @@
         <div class="card" style="margin-top:15px">
             <div class="card-content collapse show">
                 <div class="card-body">
-                    <form class="form">
-                        <div class="form-body">
-                            <h4 class="form-section">
-                                <i class="ft-flag"></i> Complain Create Form
-                            </h4>
-                            <div class="form-group">
-                                @* <input type="text" id="companyName" class="form-control" placeholder="Company Name" name="company"> *@
+                    @using (Html.BeginForm("SubmitComplain", "ComplaintManageProcess", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <form class="form">
+                            <div class="form-body">
+                                <h4 class="form-section">
+                                    <i class="ft-flag"></i> Complain Create Form
+                                </h4>
+                                <div class="form-group">
+                                    @* <input type="text" id="companyName" class="form-control" placeholder="Company Name" name="company"> *@
 
-                                <label for="Complaint Method">Complaint Method</label>
-                                <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control">
-                                </select>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Cu_Name">Customer Name</label>
-                                        <input type="text" id="Cu_Name" class="form-control" placeholder="Customer Name" name="Cus_Name">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Cus_Nic">Customer NIC</label>
-                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Refference">Refference</label>
-                                        <input type="text" id="Cus_Refference" class="form-control" placeholder="Refference" name="Cus_Refference">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Cus_MobileNumber">Customer Mobile Number</label>
-                                        <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label class="col-md-3 label-control">Select File</label>
-                                    <label id="projectinput8" class="file center-block">
-                                        <input type="file" id="file" style="margin:15px">
-                                        <span class="file-custom"></span>
-                                    </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="Dep_Id">Department</label>
-                                    <select id="Dep_Id" name="Dep_Id" class="form-control">
+                                    <label for="Complaint Method">Complaint Method</label>
+                                    <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
+                                        <option value="">-- Select --</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row" style="margin-top:20px">
-                                <div class="col-md-6">
-                                    <label for="Nature_Id">Nature</label>
-                                    <select id="Nature_Id" name="Nature_Id" class="form-control">
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6" style="position: relative;">
-                                    <label for="Priority">Priority</label>
-                                    <div class="row" style="margin-left:5px">
-                                        <div class="custom-control custom-checkbox col-md-2.5">
-                                            <input type="checkbox" class="custom-control-input" id="PriorityL" name="Priority" value="Low">
-                                            <label class="custom-control-label" for="PriorityL">Low</label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
-                                            <input type="checkbox" class="custom-control-input" id="PriorityM" name="Priority" value="Medium">
-                                            <label class="custom-control-label" for="PriorityM">Medium</label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
-                                            <input type="checkbox" class="custom-control-input" id="PriorityH" name="Priority" value="High">
-                                            <label class="custom-control-label" for="PriorityH">High</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Cus_Name">Customer Name</label>
+                                            <input type="text" id="Cus_Name" class="form-control" placeholder="Customer Name" name="Cus_Name">
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Cus_Nic">Customer NIC</label>
+                                            <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Refference">Refference</label>
+                                            <input type="text" id="Cus_Refference" class="form-control" placeholder="Refference" name="Cus_Refference">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Cus_MobileNumber">Customer Mobile Number</label>
+                                            <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="col-md-3 label-control">Select File</label>
+                                        <label id="Attachment" class="file center-block">
+                                            <input type="file" id="file" name="file" style="margin:15px">
+                                            <span class="file-custom"></span>
+                                            <span id="error-message"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="Dep_Id">Department</label>
+                                        <select id="Dep_Id" name="Dep_Id" class="form-control" asp-items="ViewBag.Dep_Id">
+                                            <option value="">-- Select --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:20px">
+                                    <div class="col-md-6">
+                                        <label for="Nature_Id">Nature</label>
+                                        <select id="Nature_Id" name="Nature_Id" class="form-control">
+                                            <option value="">-- Select --</option>
+                                        </select>
+                                    </div>
 
+                                    <div class="col-md-6" style="position: relative;">
+                                        <label for="Priority">Priority</label>
+                                        <div class="row" style="margin-left:5px">
+                                            <div class="custom-control custom-checkbox col-md-2.5">
+                                                <input type="checkbox" class="custom-control-input" id="PriorityL" name="Priority" value="Low" onclick="handlePriority(this)">
+                                                <label class="custom-control-label" for="PriorityL">Low</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
+                                                <input type="checkbox" class="custom-control-input" id="PriorityM" name="Priority" value="Medium" onclick="handlePriority(this)">
+                                                <label class="custom-control-label" for="PriorityM">Medium</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
+                                                <input type="checkbox" class="custom-control-input" id="PriorityH" name="Priority" value="High" onclick="handlePriority(this)">
+                                                <label class="custom-control-label" for="PriorityH">High</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top:10px">
+                                    <label for="Compaint">Compaint</label>
+                                    <textarea id="Compaint" rows="5" class="form-control" name="Compaint" placeholder="About Compaint"></textarea>
                                 </div>
                             </div>
-                            <div class="form-group" style="margin-top:10px">
-                                <label for="Compaint">Compaint</label>
-                                <textarea id="Compaint" rows="5" class="form-control" name="Compaint" placeholder="About Compaint"></textarea>
-                            </div>
-                        </div>
 
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-danger mr-1">
-                                Clear
-                            </button>
-                            <button type="submit" class="btn btn-success">
-                                Save
-                            </button>
-                        </div>
-                    </form>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-danger mr-1">
+                                    Clear
+                                </button>
+                                <button type="submit" class="btn btn-success" id="savensend">
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    }
                 </div>
             </div>
         </div>
@@ -143,6 +150,73 @@
     $("#Nature_Id").select2({
       allowClear:true,
       placeholder: 'Select Nature'
+    });
+    function handlePriority(checkbox) {
+
+        const clickedCheckboxId = checkbox.id;
+        if(checkbox.id == "PriorityL"){
+            document.getElementById("PriorityM").checked = false;
+            document.getElementById("PriorityH").checked = false;
+        }else if(checkbox.id == "PriorityM"){
+            document.getElementById("PriorityL").checked = false;
+            document.getElementById("PriorityH").checked = false;
+        }else if(checkbox.id == "PriorityH"){
+            document.getElementById("PriorityM").checked = false;
+            document.getElementById("PriorityL").checked = false;
+        }else{
+            document.getElementById("PriorityL").checked = false;
+            document.getElementById("PriorityM").checked = false;
+            document.getElementById("PriorityH").checked = false;
+        }
+    }
+
+    $('#Dep_Id').on('change', function () {
+        let selectedDepId = $(this).val();
+        let selectedText = $(this).find('option:selected').text();
+        // Perform further actions based on the new selection
+        $('#Nature_Id').empty().append('<option value="">-- Select --</option>');
+        if (selectedDepId) {
+            $.ajax({
+                url: '@Url.Action("GetNaturesByDepartment", "ComplaintManageProcess")',
+                type: 'GET',
+                data: { depId: selectedDepId },
+                dataType: 'json',
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        $('#Nature_Id').append($('<option>', {
+                            value: item.id,
+                            text: item.nature
+                        }));
+                    });
+                },
+                error: function (error) {
+                    console.log("Error fetching data: ", error);
+                }
+            });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.getElementById('file');
+        const errorMessageContainer = document.getElementById('error-message');
+        const allowedExtension = '.pdf';
+        const button = document.getElementById("savensend");
+        fileInput.addEventListener('change', function () {
+            errorMessageContainer.textContent = '';
+            if (fileInput.files.length > 0) {
+                const selectedFile = fileInput.files[0];
+                const fileName = selectedFile.name;
+                const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+
+                if (fileExtension !== allowedExtension) {
+                    errorMessageContainer.textContent = 'Only PDF files are allowed.';
+                    errorMessageContainer.style.color = 'red';
+                    fileInput.value = '';                            
+                    button.disabled = true;
+                }else{
+                     button.disabled = false;
+                }
+            }
+        });
     });
 </script>
 

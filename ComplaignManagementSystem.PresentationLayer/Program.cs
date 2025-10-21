@@ -1,4 +1,6 @@
 using ComplaignManagementSystem.Data.Context;
+using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
+using ComplaintManagementSystem.Business.ConncetionHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<DapperContext>();
+builder.Services.AddScoped<_ConnectionService>();
+builder.Services.AddScoped<IComplaintManageProcessService, ComplaintManageProcessService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

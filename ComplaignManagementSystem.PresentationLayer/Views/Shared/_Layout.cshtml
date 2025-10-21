@@ -17,6 +17,7 @@
     <title>@ViewData["Title"] - ComplaignManagementSystem.PresentationLayer</title>
     <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
+    //
     <link href="https:fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/vendors.min.css" rel="stylesheet" />
@@ -24,6 +25,7 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
 
+    //
     <link href="~/demo/chameleon-admin-template/app-assets/css/core/colors/palette-switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
@@ -38,7 +40,21 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/simple-line-icons/style.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/pages/dashboard-analytics.min.css" rel="stylesheet" />
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
+
 </head>
+
+
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div id="toastContainer" class="toast-container toast-top-right">
+        <div id="successToast" class="toast toast-success" role="alert" aria-live="polite" aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-title">Success Message</div>
+            <div class="toast-message"></div>
+        </div>
+    </div>
+</div>
+
+
 <body class="vertical-layout vertical-menu 2-columns fixed-navbar pace-done menu-expanded" data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="2-columns">
     <div class="pace  pace-inactive">
         <div class="pace-progress" data-progress-text="100%" data-progress="99" style="transform: translate3d(100%, 0px, 0px);">
@@ -158,7 +174,7 @@
                             </li>
                         </ul>
                     </li>
-                    
+
                 </ul>
 
             </div>
@@ -195,7 +211,8 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/pages/dashboard-analytics.min.js"></script>
-    <script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+    <script src="~/js/test-toast.js"></script>
 </body>
 </html>
 
