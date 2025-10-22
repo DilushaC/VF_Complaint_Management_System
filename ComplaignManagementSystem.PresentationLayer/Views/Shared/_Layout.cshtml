@@ -17,16 +17,12 @@
     <title>@ViewData["Title"] - ComplaignManagementSystem.PresentationLayer</title>
     <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
-    //
-    <link href="https:fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/vendors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/toggle/switchery.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
 
-    //
-    <link href="~/demo/chameleon-admin-template/app-assets/css/core/colors/palette-switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />
@@ -41,14 +37,15 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/pages/dashboard-analytics.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
 
 </head>
 
 
 <div aria-live="polite" aria-atomic="true" class="position-relative">
     <div id="toastContainer" class="toast-container toast-top-right">
-        <div id="successToast" class="toast toast-success" role="alert" aria-live="polite" aria-atomic="true" data-bs-delay="3000">
-            <div class="toast-title">Success Message</div>
+        <div id="toastId" class="toast" role="alert" aria-live="polite" aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-title"></div>
             <div class="toast-message"></div>
         </div>
     </div>
@@ -212,7 +209,8 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/pages/dashboard-analytics.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
-    <script src="~/js/test-toast.js"></script>
+    <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+    <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
 </body>
 </html>
 

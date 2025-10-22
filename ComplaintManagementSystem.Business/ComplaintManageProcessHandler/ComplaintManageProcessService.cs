@@ -8,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -197,7 +199,202 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-        public async Task<PaginationResultsModel<Complaint_ManageProcessModel>> getComplaintList(int pageNumber, int pageSize, string searchString)
+        public async Task<PaginationResultsModel<ComplaintMaster>> getComplaintList(int pageNumber, int pageSize, string searchString)
+        {
+            try
+            {
+                string whereClause = "WHERE cmp.Active = 1";
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
+                }
+
+                int offset = (pageNumber - 1) * pageSize;
+                int endRow = pageNumber * pageSize;
+
+                string query = $@"
+                                -- Main query with pagination via ROW_NUMBER()
+                                WITH PagedResults AS (
+                                    SELECT 
+                                        cmp.Id,
+                                        cmp.Refference,
+                                        cm.Method,
+                                        cmp.Complaint,
+                                        cmp.CreatedUser,
+                                        cb.Branch,
+                                        cmp.Priority,
+                                        cmp.CreatedDate,
+                                        ROW_NUMBER() OVER (ORDER BY cmp.CreatedDate DESC) AS RowNum
+                                    FROM Complaint_ManageProcess as cmp
+                                    INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
+                                    INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                    INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                    INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                    INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                    {whereClause} -- The WHERE clause is now correctly inside the CTE
+                                )
+                                SELECT 
+                                    Id,
+                                    Refference,
+                                    Method,
+                                    Complaint,
+                                    CreatedUser,
+                                    Branch,
+                                    Priority,
+                                    CreatedDate
+                                FROM PagedResults
+                                WHERE RowNum > @Offset AND RowNum <= @EndRow;
+
+                                -- The COUNT query also needs to be updated to use the full join, just like the CTE
+                                -- to ensure the count is accurate with filtering
+                                SELECT COUNT(cmp.Id) 
+                                FROM Complaint_ManageProcess as cmp
+                                INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
+                                INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                {whereClause};";
+
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Offset", offset);
+                parameters.Add("@EndRow", endRow);
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    parameters.Add("@SearchPattern", "%" + searchString + "%");
+                }
+
+                return await _connection.QueryMultipleForPaginationAsync<ComplaintMaster>(query, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<ComplaintMaster> getComplainUsingId(int Id)
+        {
+            try
+            {
+                string query = @"
+                                SELECT 
+                                    cmp.Id,
+                                    cmp.Refference,
+                                    cm.Method,
+                                    cmp.Complaint,
+                                    cmp.Priority,
+                                    cmp.CreatedDate,
+                                    cmp.CreatedUser,
+                                    cb.Branch
+                                FROM Complaint_ManageProcess as cmp
+                                INNER JOIN Complaint_Method_Master as cm ON cm.Id = cmp.ComplaintMethod_Id
+                                INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                WHERE cmp.Id = @Id";
+
+                // Use Dapper to query the single record
+                var complaintDataTable = await _connection.SingleQueryReturn(query, Id);
+
+                string FilePath = $"/wwwroot/Attachments/_{Id}.pdf";
+
+
+                var row = complaintDataTable.Rows[0];
+                ComplaintMaster complainModel = new ComplaintMaster();
+
+                complainModel.Id = Convert.ToUInt16(row["Id"]);
+                complainModel.Refference = row["Refference"].ToString();
+                complainModel.Method = row["Method"].ToString();
+                complainModel.Complaint = row["Complaint"].ToString();
+                complainModel.Priority = row["Priority"].ToString();
+                complainModel.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
+                complainModel.CreatedUser = row["CreatedUser"].ToString();
+                complainModel.Branch = row["Branch"].ToString();
+                if (!File.Exists(FilePath))
+                {
+                    complainModel.AttachmentPath = $"/wwwroot/Attachments/{FilePath}";
+                }
+                return (complainModel);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public Complaint_ManageProcessModel getComplainProcessUsingId(int Id)
+        {
+            try
+            {
+                string query = $@" SELECT * FROM Complaint_ManageProcess WHERE Id={Id} ";
+                var data = _connection.Return(query);
+                var row = data.Rows[0];
+                Complaint_ManageProcessModel comMangProcess = new Complaint_ManageProcessModel()
+                {
+                    Id = row["Id"] != DBNull.Value ? Convert.ToInt32(row["Id"]) : 0,
+                    ComplaintMethod_Id = row["ComplaintMethod_Id"] != DBNull.Value ? Convert.ToInt32(row["ComplaintMethod_Id"]) : 0,
+                    Refference = row["Refference"] != DBNull.Value ? row["Refference"].ToString() : string.Empty,
+                    Complaint = row["Complaint"] != DBNull.Value ? row["Complaint"].ToString() : string.Empty,
+                    Cus_Name = row["Cus_Name"] != DBNull.Value ? row["Cus_Name"].ToString() : string.Empty,
+                    Cus_Nic = row["Cus_Nic"] != DBNull.Value ? row["Cus_Nic"].ToString() : string.Empty,
+                    Cus_Refference = row["Cus_Refference"] != DBNull.Value ? row["Cus_Refference"].ToString() : string.Empty,
+                    Cus_MobileNumber = row["Cus_MobileNumber"] != DBNull.Value ? row["Cus_MobileNumber"].ToString() : string.Empty,
+                    Dep_Id = row["Dep_Id"] != DBNull.Value ? Convert.ToInt32(row["Dep_Id"]) : 0,
+                    Nature_Id = row["Nature_Id"] != DBNull.Value ? Convert.ToInt32(row["Nature_Id"]) : 0,
+                    Priority = row["Priority"] != DBNull.Value ? row["Priority"].ToString() : string.Empty,
+                    IsSentCentral = row["IsSentCentral"] != DBNull.Value && Convert.ToBoolean(row["IsSentCentral"]),
+                    IsSentCentralDateTime = row["IsSentCentralDateTime"] != DBNull.Value ? Convert.ToDateTime(row["IsSentCentralDateTime"]) : DateTime.MinValue,
+                    IsSentDep = row["IsSentDep"] != DBNull.Value && Convert.ToBoolean(row["IsSentDep"]),
+                    IsSentDepDateTime = row["IsSentDepDateTime"] != DBNull.Value ? Convert.ToDateTime(row["IsSentDepDateTime"]) : DateTime.MinValue,
+                    ResolvedRemark = row["ResolvedRemark"] != DBNull.Value ? row["ResolvedRemark"].ToString() : string.Empty,
+                    ResolvedUser = row["ResolvedUser"] != DBNull.Value ? row["ResolvedUser"].ToString() : string.Empty,
+                    EditedDateTime = row["EditedDateTime"] != DBNull.Value ? Convert.ToDateTime(row["EditedDateTime"]) : DateTime.MinValue,
+                    Active = row["Active"] != DBNull.Value && Convert.ToBoolean(row["Active"]),
+                    DeletedDate = row["DeletedDate"] != DBNull.Value ? Convert.ToDateTime(row["DeletedDate"]) : DateTime.MinValue,
+                    DeletedUser = row["DeletedUser"] != DBNull.Value ? row["DeletedUser"].ToString() : string.Empty,
+                    CreatedUser = row["CreatedUser"] != DBNull.Value ? row["CreatedUser"].ToString() : string.Empty,
+                    CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
+
+                    // Id = Convert.ToInt32(row["Id"]),
+                    // ComplaintMethod_Id = Convert.ToInt32(row["ComplaintMethod_Id"]),
+                    // Refference = row["Refference"].ToString(),
+                    // Complaint = row["Complaint"].ToString(),
+                    // Cus_Name = row["Cus_Name"].ToString(),
+                    // Cus_Nic = row["Cus_Nic"].ToString(),
+                    // Cus_Refference = row["Cus_Refference"].ToString(),
+                    // Cus_MobileNumber = row["Cus_MobileNumber"].ToString(),
+                    // Dep_Id = Convert.ToInt32(row["Dep_Id"]),
+                    // Nature_Id = Convert.ToInt32(row["Nature_Id"]),
+                    // Priority = row["Priority"].ToString(),
+                    // IsSentCentral = Convert.ToBoolean(row["IsSentCentral"]),
+                    // IsSentCentralDateTime = Convert.ToDateTime(row["IsSentCentralDateTime"]),
+                    // IsSentDep = Convert.ToBoolean(row["IsSentDep"]),
+                    // IsSentDepDateTime = Convert.ToDateTime(row["IsSentDepDateTime"]),
+                    // ResolvedRemark = row["ResolvedRemark"].ToString(),
+                    ///ResolvedUser = row["ResolvedUser"].ToString(),
+                    // EditedDateTime = Convert.ToDateTime(row["EditedDateTime"]),
+                    // Active = Convert.ToBoolean(row["Active"]),
+                    // DeletedDate = Convert.ToDateTime(row["DeletedDate"]),
+                    // DeletedUser = row["DeletedUser"].ToString(),
+                    // CreatedUser = row["CreatedUser"].ToString(),
+                    // CreatedDate = Convert.ToDateTime(row["CreatedDate"]),
+                };
+
+
+                return comMangProcess;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<PaginationResultsModel<Complaint_ManageProcessModel>> getComplaissntList(int pageNumber, int pageSize, string searchString)
         {
             try
             {
@@ -226,7 +423,76 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {
                 throw ex;
             }
-        }        
+        }
 
+        public void UpdateComplaint(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                var ComProcessId = collection["Id"].ToString();
+                var ComplaintMethod_Id = collection["ComplaintMethod_Id"].ToString();
+                var Cu_Name = collection["Cus_Name"].ToString();
+                var Cus_Nic = collection["Cus_Nic"].ToString();
+                var Cus_Refference = collection["Cus_Refference"].ToString(); ;
+                var Cus_MobileNumber = collection["Cus_MobileNumber"].ToString();
+                var Dep_Id = collection["Dep_Id"].ToString();
+                var Nature_Id = collection["Nature_Id"].ToString();
+                var Priority = collection["Priority"].ToString();
+                var Compaint = collection["Compaint"].ToString();
+
+                //string query = $@"UPDATE Complaint_ManageProcess SET ComplaintMethod_Id={Convert.ToInt32(ComplaintMethod_Id)}, Complaint={Compaint}, Cus_Name={Cu_Name}, Cus_Nic={Cus_Nic},
+                //    Cus_Refference={Cus_Refference}, Cus_MobileNumber={Cus_MobileNumber}, Dep_Id={Dep_Id}, Nature_Id={Nature_Id}, Priority={Priority} WHERE Id={ComProcessId}";
+                //_connection.Return(query);
+
+                string query = @"
+                                UPDATE Complaint_ManageProcess
+                                SET 
+                                    ComplaintMethod_Id = @ComplaintMethod_Id,
+                                    Complaint = @Complaint,
+                                    Cus_Name = @Cus_Name,
+                                    Cus_Nic = @Cus_Nic,
+                                    Cus_Refference = @Cus_Refference,
+                                    Cus_MobileNumber = @Cus_MobileNumber,
+                                    Dep_Id = @Dep_Id,
+                                    Nature_Id = @Nature_Id,
+                                    Priority = @Priority,
+                                    EditedDateTime = @EditedDateTime
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                                parameters.Add("@Id", Convert.ToInt64(ComProcessId), DbType.Int64);
+                                parameters.Add("@ComplaintMethod_Id", Convert.ToInt64(ComplaintMethod_Id), DbType.Int64);
+                                parameters.Add("@Complaint", Compaint, DbType.String);
+                                parameters.Add("@Cus_Name", Cu_Name, DbType.String);
+                                parameters.Add("@Cus_Nic", Cus_Nic, DbType.String);
+                                parameters.Add("@Cus_Refference", Cus_Refference, DbType.String);
+                                parameters.Add("@Cus_MobileNumber", Cus_MobileNumber, DbType.String);
+                                parameters.Add("@Dep_Id", Convert.ToInt64(Dep_Id), DbType.Int64);
+                                parameters.Add("@Nature_Id", Convert.ToInt64(Nature_Id), DbType.Int64);
+                                parameters.Add("@Priority", Priority, DbType.String);
+                                parameters.Add("@EditedDateTime", System.DateTime.Now, DbType.DateTime);
+
+                _connection.ExecuteWithPara(query, parameters);
+
+                if (file != null && file.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Attachments");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+                    var fileName = "_" + ComProcessId + ".pdf";
+                    var filePath = Path.Combine(uploadsFolder, Path.GetFileName(fileName));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+                return;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

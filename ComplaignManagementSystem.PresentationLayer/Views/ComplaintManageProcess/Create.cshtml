@@ -24,8 +24,6 @@
                                     <i class="ft-flag"></i> Complain Create Form
                                 </h4>
                                 <div class="form-group">
-                                    @* <input type="text" id="companyName" class="form-control" placeholder="Company Name" name="company"> *@
-
                                     <label for="Complaint Method">Complaint Method</label>
                                     <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
                                         <option value="">-- Select --</option>
@@ -138,7 +136,6 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/checkbox-radio.min.js"></script>
 <script>
-
     $("#ComplaintMethod_Id").select2({
       allowClear:true,
       placeholder: 'Select Method'
@@ -152,7 +149,6 @@
       placeholder: 'Select Nature'
     });
     function handlePriority(checkbox) {
-
         const clickedCheckboxId = checkbox.id;
         if(checkbox.id == "PriorityL"){
             document.getElementById("PriorityM").checked = false;

@@ -46,6 +46,17 @@ namespace ComplaintManagementSystem.Business.ConncetionHandler
             };
         }
 
+        public async Task<DataTable> SingleQueryReturn(string query, int id)
+        {
+            using var connection = _context.CreateConnection();
+            var dataTable = new DataTable();
+            // Use ExecuteReaderAsync to get an IDataReader
+            using var reader = await connection.ExecuteReaderAsync(query, new { Id = id });
+            // Load the IDataReader into the DataTable
+            dataTable.Load(reader);
+            return dataTable;
+        }
+
         public DataTable Return(string query)
         {
             using var connection = _context.CreateConnection();
@@ -63,7 +74,15 @@ namespace ComplaintManagementSystem.Business.ConncetionHandler
             dataTable.Load(reader);
             return dataTable;
         }
-        
+
+        public int ExecuteWithPara(string query, DynamicParameters parameters)
+        {
+            using var connection = _context.CreateConnection();
+            // Execute returns number of affected rows
+            int rowsAffected = connection.Execute(query, parameters, commandTimeout: int.MaxValue);
+            return rowsAffected;
+        }
+
 
         public object ExecuteScalar(string query)
         {

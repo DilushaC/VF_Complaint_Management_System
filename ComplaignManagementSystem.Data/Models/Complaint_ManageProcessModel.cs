@@ -11,6 +11,7 @@ namespace ComplaignManagementSystem.Data.Models
     {
         public int Id { get; set; }
         public int ComplaintMethod_Id { get; set; }
+        public string ComplaintMethod { get; set; }
         public string Refference { get; set; }
         public string Complaint { get; set; }
         public string Cus_Name { get; set; }
@@ -18,13 +19,16 @@ namespace ComplaignManagementSystem.Data.Models
         public string Cus_Refference { get; set; }
         public string Cus_MobileNumber { get; set; }
         public int Dep_Id { get; set; }
+        public string Dep { get; set; }
         public int Nature_Id { get; set; }
+        public string Nature { get; set; }
         public string Priority { get; set; }
         public bool IsSentCentral { get; set; }
         public DateTime IsSentCentralDateTime { get; set; }
         public bool IsSentDep { get; set; }
         public DateTime IsSentDepDateTime { get; set; }
         public int Status { get; set; }
+        public string StatusName { get; set; }
         public string ResolvedRemark { get; set; }
         public bool IsResolved { get; set; }
         public DateTime ResolvedDateTime { get; set; }
@@ -32,9 +36,11 @@ namespace ComplaignManagementSystem.Data.Models
         public DateTime EditedDateTime { get; set; }
         public bool Active { get; set; }
         public DateTime DeletedDate { get; set; }
+        public string CreatedBranch { get; set; }
         public string DeletedUser { get; set; }
         public string CreatedUser { get; set; }
         public DateTime CreatedDate { get; set; }
         public IFormFile File { get; set; }
+        public string AttachmentPath { get; set; }
     }
 }

@@ -1,0 +1,80 @@
+﻿@model ComplaignManagementSystem.Data.Models.ComplaintMaster // Change this to your actual model namespace
+
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3">
+                <strong>Refference</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Refference)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Complaint Method</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Method)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Complaint</strong>
+            </div>
+            <div class="col-md-6">
+                :  @Html.DisplayFor(m => m.Complaint)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Acttachment</strong>
+            </div>
+            <div class="col-md-3">
+                : @if (!string.IsNullOrEmpty(Model.AttachmentPath))
+                {
+                    <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
+                        <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
+                    </a>
+                }
+                 else
+                {
+                    <span>No attachment</span>
+                }
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Foreward By</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Branch)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Foreward Name</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.CreatedUser)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-footer">
+    <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+
+
+@* <p><strong>Refference :</strong> @Html.DisplayFor(m => m.Refference)</p>
+<p><strong>Priority :</strong> @Html.DisplayFor(m => m.Priority)</p>
+<p><strong>Created Date :</strong> @Html.DisplayFor(m => m.CreatedDate)</p> *@
+
+
+
+
+
