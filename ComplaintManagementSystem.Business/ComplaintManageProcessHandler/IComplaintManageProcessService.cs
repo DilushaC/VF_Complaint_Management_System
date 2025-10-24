@@ -17,8 +17,11 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public void CreateComplaint(IFormCollection collection, IFormFile file);
         public void UpdateComplaint(IFormCollection collection, IFormFile file);
         public Task<PaginationResultsModel<ComplaintMaster>> getComplaintList(int pageNumber, int pageSize, string searchString);
+        public Task<PaginationResultsModel<ComplaintMaster>> getDepComplaintList(int pageNumber, int pageSize, string searchString);
         public Task<ComplaintMaster> getComplainUsingId(int Id);
         public Complaint_ManageProcessModel getComplainProcessUsingId(int Id);
+        public void UpdateForwardToCentral(int CompId);
+        public void DepartmentComplainResolve(int Id, string Remark);
 
 
 
