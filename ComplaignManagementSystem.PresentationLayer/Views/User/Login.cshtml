@@ -1,4 +1,4 @@
-﻿@model ComplaignManagementSystem.Data.Context.DapperContext
+﻿@model ComplaignManagementSystem.Data.Models.LoginViewModel
 
 
 @{
@@ -70,28 +70,31 @@
                                 <div class="card-content">
 
                                     <div class="card-body">
-                                        <form class="form-horizontal" novalidate>
+                                        <form class="form-horizontal" asp-action="Index" asp-controller="Login" method="post">
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input type="text" class="form-control round" id="user-name" placeholder="Your Username" required>
+                                                <input asp-for="UserName" name="username" class="form-control round" placeholder="Your Username" required />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-user"></i>
                                                 </div>
                                             </fieldset>
+
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input type="password" class="form-control round" id="user-password" placeholder="Enter Password" required>
+                                                <input asp-for="Password" name="password" type="password" class="form-control round" placeholder="Enter Password" required />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-lock"></i>
                                                 </div>
                                             </fieldset>
-                                            <div class="form-group row">
-                                                <div class="col-md-6 col-12 text-center text-sm-left">
-                                                </div>
-                                                <div class="col-md-6 col-12 float-sm-left text-center text-sm-right"><a href="recover-password.html" class="card-link">Forgot Password?</a></div>
-                                            </div>
+
                                             <div class="form-group text-center">
                                                 <button type="submit" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">Login</button>
                                             </div>
+
+                                            @if (ViewBag.Error != null)
+                                            {
+                                                <div class="alert alert-danger text-center">@ViewBag.Error</div>
+                                            }
                                         </form>
+
                                     </div>
                                     <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2 my-2 "><span>OR Sign Up Using</span></p>
                                     <div class="text-center">
