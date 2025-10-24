@@ -177,48 +177,99 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-
-
-        // GET: ComplaintManageProcessController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ComplaintManageProcessController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> DepartmentProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getDepComplaintList(pageNumber, pageSize, searchString);
+                ViewBag.ComplainLists = paginationResult.Items;
+
+                //Also pass the total count for building the pagination links
+                ViewBag.TotalCount = paginationResult.TotalCount;
+                ViewBag.PageSize = pageSize;
+                ViewBag.PageNumber = pageNumber;
+                //TempData["ToastMessage"] = "EditedSuccessfully!";
+
                 return View();
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        // GET: ComplaintManageProcessController/Delete/5
-        public ActionResult Delete(int id)
+
+        public async Task<IActionResult> ComplaintForwardDetails(int id)
         {
-            return View();
+            // SQL query to retrieve the master data for the given complaint ID
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound(); // Or return an error partial view
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+            // Return the data to the partial view
+            return PartialView("_DepartmentForwardPartial", complaintData);
         }
 
-        // POST: ComplaintManageProcessController/Delete/5
+
+       
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public JsonResult ForwardToCentral(int Id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _complainProcess.UpdateForwardToCentral(Id);
+                return Json(new { success = true, message = "Sent to central successfully." });
+
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Json(new { success = false, message = ex.Message });
             }
         }
+
+
+        public async Task<IActionResult> ComplaintResolveDetails(int id)
+        {
+            // SQL query to retrieve the master data for the given complaint ID
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound(); // Or return an error partial view
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+            // Return the data to the partial view
+            return PartialView("_DepartmentResolvePartial", complaintData);
+        }
+
+
+
+        [HttpPost]
+        public JsonResult DepComplainResolve(int Id, string Remark)
+        {
+            try
+            {
+                _complainProcess.DepartmentComplainResolve(Id, Remark);
+                return Json(new { success = true, message = "Complain Resolve successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
     }
 }

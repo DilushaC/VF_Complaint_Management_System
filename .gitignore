@@ -122,6 +122,7 @@ $RECYCLE.BIN/
 # JetBrains Rider / Resharper
 _ReSharper*/
 *.[Rr]e[Ss]harper
+<<<<<<< HEAD
 *.DotSettings.user
 
 
@@ -129,3 +130,7 @@ _ReSharper*/
 
 
 
+=======
+*.DotSettings.user
+>>>>>>> dev-4514
+/ComplaignManagementSystem.PresentationLayer/appsettings.json
