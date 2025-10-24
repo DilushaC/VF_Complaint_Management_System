@@ -30,7 +30,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             var getAllMethods = _complainProcess.getMethodList();
             ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
             ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name");
-
             return View();
         }
 

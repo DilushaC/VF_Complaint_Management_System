@@ -80,7 +80,6 @@
                                             <option value="">-- Select --</option>
                                         </select>
                                     </div>
-
                                     <div class="col-md-6" style="position: relative;">
                                         <label for="Priority">Priority</label>
                                         <div class="row" style="margin-left:5px">
@@ -97,15 +96,30 @@
                                                 <label class="custom-control-label" for="PriorityH">High</label>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin-top:10px">
                                     <label for="Compaint">Compaint</label>
                                     <textarea id="Compaint" rows="5" class="form-control" name="Compaint" placeholder="About Compaint"></textarea>
                                 </div>
-                            </div>
+                            </div>                            
+                            
+                            <div class="form-group" style="margin-top:10px">
+                                <h3> If you resolved this Complaint?</h3>
+                                <br />
+                                <div class="row" style="margin-left:10px">
 
+                                    <div class="col-md-2">
+                                        <label for="Yes">Yes</label>
+                                        <input class="form-control" type="radio" id="Yes" name="fav_language" value="Yes" style="block-size:20px;margin:-28px;margin-left:0px">
+                                    </div>
+                                    <div class="col-md-2" style="margin-left:-40px">
+                                        <label for="No">No</label>
+                                        <input class="form-control" type="radio" id="No" name="fav_language" value="No" style="block-size:20px;margin:-28px">
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
                             <div class="form-actions">
                                 <button type="button" class="btn btn-danger mr-1">
                                     Clear
@@ -206,7 +220,7 @@
                 if (fileExtension !== allowedExtension) {
                     errorMessageContainer.textContent = 'Only PDF files are allowed.';
                     errorMessageContainer.style.color = 'red';
-                    fileInput.value = '';                            
+                    fileInput.value = '';
                     button.disabled = true;
                 }else{
                      button.disabled = false;
