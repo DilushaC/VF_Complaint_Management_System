@@ -127,7 +127,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
-                string Query = $"SELECT * FROM Complaint_ManageProcess WHERE Active=1";
+                string Query = $"SELECT * FROM Complaint_ManageProcess";
                 var Data = _connection.Return(Query);
                 var newCode = Data.Rows.Count + 1;
                 var Refference = "CMAF" + newCode.ToString("D5");
@@ -140,6 +140,90 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var Nature_Id = collection["Nature_Id"].ToString();
                 var Priority = collection["Priority"].ToString();
                 var Compaint = collection["Compaint"].ToString();
+                var ResolvedStatus = collection["ResolvedStatus"].ToString();
+                var ResolvedRemark = collection["ResolvedRemark"].ToString();
+
+                var query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate) " +
+                    "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate)" +
+                    "SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("comMethodId", Convert.ToInt64(ComplaintMethod_Id), DbType.Int64);
+                parameters.Add("reff", Refference, DbType.String);
+                parameters.Add("complaint", Compaint, DbType.String);
+                parameters.Add("cusName", Cu_Name, DbType.String);
+                parameters.Add("cus_Nic", Cus_Nic, DbType.String);
+                parameters.Add("cusReff", Cus_Refference, DbType.String);
+                parameters.Add("cusMob", Cus_MobileNumber, DbType.String);
+                parameters.Add("depId", Convert.ToInt64(Dep_Id), DbType.Int64);
+                parameters.Add("natId", Convert.ToInt64(Nature_Id), DbType.Int64);
+                parameters.Add("priority", Priority, DbType.String);
+                parameters.Add("isCentral", 0, DbType.Int32);
+                parameters.Add("isDep", 0, DbType.Int32);
+                parameters.Add("isSentDepDate", System.DateTime.Now, DbType.DateTime);
+                parameters.Add("status", 1, DbType.Int32);
+                parameters.Add("active", 1, DbType.Int32);
+                parameters.Add("createdUser", "Kasunp", DbType.String);
+                parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
+
+                var ProcessId = _connection.InsertAndGetId(query, parameters);
+
+                var depQuery = "INSERT INTO Complaint_Send_Departments(ComplaintMngProcess_Id, Dep_Id, EscalatiomMatrix, Active, Status, ForwardUser, CreatedDate)" +
+                    "VALUES (@comProccessId, @depId, @esMatrix, @active, @status, @forUser, @createdDate)";
+                var depParameters = new DynamicParameters();
+                depParameters.Add("comProccessId", Convert.ToInt64(ProcessId), DbType.Int64);
+                depParameters.Add("depId", Convert.ToInt64(Dep_Id), DbType.Int64);
+                depParameters.Add("esMatrix", 1, DbType.Int64);
+                depParameters.Add("active", 1, DbType.Int32);
+                depParameters.Add("status", 1, DbType.Int32);
+                depParameters.Add("forUser", "Kasunp", DbType.String);
+                depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
+                _connection.ReturnWithPara(depQuery, depParameters);
+                //Handle file upload
+                if (file != null && file.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Attachments");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+                    var fileName = "_" + ProcessId + ".pdf";
+                    var filePath = Path.Combine(uploadsFolder, Path.GetFileName(fileName));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+                if(ResolvedStatus == "Yes")
+                {
+                    DepartmentComplainResolve(ProcessId, ResolvedRemark);
+                }
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void CreateAndSendComplaint(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                string Query = $"SELECT * FROM Complaint_ManageProcess";
+                var Data = _connection.Return(Query);
+                var newCode = Data.Rows.Count + 1;
+                var Refference = "CMAF" + newCode.ToString("D5");
+                var ComplaintMethod_Id = collection["ComplaintMethod_Id"].ToString();
+                var Cu_Name = collection["Cus_Name"].ToString();
+                var Cus_Nic = collection["Cus_Nic"].ToString();
+                var Cus_Refference = collection["Cus_Refference"].ToString(); ;
+                var Cus_MobileNumber = collection["Cus_MobileNumber"].ToString();
+                var Dep_Id = collection["Dep_Id"].ToString();
+                var Nature_Id = collection["Nature_Id"].ToString();
+                var Priority = collection["Priority"].ToString();
+                var Compaint = collection["Compaint"].ToString();
+                var ResolvedStatus = collection["ResolvedStatus"].ToString();
+                var ResolvedRemark = collection["ResolvedRemark"].ToString();
 
                 var query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate) " +
                     "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate)" +
@@ -168,7 +252,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 
                 var depQuery = "INSERT INTO Complaint_Send_Departments(ComplaintMngProcess_Id, Dep_Id, EscalatiomMatrix, Active, Status, ForwardUser, CreatedDate)" +
                     "VALUES (@comProccessId, @depId, @esMatrix, @active, @status, @forUser, @createdDate)";
-
                 var depParameters = new DynamicParameters();
                 depParameters.Add("comProccessId", Convert.ToInt64(ProcessId), DbType.Int64);
                 depParameters.Add("depId", Convert.ToInt64(Dep_Id), DbType.Int64);
@@ -191,6 +274,11 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                         file.CopyTo(stream);
                     }
                 }
+                if(ResolvedStatus == "Yes")
+                {
+                    DepartmentComplainResolve(ProcessId, ResolvedRemark);
+                }
+
                 return;
             }
             catch (Exception ex)
@@ -435,29 +523,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                     CreatedUser = row["CreatedUser"] != DBNull.Value ? row["CreatedUser"].ToString() : string.Empty,
                     CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
 
-                    // Id = Convert.ToInt32(row["Id"]),
-                    // ComplaintMethod_Id = Convert.ToInt32(row["ComplaintMethod_Id"]),
-                    // Refference = row["Refference"].ToString(),
-                    // Complaint = row["Complaint"].ToString(),
-                    // Cus_Name = row["Cus_Name"].ToString(),
-                    // Cus_Nic = row["Cus_Nic"].ToString(),
-                    // Cus_Refference = row["Cus_Refference"].ToString(),
-                    // Cus_MobileNumber = row["Cus_MobileNumber"].ToString(),
-                    // Dep_Id = Convert.ToInt32(row["Dep_Id"]),
-                    // Nature_Id = Convert.ToInt32(row["Nature_Id"]),
-                    // Priority = row["Priority"].ToString(),
-                    // IsSentCentral = Convert.ToBoolean(row["IsSentCentral"]),
-                    // IsSentCentralDateTime = Convert.ToDateTime(row["IsSentCentralDateTime"]),
-                    // IsSentDep = Convert.ToBoolean(row["IsSentDep"]),
-                    // IsSentDepDateTime = Convert.ToDateTime(row["IsSentDepDateTime"]),
-                    // ResolvedRemark = row["ResolvedRemark"].ToString(),
-                    ///ResolvedUser = row["ResolvedUser"].ToString(),
-                    // EditedDateTime = Convert.ToDateTime(row["EditedDateTime"]),
-                    // Active = Convert.ToBoolean(row["Active"]),
-                    // DeletedDate = Convert.ToDateTime(row["DeletedDate"]),
-                    // DeletedUser = row["DeletedUser"].ToString(),
-                    // CreatedUser = row["CreatedUser"].ToString(),
-                    // CreatedDate = Convert.ToDateTime(row["CreatedDate"]),
                 };
 
 
@@ -549,6 +614,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 
                 _connection.ExecuteWithPara(query, parameters);
 
+                var depQuery = $"UPDATE Complaint_ManageProcess SET Dep_Id={Convert.ToInt64(Dep_Id)} WHERE ComplaintMngProcess_Id={Convert.ToInt64(ComProcessId)} AND Active=1 AND EscalatiomMatrix=1";
+                _connection.Return(depQuery);
+
                 if (file != null && file.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Attachments");
@@ -570,7 +638,89 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
+        public void UpdateSendComplaint(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                var ComProcessId = collection["Id"].ToString();
+                var ComplaintMethod_Id = collection["ComplaintMethod_Id"].ToString();
+                var Cu_Name = collection["Cus_Name"].ToString();
+                var Cus_Nic = collection["Cus_Nic"].ToString();
+                var Cus_Refference = collection["Cus_Refference"].ToString(); ;
+                var Cus_MobileNumber = collection["Cus_MobileNumber"].ToString();
+                var Dep_Id = collection["Dep_Id"].ToString();
+                var Nature_Id = collection["Nature_Id"].ToString();
+                var Priority = collection["Priority"].ToString();
+                var Compaint = collection["Compaint"].ToString();
+                var ResolvedStatus = collection["ResolvedStatus"].ToString();
+                var ResolvedRemark = collection["ResolvedRemark"].ToString();
 
+                //string query = $@"UPDATE Complaint_ManageProcess SET ComplaintMethod_Id={Convert.ToInt32(ComplaintMethod_Id)}, Complaint={Compaint}, Cus_Name={Cu_Name}, Cus_Nic={Cus_Nic},
+                //    Cus_Refference={Cus_Refference}, Cus_MobileNumber={Cus_MobileNumber}, Dep_Id={Dep_Id}, Nature_Id={Nature_Id}, Priority={Priority} WHERE Id={ComProcessId}";
+                //_connection.Return(query);
+
+                string query = @"
+                                UPDATE Complaint_ManageProcess
+                                SET 
+                                    ComplaintMethod_Id = @ComplaintMethod_Id,
+                                    Complaint = @Complaint,
+                                    Cus_Name = @Cus_Name,
+                                    Cus_Nic = @Cus_Nic,
+                                    Cus_Refference = @Cus_Refference,
+                                    Cus_MobileNumber = @Cus_MobileNumber,
+                                    Dep_Id = @Dep_Id,
+                                    Nature_Id = @Nature_Id,
+                                    Priority = @Priority,
+                                    EditedDateTime = @EditedDateTime,
+                                    IsSentDep = @IsSentDep,
+                                    IsSentDepDateTime = @IsSentDepDateTime,
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                                parameters.Add("@Id", Convert.ToInt64(ComProcessId), DbType.Int64);
+                                parameters.Add("@ComplaintMethod_Id", Convert.ToInt64(ComplaintMethod_Id), DbType.Int64);
+                                parameters.Add("@Complaint", Compaint, DbType.String);
+                                parameters.Add("@Cus_Name", Cu_Name, DbType.String);
+                                parameters.Add("@Cus_Nic", Cus_Nic, DbType.String);
+                                parameters.Add("@Cus_Refference", Cus_Refference, DbType.String);
+                                parameters.Add("@Cus_MobileNumber", Cus_MobileNumber, DbType.String);
+                                parameters.Add("@Dep_Id", Convert.ToInt64(Dep_Id), DbType.Int64);
+                                parameters.Add("@Nature_Id", Convert.ToInt64(Nature_Id), DbType.Int64);
+                                parameters.Add("@Priority", Priority, DbType.String);
+                                parameters.Add("@EditedDateTime", System.DateTime.Now, DbType.DateTime);
+                                parameters.Add("@IsSentDep", 1, DbType.Int32);
+                                parameters.Add("@IsSentDepDateTime", System.DateTime.Now, DbType.DateTime);
+
+                _connection.ExecuteWithPara(query, parameters);
+
+                var depQuery = $"UPDATE Complaint_ManageProcess SET Dep_Id={Convert.ToInt64(Dep_Id)} WHERE ComplaintMngProcess_Id={Convert.ToInt64(ComProcessId)} AND Active=1 AND EscalatiomMatrix=1";
+                _connection.Return(depQuery);
+
+                if (file != null && file.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Attachments");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+                    var fileName = "_" + ComProcessId + ".pdf";
+                    var filePath = Path.Combine(uploadsFolder, Path.GetFileName(fileName));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+
+                if (ResolvedStatus == "Yes")
+                {
+                    DepartmentComplainResolve(Convert.ToInt16(ComProcessId), ResolvedRemark);
+                }
+                return;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
 
         public void UpdateForwardToCentral(int Id)
         {
@@ -611,30 +761,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         }
 
 
-        //public void DepartmentComplainResolve(int Id, string Remark)
-        //{
-        //    try
-        //    {
-        //        string query = $@" UPDATE Complaint_ManageProcess 
-        //                        SET IsResolved = 1, ResolvedDateTime = @CurrentDateTime, ResolvedRemark = {Remark}
-        //                        WHERE Id={Id} ";
-
-        //        var parameters = new DynamicParameters();
-        //        parameters.Add("@Id", Convert.ToInt64(Id), DbType.Int64);                
-        //        parameters.Add("@ResolvedRemark", Remark, DbType.String);
-        //        parameters.Add("@ResolvedDateTime", System.DateTime.Now, DbType.DateTime);
-
-        //        _connection.ExecuteWithPara(query, parameters);
-
-        //        return;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
-
         public void DepartmentComplainResolve(int Id, string Remark)
         {
             try
@@ -656,7 +782,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

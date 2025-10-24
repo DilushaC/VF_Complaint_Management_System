@@ -35,11 +35,26 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
         // POST: ComplaintManageProcessController/Create
         [HttpPost]
-        public ActionResult SubmitComplain(IFormCollection collection, IFormFile file)
+        public ActionResult SaveComplaint(IFormCollection collection, IFormFile file)
         {
             try
             {
                 _complainProcess.CreateComplaint(collection, file);
+                TempData["ToastMessage"] = "SubmittedSuccessfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult SubmitAndSendComplain(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                _complainProcess.CreateAndSendComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
                 return RedirectToAction(nameof(Index));
             }
@@ -168,6 +183,21 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 _complainProcess.UpdateComplaint(collection, file);
+                TempData["ToastMessage"] = "EditedSuccessfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult UpdateSendComplaint(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                _complainProcess.UpdateSendComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
                 return RedirectToAction(nameof(Index));
             }
