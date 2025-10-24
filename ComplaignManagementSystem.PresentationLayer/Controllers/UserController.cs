@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ComplaignManagementSystem.Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
@@ -11,10 +12,28 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return View();
         }
 
-        public ActionResult Register()
+        [HttpGet]
+        public IActionResult Register()
         {
             return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // TODO: Save new user to database
+                return RedirectToAction("Index", "Login");
+            }
+
+            ViewBag.Error = "Please fill all required fields correctly.";
+            return View(model);
+        }
+
+
+
 
         // GET: UserController/Details/5
         public ActionResult Details(int id)

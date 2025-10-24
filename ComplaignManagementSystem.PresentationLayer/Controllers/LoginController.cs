@@ -15,7 +15,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            // Explicitly load the view from Views/User/Login.cshtml
             return View("~/Views/User/Login.cshtml");
         }
 
@@ -26,14 +25,19 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
             if (user != null)
             {
-                // Example: Set session or redirect
                 HttpContext.Session.SetString("UserName", user.UserName);
                 return RedirectToAction("Dashboard", "ComplaintManageProcess");
             }
 
-            // If login failed, show same User/Login view again with error
             ViewBag.Error = "Invalid username or password.";
             return View("~/Views/User/Login.cshtml");
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); 
+            return RedirectToAction("Index", "Login"); 
         }
     }
 }
