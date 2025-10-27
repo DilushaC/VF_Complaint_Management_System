@@ -2,6 +2,7 @@
 using ComplaintManagementSystem.Business.LoginHandler;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
@@ -33,6 +34,33 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
                 HttpContext.Session.SetString("UserName", user.UserName);
                 HttpContext.Session.SetString("UserDep_Id", Convert.ToString(user.Dep_Id));
+                var DepUCount = getAccessPages.Where(a => a.Page == "Department Master" && a.Active == true).Count();
+                var CentUCount = getAccessPages.Where(a => a.Page == "Central Master" && a.Active == true).Count();
+
+                HttpContext.Session.SetString("UserPermission", getPermissions.Role);
+                if(DepUCount != 0)
+                {
+                    HttpContext.Session.SetString("DepartmentPermission", "Department User");
+                }
+                else
+                {
+                    HttpContext.Session.SetString("DepartmentPermission", null);
+                }
+                if(CentUCount != 0)
+                {
+                    HttpContext.Session.SetString("CentralPermission", "Central User");
+                }
+                else
+                {
+                    HttpContext.Session.SetString("CentralPermission", null);
+                }
+
+
+
+                var jsonData = JsonConvert.SerializeObject(getAccessPages);
+
+                HttpContext.Session.SetString("AccessPages", jsonData);
+
                 //HttpContext.Session.SetString("AccessPages", getAccessPages);
                 //return RedirectToAction("Dashboard", "ComplaintManageProcess");
                 return Json(new { success = true, redirectUrl = Url.Action("Dashboard", "ComplaintManageProcess") });

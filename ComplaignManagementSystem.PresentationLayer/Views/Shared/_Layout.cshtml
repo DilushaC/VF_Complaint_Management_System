@@ -106,7 +106,7 @@
                                 <a class="dropdown-item" href="#">
                                     <span class="avatar avatar-online">
                                         <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/portrait/small/avatar-s-19.png" alt="avatar" />
-                                        <span class="user-name text-bold-700 ml-1">John Doe</span>
+                                        <span class="user-name text-bold-700 ml-1">@Context.Session.GetString("UserName")</span>
                                     </span>
                                 </a>
                                 <div class="dropdown-divider">
@@ -161,29 +161,51 @@
             <div class="main-menu-content ps ps--active-y" style="height: 704px;">
 
                 <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-
-                    <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")"><a href="/ComplaintManageProcess/Dashboard"><i class="ft-home"></i><span class="menu-title" data-i18n="">Dashboard</span></a>
-                    <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
-                        <a href="#"><i class="ft-file-text"></i>Create Form</a>
-                        <ul class="menu-content">
-                            <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
-                                <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
-                            </li>
-                            <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
-                                <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
-                            </li>
-                        </ul>
+                    <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
+                        <a href="/ComplaintManageProcess/Dashboard">
+                            <i class="ft-home"></i>
+                            <span class="menu-title" data-i18n="">Dashboard</span>
+                        </a>
                     </li>
-                    <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                        <a href="#"><i class="ft-file-text"></i>Complaint Forms</a>
-                        <ul class="menu-content">
-                            <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
-                                <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                    // @Context.Session.GetString("UserName")
+                    @if (Context.Session.GetString("UserPermission") == "Admin ")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Complaint Forms</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                    }
+                    else if (Context.Session.GetString("UserPermission") == "Supper User")
+                    {
+                        if (Context.Session.GetString("DepartmentPermission") != null || Context.Session.GetString("CentralPermission") != null)
+                        {
+                            <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                                <a href="#"><i class="ft-file-text"></i>Complaint Forms</a>
+                                <ul class="menu-content">
+                                    <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                        <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                    </li>
+
+                                </ul>
                             </li>
-
-                        </ul>
-                    </li>
-
+                        }
+                    }
                 </ul>
 
             </div>
