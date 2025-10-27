@@ -272,5 +272,98 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
 
 
+        //------------------------ Central Process ------------------------------------>    
+
+        public async Task<IActionResult> CentralProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        {
+            try
+            {
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getCentralComplaintList(pageNumber, pageSize, searchString);
+                ViewBag.ComplainLists = paginationResult.Items;
+
+                //Also pass the total count for building the pagination links
+                ViewBag.TotalCount = paginationResult.TotalCount;
+                ViewBag.PageSize = pageSize;
+                ViewBag.PageNumber = pageNumber;
+                //TempData["ToastMessage"] = "EditedSuccessfully!";
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> CentralComplaintForwardDetails(int id)
+        {
+            Complaint_ManageProcessModel complaint = _complainProcess.getComplainProcessUsingId(id);
+            var getAllDeps = _complainProcess.getDepList();
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound(); 
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+
+            ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name", complaint.Dep_Id);
+            return PartialView("_CentralForwardPartial", complaintData);
+        }
+
+
+
+        [HttpPost]
+        public JsonResult ForwardToDepartment(int Id, int Department)
+        {
+            try
+            {
+                _complainProcess.UpdateForwardToDepartment(Id, Department);
+                return Json(new { success = true, message = "Sent to Department successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult CentralComplainResolve(int Id, string Remark)
+        {
+            try
+            {
+                _complainProcess.CentralComplainResolve(Id, Remark);
+                return Json(new { success = true, message = "Complain Resolve successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public async Task<IActionResult> CentralComplaintResolveDetails(int id)
+        {
+            // SQL query to retrieve the master data for the given complaint ID
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound(); // Or return an error partial view
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+            // Return the data to the partial view
+            return PartialView("_CentralResolvePartial", complaintData);
+        }
+
+
     }
 }
