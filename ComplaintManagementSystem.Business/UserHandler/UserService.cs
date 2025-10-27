@@ -74,7 +74,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@UserId", user.Id);
-                
+
                 var data = _connectionService.ReturnWithPara(query, parameters);
                 var Row = data.Rows[0];
 
@@ -106,7 +106,8 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                                 UR.Role AS Role,
                                 CPM.Id AS PageId,
                                 CPM.Page AS Page,
-                                UPC.IsEdit AS IsEdit
+                                UPC.IsEdit AS IsEdit,
+                                UPC.Active AS Active
                             FROM Complaint_User_Role AS UR
                             INNER JOIN Complaint_User_PageCapability AS UPC ON UPC.UserRoleId = UR.Id
                             INNER JOIN Complaint_Page_Master AS CPM ON CPM.Id = UPC.PageId
@@ -115,7 +116,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                 parameters.Add("@UserRoleId", uPermission.UserRoleId);
 
                 var data = _connectionService.ReturnWithPara(query, parameters);
-                
+
                 List<UserPageCapabilityModel> pageList = new List<UserPageCapabilityModel>();
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
@@ -126,7 +127,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                     pageAccessModel.PageId = Convert.ToInt32(Row["PageId"]);
                     pageAccessModel.Page = Row["Page"].ToString();
                     pageAccessModel.IsEdit = Convert.ToBoolean(Row["IsEdit"]);
-                        //Active = Convert.ToBoolean(Row["Active"]),
+                    pageAccessModel.Active = Convert.ToBoolean(Row["Active"]);
                         //Role = Row["Role"].ToString(),
                     
                     pageList.Add(pageAccessModel);

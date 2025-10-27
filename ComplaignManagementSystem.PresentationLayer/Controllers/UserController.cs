@@ -44,7 +44,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 }
                 else
                 {
-                    HttpContext.Session.SetString("DepartmentPermission", null);
+                    HttpContext.Session.SetString("DepartmentPermission", "");
                 }
                 if(CentUCount != 0)
                 {
@@ -52,7 +52,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 }
                 else
                 {
-                    HttpContext.Session.SetString("CentralPermission", null);
+                    HttpContext.Session.SetString("CentralPermission", "");
                 }
 
 
