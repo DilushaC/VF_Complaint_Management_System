@@ -1,0 +1,141 @@
+﻿@model ComplaignManagementSystem.Data.Models.ComplaintMaster // Change this to your actual model namespace
+
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3">
+                <strong>Refference</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Refference)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Complaint Method</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Method)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Complaint</strong>
+            </div>
+            <div class="col-md-6">
+                :  @Html.DisplayFor(m => m.Complaint)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Acttachment</strong>
+            </div>
+            <div class="col-md-3">
+                : @if (!string.IsNullOrEmpty(Model.AttachmentPath))
+                {
+                    <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
+                        <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
+                    </a>
+                }
+                 else
+                {
+                    <span>No attachment</span>
+                }
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Foreward By</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Branch)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Foreward Name</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.CreatedUser)
+            </div>
+        </div>
+
+         <div class="row" style="margin-top:20px">
+            <div class="col-md-3">
+                <strong>Department</strong>
+            </div>
+            <div class="col-md-6">                
+                <div class="mb-2">
+          
+                    <div class="form-group">                        
+                        <select id="Dep_Id" name="Dep_Id" class="form-control" asp-items="ViewBag.Dep_Id">
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div class="modal-footer">
+    <button type="button" class="btn grey btn-success" onclick="ForwardToDepartment('@Model.Id')">Forward to Department</button>
+    <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+
+
+
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+
+<script>
+        function ForwardToDepartment(complaintId) {
+        var Department = document.getElementById("Dep_Id").value;
+
+         $.ajax({
+                    url: '@Url.Action("ForwardToDepartment", "ComplaintManageProcess")',
+                    type: 'POST',
+                    data: { id: complaintId , Department : Department },
+                    success: function (response) {
+                        if (response.success) {                            
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Successfully forwarded to the Department.',
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '@Url.Action("CentralProcess", "ComplaintManageProcess")';
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message || 'Sent to central Failed.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Error Sent to central.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+    }
+
+               
+
+</script>
+
+
+
+

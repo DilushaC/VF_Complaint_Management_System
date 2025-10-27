@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Index";
     ViewData["MenuTab"] = "MainProcessMenu";
-    ViewData["SubMenuTab"] = "DepartmentMenu";
+    ViewData["SubMenuTab"] = "CentralMenu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var successMessage = TempData["SuccessMessage"] as string;
@@ -33,17 +33,17 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card-header">
-                <h1>Department Master</h1>
+                <h1>Central Master</h1>
                 <hr />
             </div>
-           
+
             <div class="card-content collapse show">
                 <div class="card-body card-dashboard">
                     <div class="table-responsive">
                         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
                             <div class="row">
                                 <div class="col-sm-12 col-md-6">
-                                    <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="DepartmentProcess" method="get">
+                                    <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
                                         <div class="dataTables_length" id="DataTables_Table_0_length">
                                             <label>
                                                 Show
@@ -58,7 +58,7 @@
                                     </form>
                                 </div>
                                 <div class="col-sm-12 col-md-6">
-                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="DepartmentProcess" method="get">
+                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
                                         <div id="DataTables_Table_0_filter" class="dataTables_filter">
                                             <label>
                                                 Search:
@@ -147,18 +147,18 @@
                                     <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
                                         <ul class="pagination">
                                             <li class="paginate_button page-item previous @(pageNumber <= 1 ? "disabled" : "")">
-                                                <a href="@Url.Action("DepartmentProcess", new { pageNumber = pageNumber - 1, pageSize = pageSize })"
+                                                <a href="@Url.Action("CentralProcess", new { pageNumber = pageNumber - 1, pageSize = pageSize })"
                                                    aria-controls="DataTables_Table_0" tabindex="0" class="page-link">Previous</a>
                                             </li>
                                             @for (int i = 1; i <= totalPages; i++)
                                             {
                                                 <li class="paginate_button page-item @(i == pageNumber ? "active" : "")">
-                                                    <a href="@Url.Action("DepartmentProcess", new { pageNumber = i, pageSize = pageSize })"
+                                                    <a href="@Url.Action("CentralProcess", new { pageNumber = i, pageSize = pageSize })"
                                                        aria-controls="DataTables_Table_0" tabindex="0" class="page-link">@i</a>
                                                 </li>
                                             }
                                             <li class="paginate_button page-item next @(pageNumber >= totalPages ? "disabled" : "")" id="DataTables_Table_0_next">
-                                                <a href="@Url.Action("DepartmentProcess", new { pageNumber = pageNumber + 1, pageSize = pageSize })"
+                                                <a href="@Url.Action("CentralProcess", new { pageNumber = pageNumber + 1, pageSize = pageSize })"
                                                    aria-controls="DataTables_Table_0" tabindex="0" class="page-link">Next</a>
                                             </li>
                                         </ul>
@@ -183,17 +183,17 @@
 
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
             </div>
-            <div class="modal-body">        
+            <div class="modal-body">
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="DepForwardModal" tabindex="-1" role="dialog" aria-labelledby="complaintModalLabel" aria-hidden="true">
+<div class="modal fade" id="CentralForwardModal" tabindex="-1" role="dialog" aria-labelledby="complaintModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="DepForwardModalLabel">Complaint Forward</h2>
+                <h2 class="modal-title" id="CentralForwardModalLabel">Complaint Forward</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
             </div>
             <div class="modal-body">
@@ -224,7 +224,7 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
 <script type="text/javascript">
-  
+
     function ComplaintDetils(Id) {
         $.ajax({
             url: '@Url.Action("ComplaintDetails", "ComplaintManageProcess")',
@@ -247,27 +247,26 @@
 
     function ComplaintForward(Id) {
         $.ajax({
-            url: '@Url.Action("ComplaintForwardDetails", "ComplaintManageProcess")',
+            url: '@Url.Action("CentralComplaintForwardDetails", "ComplaintManageProcess")',
             type: "GET",
             data: { id: Id },
             dataType: 'html',
             success: function (result) {
-                $("#DepForwardModal .modal-body").html(result);
-                $("#DepForwardModal").modal('show');
+                $("#CentralForwardModal .modal-body").html(result);
+                $("#CentralForwardModal").modal('show');
             },
             error: function (xhr, status, error) {
-                console.error("Failed to load modal content:", error);
-                alert("Error");
+                console.error("Failed to load modal content:", error);                
                 // Optionally show an error message in the modal
-                $("#DepForwardModal .modal-body").html("<p class='text-danger'>Error loading details.</p>");
-                $("#DepForwardModal").modal('show');
+                $("#CentralForwardModal .modal-body").html("<p class='text-danger'>Error loading details.</p>");
+                $("#CentralForwardModal").modal('show');
             }
         });
     }
 
     function ComplaintDepResolve(Id) {
         $.ajax({
-            url: '@Url.Action("ComplaintResolveDetails", "ComplaintManageProcess")',
+            url: '@Url.Action("CentralComplaintResolveDetails", "ComplaintManageProcess")',
             type: "GET",
             data: { id: Id },
             dataType: 'html',
@@ -284,7 +283,7 @@
             }
         });
     }
-    
+
 
     $(document).ready(function() {
         // Find the select element and attach a change event handler

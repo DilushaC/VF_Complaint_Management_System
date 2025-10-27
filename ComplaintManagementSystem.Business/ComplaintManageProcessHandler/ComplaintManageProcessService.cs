@@ -804,6 +804,148 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         }
 
 
+        //------------------------ Central Process ------------------------------------>   
+
+
+        public async Task<PaginationResultsModel<ComplaintMaster>> getCentralComplaintList(int pageNumber, int pageSize, string searchString)
+        {
+            try
+            {
+                string whereClause = "WHERE cmp.Active = 1 AND cmp.IsSentCentral = 1 AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
+                }
+
+                int offset = (pageNumber - 1) * pageSize;
+                int endRow = pageNumber * pageSize;
+
+                string query = $@"
+                                -- Main query with pagination via ROW_NUMBER()
+                                WITH PagedResults AS (
+                                    SELECT 
+                                        cmp.Id,
+                                        cmp.Refference,
+                                        cm.Method,
+                                        cmp.Complaint,
+                                        cmp.CreatedUser,
+                                        cb.Branch,
+                                        cmp.Priority,
+                                        cmp.CreatedDate,
+                                        ROW_NUMBER() OVER (ORDER BY cmp.CreatedDate DESC) AS RowNum
+                                    FROM Complaint_ManageProcess as cmp
+                                    INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
+                                    INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                    INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                    INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                    INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                    {whereClause} -- The WHERE clause is now correctly inside the CTE
+                                )
+                                SELECT 
+                                    Id,
+                                    Refference,
+                                    Method,
+                                    Complaint,
+                                    CreatedUser,
+                                    Branch,
+                                    Priority,
+                                    CreatedDate
+                                FROM PagedResults
+                                WHERE RowNum > @Offset AND RowNum <= @EndRow;
+
+                                -- The COUNT query also needs to be updated to use the full join, just like the CTE
+                                -- to ensure the count is accurate with filtering
+                                SELECT COUNT(cmp.Id) 
+                                FROM Complaint_ManageProcess as cmp
+                                INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
+                                INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                {whereClause};";
+
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Offset", offset);
+                parameters.Add("@EndRow", endRow);
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    parameters.Add("@SearchPattern", "%" + searchString + "%");
+                }
+
+                return await _connection.QueryMultipleForPaginationAsync<ComplaintMaster>(query, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void UpdateForwardToDepartment(int Id, int Department)
+        {
+            try
+            {
+                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 0 WHERE Id={Id} ";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Convert.ToInt64(Id), DbType.Int64);
+                parameters.Add("@IsSentCentralDateTime", System.DateTime.Now, DbType.DateTime);
+
+                _connection.ExecuteWithPara(query, parameters);
+
+                string dPuery = $@" SELECT * FROM Complaint_Send_Departments WHERE ComplaintMngProcess_Id={Id} ";
+
+                var data = _connection.Return(dPuery);
+                var row = data.Rows[0];
+                var depSendCount = data.Rows.Count;
+                var depQuery = "INSERT INTO Complaint_Send_Departments(ComplaintMngProcess_Id, Dep_Id, EscalatiomMatrix, Active, Status, ForwardUser, CreatedDate)" +
+                   "VALUES (@comProccessId, @depId, @esMatrix, @active, @status, @forUser, @createdDate)";
+
+                var depParameters = new DynamicParameters();
+                depParameters.Add("comProccessId", Convert.ToInt64(Id), DbType.Int64);
+                depParameters.Add("depId", Convert.ToInt64(Department), DbType.Int64);
+                depParameters.Add("esMatrix", depSendCount + 1, DbType.Int64);
+                depParameters.Add("active", 1, DbType.Int32);
+                depParameters.Add("status", 1, DbType.Int32);
+                depParameters.Add("forUser", "Kasunp", DbType.String);
+                depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
+                _connection.ReturnWithPara(depQuery, depParameters);
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void CentralComplainResolve(int Id, string Remark)
+        {
+            try
+            {
+                string query = @"
+            UPDATE Complaint_ManageProcess 
+            SET 
+                IsResolved = 1, 
+                ResolvedDateTime = @ResolvedDateTime, 
+                ResolvedRemark = @ResolvedRemark
+            WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Id, DbType.Int64);
+                parameters.Add("@ResolvedRemark", Remark, DbType.String);
+                parameters.Add("@ResolvedDateTime", DateTime.Now, DbType.DateTime);
+
+                _connection.ExecuteWithPara(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
 
 
 
