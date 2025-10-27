@@ -18,17 +18,22 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        private bool IsUserLoggedIn()
+        {
+            return !string.IsNullOrEmpty(HttpContext.Session.GetString("UserName"));
+        }
+
         public ActionResult Dashboard()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
-            {
+            if (!IsUserLoggedIn())
                 return RedirectToAction("Index", "Login");
-            }
             return View();
-        }
+        } 
 
         public ActionResult Create()
         {
+            if (!IsUserLoggedIn())
+                return RedirectToAction("Index", "Login");
             var getAllDeps = _complainProcess.getDepList();
             var getAllMethods = _complainProcess.getMethodList();
             ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
@@ -41,6 +46,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Index", "Login");
+
                 _complainProcess.CreateComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
                 return RedirectToAction(nameof(Index));
@@ -56,6 +64,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Index", "Login");
+
                 _complainProcess.CreateAndSendComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
                 return RedirectToAction(nameof(Index));
@@ -78,6 +89,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Index", "Login");
+
                 PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getComplaintList(pageNumber, pageSize, searchString);
                 ViewBag.ComplainLists = paginationResult.Items;
 
@@ -184,6 +198,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Index", "Login");
+
                 _complainProcess.UpdateComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
                 return RedirectToAction(nameof(Index));
@@ -199,6 +216,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Index", "Login");
+
                 _complainProcess.UpdateSendComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
                 return RedirectToAction(nameof(Index));
@@ -213,6 +233,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Index", "Login");
+
                 PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getDepComplaintList(pageNumber, pageSize, searchString);
                 ViewBag.ComplainLists = paginationResult.Items;
 
@@ -300,8 +323,5 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
-
-
     }
 }

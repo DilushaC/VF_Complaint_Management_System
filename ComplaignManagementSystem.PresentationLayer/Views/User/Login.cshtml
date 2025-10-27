@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Login";
-    Layout = null ;
+    Layout = null;
 }
 
 
@@ -17,8 +17,9 @@
     <meta name="description" content="Chameleon Admin is a modern Bootstrap 4 webapp &amp; admin dashboard html template with a large number of components, elegant design, clean and organized code.">
     <meta name="keywords" content="admin template, Chameleon admin template, dashboard template, gradient admin template, responsive admin template, webapp, eCommerce dashboard, analytic dashboard">
     <meta name="author" content="ThemeSelect">
-    <title>Login - Chameleon Admin - Modern Bootstrap 4 WebApp & Dashboard HTML Template + UI Kit</title>
-    <link rel="apple-touch-icon" href="../../../app-assets/images/ico/apple-icon-120.png">
+    <title>Login</title>
+    <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
     @*     <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
  *@@*     <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
  *@
@@ -28,7 +29,7 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/toggle/switchery.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/demo/chameleon-admin-template/app-assets/css/core/colors/palette-switch.min.css" rel="stylesheet" />
+    @* <link href="~/demo/chameleon-admin-template/app-assets/css/core/colors/palette-switch.min.css" rel="stylesheet" /> *@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />
@@ -64,13 +65,13 @@
                                         <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/logo/logo.png" alt="branding logo" />
                                     </div>
                                     <div class="font-large-1  text-center">
-                                        Member Login
+                                        Complaint Management Login
                                     </div>
                                 </div>
                                 <div class="card-content">
 
                                     <div class="card-body">
-                                        <form class="form-horizontal" asp-action="Index" asp-controller="Login" method="post">
+                                        <form class="form-horizontal" asp-action="Index" asp-controller="Login" method="post" id="loginForm">
                                             <fieldset class="form-group position-relative has-icon-left">
                                                 <input asp-for="UserName" name="username" class="form-control round" placeholder="Your Username" required />
                                                 <div class="form-control-position" style="margin-top:10px">
@@ -86,21 +87,15 @@
                                             </fieldset>
 
                                             <div class="form-group text-center">
-                                                <button type="submit" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">Login</button>
+                                                <button type="button" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1" onclick="submitLogin()">Login</button>
                                             </div>
-
-                                            @if (ViewBag.Error != null)
-                                            {
-                                                <div class="alert alert-danger text-center">@ViewBag.Error</div>
-                                            }
+                                            <div class="alert alert-danger text-center" id="Error" style="display:none;"></div>
                                         </form>
-
                                     </div>
                                     <p class="card-subtitle text-muted text-right font-small-3 mx-2 my-1">
                                         <span>
                                             Don't have an account?
                                             <a asp-controller="User" asp-action="Register" class="card-link">Sign Up</a>
-
                                         </span>
                                     </p>
                                 </div>
@@ -123,7 +118,45 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/form-login-register.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
+    <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
 
+    <script type="text/javascript">            
+        $("#Error").hide();
+        function submitLogin() {
+            var form = $("#loginForm");
+            $.ajax({            
+                url: form.attr("/User/Login"), // Uses the form's asp-action and asp-controller            
+                type: "POST",            
+                data: form.serialize(),            
+                headers: { "X-Requested-With": "XMLHttpRequest" },   // Collects all form inputs            
+                success: function (response) {            
+                    // ✅ If your controller returns JSON            
+                    if (response.success) {              
+                        Swal.fire({            
+                            title: 'Successfully Lgin!',            
+                            text: 'Welcome to Complaint Management System.',            
+                            icon: 'success',            
+                            timer: 2000,            
+                            showConfirmButton: false            
+                        }).then(() => {            
+                            window.location.href = response.redirectUrl || '/Home/Index';            
+                        });            
+                    } else {                             
+                        $("#Error").text("Invalid username or password!").show();         
+                    }            
+                },            
+                error: function (xhr, status, error) {            
+                    Swal.fire({            
+                        icon: 'error',            
+                        title: 'Error',            
+                        text: 'Something went wrong! Please try again.'            
+                    });            
+                }            
+            });
+        }
+    </script>
 </body>
+
 </html>
+
 

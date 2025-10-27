@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace ComplaintManagementSystem.Business.LoginHandler
 {
-    public interface ILoginService
+    public interface IUserService
     {
         Task<UserModel> ValidateUserAsync(string username, string password);
+        UserPermissionModel getAccessPerimissions(UserModel user);
+        List<UserPageCapabilityModel> getAccessPages(UserModel user, UserPermissionModel uPermission);
     }
 }

@@ -15,17 +15,26 @@ using System.Text;
 using System.Threading.Tasks;
 using static ComplaintManagementSystem.Business.ConncetionHandler._ConnectionService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Http;
 
 namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 {
     public class ComplaintManageProcessService : IComplaintManageProcessService
     {
         private readonly _ConnectionService _connection;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ComplaintManageProcessService(_ConnectionService connection)
+        private readonly string UserName;
+        private readonly string UserDep;
+
+        public ComplaintManageProcessService(_ConnectionService connection, IHttpContextAccessor httpContextAccessor)
         {
             _connection = connection;
+            _httpContextAccessor = httpContextAccessor;
         }
+
+
+
 
         public async Task<List<Complaint_Method_MasterModel>> getMethodList()
         {
@@ -127,6 +136,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+
                 string Query = $"SELECT * FROM Complaint_ManageProcess";
                 var Data = _connection.Return(Query);
                 var newCode = Data.Rows.Count + 1;
@@ -163,7 +175,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("isSentDepDate", System.DateTime.Now, DbType.DateTime);
                 parameters.Add("status", 1, DbType.Int32);
                 parameters.Add("active", 1, DbType.Int32);
-                parameters.Add("createdUser", "Kasunp", DbType.String);
+                parameters.Add("createdUser", UserName, DbType.String);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
 
                 var ProcessId = _connection.InsertAndGetId(query, parameters);
@@ -209,6 +221,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+
                 string Query = $"SELECT * FROM Complaint_ManageProcess";
                 var Data = _connection.Return(Query);
                 var newCode = Data.Rows.Count + 1;
@@ -245,7 +260,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("isSentDepDate", System.DateTime.Now, DbType.DateTime);
                 parameters.Add("status", 1, DbType.Int32);
                 parameters.Add("active", 1, DbType.Int32);
-                parameters.Add("createdUser", "Kasunp", DbType.String);
+                parameters.Add("createdUser", UserName, DbType.String);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
 
                 var ProcessId = _connection.InsertAndGetId(query, parameters);
@@ -291,6 +306,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+
                 string whereClause = "WHERE cmp.Active = 1";
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -759,7 +777,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 throw ex;
             }
         }
-
 
         public void DepartmentComplainResolve(int Id, string Remark)
         {
