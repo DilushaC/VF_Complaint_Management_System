@@ -333,8 +333,8 @@
                 });
             }
         });
-    }
-        $('input[name="ResolvedStatus"]').on('change', function () {
+    }        
+    $('input[name="ResolvedStatus"]').on('change', function () {
       var selectedValue = $(this).val();
       onStatusChange(selectedValue);
     });
@@ -350,7 +350,6 @@
           $('#savensend').show();
       }
     }
-
     $('#save').on('click', function () {
         var form = $('#ComplaignEdit');
         // Change action dynamically
@@ -384,29 +383,40 @@
         })
     });
     $('#savenresolved').on('click', function () {
-        var form = $('#ComplaignEdit');
+        var form = $('#ComplaignEdit');               
+        var remark = document.getElementById("Remarktxt").value;
         // Change action dynamically
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Do you want to Resolved this Complaint?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Resolved it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Successfully Complain Resolved.',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(() => {
-                    form.attr('action', '/ComplaintManageProcess/UpdateSendComplaint');
-                    form.submit();
-                })
-            }
-        })
+        if (remark.trim() === "") {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'Remark is a required field. Please enter a remark.',
+                icon: 'warning',
+                confirmButtonText: 'OK'             
+            });
+        }
+        else {        
+            Swal.fire({        
+                title: 'Are you sure?',        
+                text: "Do you want to Resolved this Complaint?",        
+                icon: 'question',        
+                showCancelButton: true,        
+                confirmButtonColor: '#3085d6',        
+                cancelButtonColor: '#d33',        
+                confirmButtonText: 'Yes, Resolved it!'        
+            }).then((result) => {        
+                if (result.isConfirmed) {        
+                    Swal.fire({        
+                        title: 'Success!',        
+                        text: 'Successfully Complain Resolved.',        
+                        icon: 'success',        
+                        timer: 2000,        
+                        showConfirmButton: false        
+                    }).then(() => {        
+                        form.attr('action', '/ComplaintManageProcess/UpdateSendComplaint');        
+                        form.submit();        
+                    })        
+                }        
+            })
+        }
     });
 </script>
