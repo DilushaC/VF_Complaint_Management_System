@@ -1,15 +1,12 @@
-﻿@model ComplaignManagementSystem.Data.Models.LoginViewModel
-
+﻿@model ComplaignManagementSystem.Data.Models.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Login";
-    Layout = null ;
+    ViewData["Title"] = "Register";
+    Layout = null;
 }
 
-
+<!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
-<!-- BEGIN: Head-->
-<!-- Mirrored from themeselection.com/demo/chameleon-admin-template/html/ltr/vertical-menu-template/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 30 Nov 2020 04:59:17 GMT -->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,20 +38,17 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/feather/style.min.css" rel="stylesheet" />
 
 
-
-
-
 </head>
-<!-- END: Head-->
-<!-- BEGIN: Body-->
-<body class="vertical-layout vertical-menu 1-column  bg-full-screen-image blank-page blank-page" data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="1-column">
-    <!-- BEGIN: Content-->
+
+<body class="vertical-layout vertical-menu 1-column bg-full-screen-image blank-page blank-page"
+      data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="1-column">
+
     <div class="app-content content">
         <div class="content-wrapper">
             <div class="content-wrapper-before"></div>
-            <div class="content-header row">
-            </div>
+            <div class="content-header row"></div>
             <div class="content-body">
+
                 <section class="flexbox-container">
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="col-lg-4 col-md-6 col-10 box-shadow-2 p-0">
@@ -63,30 +57,40 @@
                                     <div class="text-center mb-1">
                                         <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/logo/logo.png" alt="branding logo" />
                                     </div>
-                                    <div class="font-large-1  text-center">
-                                        Member Login
+                                    <div class="font-large-1 text-center">
+                                        Become A Member
                                     </div>
                                 </div>
-                                <div class="card-content">
 
+                                <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form-horizontal" asp-action="Index" asp-controller="Login" method="post">
+                                        <form class="form-horizontal" asp-action="Register" asp-controller="User" method="post">
+                                            @Html.AntiForgeryToken()
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="UserName" name="username" class="form-control round" placeholder="Your Username" required />
+                                                <input asp-for="UserName" class="form-control round" placeholder="Choose Username" required />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-user"></i>
                                                 </div>
                                             </fieldset>
 
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="Password" name="password" type="password" class="form-control round" placeholder="Enter Password" required />
+                                                <input asp-for="Email" type="email" class="form-control round" placeholder="Your Email Address" required />
+                                                <div class="form-control-position" style="margin-top:10px">
+                                                    <i class="ft-mail"></i>
+                                                </div>
+                                            </fieldset>
+
+                                            <fieldset class="form-group position-relative has-icon-left">
+                                                <input asp-for="Password" type="password" class="form-control round" placeholder="Enter Password" required />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-lock"></i>
                                                 </div>
                                             </fieldset>
 
                                             <div class="form-group text-center">
-                                                <button type="submit" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">Login</button>
+                                                <button type="submit" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">
+                                                    Register
+                                                </button>
                                             </div>
 
                                             @if (ViewBag.Error != null)
@@ -94,13 +98,11 @@
                                                 <div class="alert alert-danger text-center">@ViewBag.Error</div>
                                             }
                                         </form>
-
                                     </div>
                                     <p class="card-subtitle text-muted text-right font-small-3 mx-2 my-1">
                                         <span>
-                                            Don't have an account?
-                                            <a asp-controller="User" asp-action="Register" class="card-link">Sign Up</a>
-
+                                            Already a member?
+                                            <a asp-controller="Login" asp-action="Index" class="card-link">Sign In</a>
                                         </span>
                                     </p>
                                 </div>
@@ -123,7 +125,5 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/form-login-register.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-
 </body>
 </html>
-

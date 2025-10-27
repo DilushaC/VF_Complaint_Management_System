@@ -20,10 +20,13 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
         public ActionResult Dashboard()
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
+            {
+                return RedirectToAction("Index", "Login");
+            }
             return View();
         }
 
-        // GET: ComplaintManageProcessController/Create
         public ActionResult Create()
         {
             var getAllDeps = _complainProcess.getDepList();
@@ -33,7 +36,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return View();
         }
 
-        // POST: ComplaintManageProcessController/Create
         [HttpPost]
         public ActionResult SaveComplaint(IFormCollection collection, IFormFile file)
         {
