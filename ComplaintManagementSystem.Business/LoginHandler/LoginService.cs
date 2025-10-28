@@ -15,10 +15,12 @@ namespace ComplaintManagementSystem.Business.LoginHandler
     public class LoginService : ILoginService
     {
         private readonly _ConnectionService _connectionService;
+        private readonly PasswordHelper _passwordHelper;
 
-        public LoginService(_ConnectionService connectionService)
+        public LoginService(_ConnectionService connectionService, PasswordHelper passwordHelper)
         {
             _connectionService = connectionService;
+            _passwordHelper = passwordHelper;
         }
 
         public async Task<UserModel> ValidateUserAsync(string username, string password)
@@ -50,7 +52,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
             if (user == null)
                 return null;
 
-            bool isValid = PasswordHelper.VerifyPassword(password, user.Password, user.SaltKey);
+            bool isValid = _passwordHelper.VerifyPassword(password, user.Password);
             return isValid ? user : null;
         }
     }
