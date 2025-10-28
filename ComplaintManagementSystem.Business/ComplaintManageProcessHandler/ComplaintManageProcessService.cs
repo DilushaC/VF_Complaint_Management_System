@@ -3,6 +3,7 @@ using ComplaignManagementSystem.Data.Models;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static ComplaintManagementSystem.Business.ConncetionHandler._ConnectionService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using Microsoft.AspNetCore.Http;
 
 namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 {
@@ -24,17 +25,11 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         private readonly _ConnectionService _connection;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private readonly string UserName;
-        private readonly string UserDep;
-
         public ComplaintManageProcessService(_ConnectionService connection, IHttpContextAccessor httpContextAccessor)
         {
             _connection = connection;
             _httpContextAccessor = httpContextAccessor;
         }
-
-
-
 
         public async Task<List<Complaint_Method_MasterModel>> getMethodList()
         {
@@ -206,7 +201,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 }
                 if (ResolvedStatus == "Yes")
                 {
-                    DepartmentComplainResolve(ProcessId, ResolvedRemark);
+                    ComplainResolve(ProcessId, ResolvedRemark);
                 }
 
                 return;
@@ -258,7 +253,12 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("isCentral", 0, DbType.Int32);
                 parameters.Add("isDep", 1, DbType.Int32);
                 parameters.Add("isSentDepDate", System.DateTime.Now, DbType.DateTime);
-                parameters.Add("status", 1, DbType.Int32);
+
+                if (ResolvedStatus == "No")
+                {
+                    parameters.Add("status", 2, DbType.Int32);
+                }
+                    
                 parameters.Add("active", 1, DbType.Int32);
                 parameters.Add("createdUser", UserName, DbType.String);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
@@ -273,7 +273,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 depParameters.Add("esMatrix", 1, DbType.Int64);
                 depParameters.Add("active", 1, DbType.Int32);
                 depParameters.Add("status", 1, DbType.Int32);
-                depParameters.Add("forUser", "Kasunp", DbType.String);
+                depParameters.Add("forUser", UserName, DbType.String);
                 depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 _connection.ReturnWithPara(depQuery, depParameters);
                 //Handle file upload
@@ -291,7 +291,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 }
                 if (ResolvedStatus == "Yes")
                 {
-                    DepartmentComplainResolve(ProcessId, ResolvedRemark);
+                    ComplainResolve(ProcessId, ResolvedRemark);
                 }
 
                 return;
@@ -309,7 +309,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var httpContext = _httpContextAccessor.HttpContext;
                 var UserName = httpContext?.Session.GetString("UserName");
 
-                string whereClause = $"WHERE cmp.Active = 1 AND CreatedUser = '{UserName}'";
+                string whereClause = $"WHERE cmp.Active = 1 AND CreatedUser = '{UserName}' AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
@@ -330,6 +330,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                         cb.Branch,
                                         cmp.Priority,
                                         cmp.CreatedDate,
+                                        csm.Status,
                                         ROW_NUMBER() OVER (ORDER BY cmp.CreatedDate DESC) AS RowNum
                                     FROM Complaint_ManageProcess as cmp
                                     INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
@@ -337,6 +338,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
                                     INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
                                     INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                    INNER JOIN Complaint_Status_Master as csm on csm.Id = cmp.Status
                                     {whereClause} -- The WHERE clause is now correctly inside the CTE
                                 )
                                 SELECT 
@@ -347,7 +349,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     CreatedUser,
                                     Branch,
                                     Priority,
-                                    CreatedDate
+                                    CreatedDate,
+                                    Status
                                 FROM PagedResults
                                 WHERE RowNum > @Offset AND RowNum <= @EndRow;
 
@@ -360,6 +363,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                 INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
                                 INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
                                 INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                INNER JOIN Complaint_Status_Master as csm on csm.Id = cmp.Status
                                 {whereClause};";
 
 
@@ -409,6 +413,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                         cb.Branch,
                                         cmp.Priority,
                                         cmp.CreatedDate,
+                                        csm.Status,
                                         ROW_NUMBER() OVER (ORDER BY cmp.CreatedDate DESC) AS RowNum
                                     FROM Complaint_ManageProcess as cmp
                                     INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
@@ -416,6 +421,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
                                     INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
                                     INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                    INNER JOIN Complaint_Status_Master as csm on csm.Id = cmp.Status
                                     {whereClause} -- The WHERE clause is now correctly inside the CTE
                                 )
                                 SELECT 
@@ -426,7 +432,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     CreatedUser,
                                     Branch,
                                     Priority,
-                                    CreatedDate
+                                    CreatedDate,
+                                    Status
                                 FROM PagedResults
                                 WHERE RowNum > @Offset AND RowNum <= @EndRow;
 
@@ -439,6 +446,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                 INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
                                 INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
                                 INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                INNER JOIN Complaint_Status_Master as csm on csm.Id = cmp.Status
                                 {whereClause};";
 
 
@@ -636,7 +644,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 
                 _connection.ExecuteWithPara(query, parameters);
 
-                var depQuery = $"UPDATE Complaint_ManageProcess SET Dep_Id={Convert.ToInt64(Dep_Id)} WHERE ComplaintMngProcess_Id={Convert.ToInt64(ComProcessId)} AND Active=1 AND EscalatiomMatrix=1";
+                var depQuery = $"UPDATE Complaint_Send_Departments SET Dep_Id={Convert.ToInt64(Dep_Id)} WHERE ComplaintMngProcess_Id={Convert.ToInt64(ComProcessId)} AND Active=1 AND EscalatiomMatrix=1";
                 _connection.Return(depQuery);
 
                 if (file != null && file.Length > 0)
@@ -696,6 +704,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     EditedDateTime = @EditedDateTime,
                                     IsSentDep = @IsSentDep,
                                     IsSentDepDateTime = @IsSentDepDateTime,
+                                    status = @status
                                 WHERE Id = @Id";
 
                 var parameters = new DynamicParameters();
@@ -713,9 +722,18 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("@IsSentDep", 1, DbType.Int32);
                 parameters.Add("@IsSentDepDateTime", System.DateTime.Now, DbType.DateTime);
 
-                _connection.ExecuteWithPara(query, parameters);
+                if (ResolvedStatus == "No")
+                {
+                    parameters.Add("status", 2, DbType.Int32);
+                }
+                else
+                {
+                    parameters.Add("status", 3, DbType.Int32);
+                }
 
-                var depQuery = $"UPDATE Complaint_ManageProcess SET Dep_Id={Convert.ToInt64(Dep_Id)} WHERE ComplaintMngProcess_Id={Convert.ToInt64(ComProcessId)} AND Active=1 AND EscalatiomMatrix=1";
+                    _connection.ExecuteWithPara(query, parameters);
+
+                var depQuery = $"UPDATE Complaint_Send_Departments SET Dep_Id={Convert.ToInt64(Dep_Id)} WHERE ComplaintMngProcess_Id={Convert.ToInt64(ComProcessId)} AND Active=1 AND EscalatiomMatrix=1";
                 _connection.Return(depQuery);
 
                 if (file != null && file.Length > 0)
@@ -733,7 +751,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 
                 if (ResolvedStatus == "Yes")
                 {
-                    DepartmentComplainResolve(Convert.ToInt16(ComProcessId), ResolvedRemark);
+                    ComplainResolve(Convert.ToInt16(ComProcessId), ResolvedRemark);
                 }
                 return;
             }
@@ -748,7 +766,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
-                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 1, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id={Id} ";
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 1, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id=@Id ";
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", Convert.ToInt64(Id), DbType.Int64);
@@ -770,7 +790,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 depParameters.Add("esMatrix", depSendCount + 1, DbType.Int64);
                 depParameters.Add("active", 1, DbType.Int32);
                 depParameters.Add("status", 1, DbType.Int32);
-                depParameters.Add("forUser", "Kasunp", DbType.String);
+                depParameters.Add("forUser", UserName, DbType.String);
                 depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 _connection.ReturnWithPara(depQuery, depParameters);
 
@@ -782,22 +802,28 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-        public void DepartmentComplainResolve(int Id, string Remark)
+        public void ComplainResolve(int Id, string Remark)
         {
             try
             {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
                 string query = @"
-            UPDATE Complaint_ManageProcess 
-            SET 
-                IsResolved = 1, 
-                ResolvedDateTime = @ResolvedDateTime, 
-                ResolvedRemark = @ResolvedRemark
-            WHERE Id = @Id";
+                                UPDATE Complaint_ManageProcess 
+                                SET 
+                                    IsResolved = 1, 
+                                    ResolvedDateTime = @ResolvedDateTime, 
+                                    ResolvedRemark = @ResolvedRemark,
+                                    Status = @Status,
+                                    ResolvedUser = @ResolvedUser
+                                WHERE Id = @Id";
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", Id, DbType.Int64);
                 parameters.Add("@ResolvedRemark", Remark, DbType.String);
                 parameters.Add("@ResolvedDateTime", DateTime.Now, DbType.DateTime);
+                parameters.Add("status", 4, DbType.Int32);
+                parameters.Add("ResolvedUser", UserName, DbType.String);
 
                 _connection.ExecuteWithPara(query, parameters);
             }
@@ -807,15 +833,12 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-
         //------------------------ Central Process ------------------------------------>   
-
-
         public async Task<PaginationResultsModel<ComplaintMaster>> getCentralComplaintList(int pageNumber, int pageSize, string searchString)
         {
             try
             {
-                string whereClause = "WHERE cmp.Active = 1 AND cmp.IsSentCentral = 1 AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
+                string whereClause = "WHERE cmp.Active = 1 AND cmp.IsSentCentral = 1";
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
@@ -836,6 +859,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                         cb.Branch,
                                         cmp.Priority,
                                         cmp.CreatedDate,
+                                        csm.Status,
                                         ROW_NUMBER() OVER (ORDER BY cmp.CreatedDate DESC) AS RowNum
                                     FROM Complaint_ManageProcess as cmp
                                     INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
@@ -843,6 +867,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
                                     INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
                                     INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                    INNER JOIN Complaint_Status_Master as csm on csm.Id = cmp.Status
                                     {whereClause} -- The WHERE clause is now correctly inside the CTE
                                 )
                                 SELECT 
@@ -853,7 +878,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     CreatedUser,
                                     Branch,
                                     Priority,
-                                    CreatedDate
+                                    CreatedDate,
+                                    Status
                                 FROM PagedResults
                                 WHERE RowNum > @Offset AND RowNum <= @EndRow;
 
@@ -866,6 +892,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                 INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
                                 INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
                                 INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                INNER JOIN Complaint_Status_Master as csm on csm.Id = cmp.Status
                                 {whereClause};";
 
 
@@ -890,6 +917,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
                 string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 0 WHERE Id={Id} ";
 
                 var parameters = new DynamicParameters();
@@ -911,8 +940,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 depParameters.Add("depId", Convert.ToInt64(Department), DbType.Int64);
                 depParameters.Add("esMatrix", depSendCount + 1, DbType.Int64);
                 depParameters.Add("active", 1, DbType.Int32);
-                depParameters.Add("status", 1, DbType.Int32);
-                depParameters.Add("forUser", "Kasunp", DbType.String);
+                depParameters.Add("status", 2, DbType.Int32);
+                depParameters.Add("forUser", UserName, DbType.String);
                 depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 _connection.ReturnWithPara(depQuery, depParameters);
 
@@ -923,35 +952,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 throw ex;
             }
         }
-
-        public void CentralComplainResolve(int Id, string Remark)
-        {
-            try
-            {
-                string query = @"
-            UPDATE Complaint_ManageProcess 
-            SET 
-                IsResolved = 1, 
-                ResolvedDateTime = @ResolvedDateTime, 
-                ResolvedRemark = @ResolvedRemark
-            WHERE Id = @Id";
-
-                var parameters = new DynamicParameters();
-                parameters.Add("@Id", Id, DbType.Int64);
-                parameters.Add("@ResolvedRemark", Remark, DbType.String);
-                parameters.Add("@ResolvedDateTime", DateTime.Now, DbType.DateTime);
-
-                _connection.ExecuteWithPara(query, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-
-
-
 
     }
 }

@@ -26,14 +26,16 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         public ActionResult Dashboard()
         {
             if (!IsUserLoggedIn())
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Login", "User");
+
+            ViewBag.CurrYear = System.DateTime.Now.Year;
             return View();
         } 
 
         public ActionResult Create()
         {
             if (!IsUserLoggedIn())
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Login", "User");
             var getAllDeps = _complainProcess.getDepList();
             var getAllMethods = _complainProcess.getMethodList();
             ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
@@ -47,7 +49,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 if (!IsUserLoggedIn())
-                    return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Login", "User");
 
                 _complainProcess.CreateComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
@@ -65,7 +67,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 if (!IsUserLoggedIn())
-                    return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Login", "User");
 
                 _complainProcess.CreateAndSendComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
@@ -90,7 +92,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 if (!IsUserLoggedIn())
-                    return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Login", "User");
 
                 PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getComplaintList(pageNumber, pageSize, searchString);
                 ViewBag.ComplainLists = paginationResult.Items;
@@ -199,7 +201,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 if (!IsUserLoggedIn())
-                    return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Login", "User");
 
                 _complainProcess.UpdateComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
@@ -217,10 +219,19 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 if (!IsUserLoggedIn())
-                    return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Login", "User");
 
                 _complainProcess.UpdateSendComplaint(collection, file);
-                TempData["ToastMessage"] = "EditedSuccessfully!";
+                var ResolvedStatus = collection["ResolvedStatus"].ToString();
+
+                if(ResolvedStatus == "true")
+                {
+                    TempData["ToastMessage"] = "sentDepSuccessfully!";
+                }
+                else
+                {
+                    TempData["ToastMessage"] = "resolvedSuccessfully!";
+                }                    
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -234,7 +245,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 if (!IsUserLoggedIn())
-                    return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Login", "User");
 
                 PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getDepComplaintList(pageNumber, pageSize, searchString);
                 ViewBag.ComplainLists = paginationResult.Items;
@@ -314,7 +325,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
-                _complainProcess.DepartmentComplainResolve(Id, Remark);
+                _complainProcess.ComplainResolve(Id, Remark);
                 return Json(new { success = true, message = "Complain Resolve successfully." });
 
             }
@@ -391,7 +402,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
-                _complainProcess.CentralComplainResolve(Id, Remark);
+                _complainProcess.ComplainResolve(Id, Remark);
                 return Json(new { success = true, message = "Complain Resolve successfully." });
 
             }

@@ -3,6 +3,7 @@ using ComplaintManagementSystem.Business.LoginHandler;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
@@ -28,12 +29,23 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
             if (user != null)
             {
+                HttpContext.Session.SetString("UserName", user.UserName);
+                HttpContext.Session.SetString("UserDep_Id", Convert.ToString(user.Dep_Id));
+                HttpContext.Session.SetString("SaltKey", Convert.ToString(user.SaltKey));
+                HttpContext.Session.SetString("UserId", Convert.ToString(user.Id));
+
+                if (user.IsReset == false)
+                {
+                    //return RedirectToAction("Reset");
+                    return Json(new { success = false, redirectUrl = Url.Action("Reset", "User") });
+                }
 
                 UserPermissionModel getPermissions = _loginService.getAccessPerimissions(user);
                 var getAccessPages = _loginService.getAccessPages(user, getPermissions);
 
-                HttpContext.Session.SetString("UserName", user.UserName);
-                HttpContext.Session.SetString("UserDep_Id", Convert.ToString(user.Dep_Id));
+
+
+
                 var DepUCount = getAccessPages.Where(a => a.Page == "Department Master" && a.Active == true).Count();
                 var CentUCount = getAccessPages.Where(a => a.Page == "Central Master" && a.Active == true).Count();
 
@@ -60,9 +72,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 var jsonData = JsonConvert.SerializeObject(getAccessPages);
 
                 HttpContext.Session.SetString("AccessPages", jsonData);
-
-                //HttpContext.Session.SetString("AccessPages", getAccessPages);
-                //return RedirectToAction("Dashboard", "ComplaintManageProcess");
                 return Json(new { success = true, redirectUrl = Url.Action("Dashboard", "ComplaintManageProcess") });
             }
             else
@@ -70,8 +79,32 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 return Json(new { success = false});
             }
 
-            //    ViewBag.Error = "Invalid username or password.";
-            //return View("~/Views/User/Login.cshtml");
+        }
+
+        public ActionResult Reset()
+        {
+            //HttpContext.Session.Clear();
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult ResetPassword(string NewPassword, string ConPassword)
+        {
+            try
+            {
+                var UserId = HttpContext.Session.GetString("UserId");
+                var SaltKey = HttpContext.Session.GetString("SaltKey");
+
+                _loginService.ResetPassword(UserId, SaltKey, NewPassword);
+                return Json(new { success = true, redirectUrl = Url.Action("Login", "User") });
+                //return RedirectToAction(nameof(Login));
+            }
+            catch
+            {
+                //return View();
+                return Json(new { success = false});
+            }
         }
 
         [HttpGet]

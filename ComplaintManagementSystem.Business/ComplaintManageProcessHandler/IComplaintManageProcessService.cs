@@ -24,11 +24,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<ComplaintMaster> getComplainUsingId(int Id);
         public Complaint_ManageProcessModel getComplainProcessUsingId(int Id);
         public void UpdateForwardToCentral(int CompId);
-        public void DepartmentComplainResolve(int Id, string Remark);
+        public void ComplainResolve(int Id, string Remark);
         public void UpdateForwardToDepartment(int CompId, int Department);
-        public void CentralComplainResolve(int Id, string Remark);
-
-
-
     }
 }

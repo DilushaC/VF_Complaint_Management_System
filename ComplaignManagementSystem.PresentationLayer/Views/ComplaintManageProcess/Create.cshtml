@@ -1,16 +1,17 @@
 ﻿@model ComplaignManagementSystem.Data.Context.DapperContext
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Form";
     ViewData["MenuTab"] = "ComplaintMenu";
     ViewData["SubMenuTab"] = "CreateFormScreen";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
-<link href="~/plugins/demo/chameleon-admin-template/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
-<link href="~/plugins/demo/chameleon-admin-template/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
-<link href="~/plugins/demo/chameleon-admin-template/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
 <div class="row">
     <div class="col-md-12">
         <div class="card" style="margin-top:15px">
@@ -23,22 +24,23 @@
                                 <i class="ft-flag"></i> Complain Create Form
                             </h4>
                             <div class="form-group">
-                                <label for="Complaint Method">Complaint Method</label>
+                                <label for="Complaint Method">Complaint Method</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                 <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
                                     <option value="">-- Select --</option>
                                 </select>
+                                <span id="error-message-method"></span>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Cus_Name">Customer Name</label>
-                                        <input type="text" id="Cus_Name" class="form-control" placeholder="Customer Name" name="Cus_Name">
+                                        <input type="text" id="Cus_Name" class="form-control" placeholder="Customer Name" name="Cus_Name" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Cus_Nic">Customer NIC</label>
-                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic">
+                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -46,13 +48,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Refference">Refference</label>
-                                        <input type="text" id="Cus_Refference" class="form-control" placeholder="Refference" name="Cus_Refference">
+                                        <input type="text" id="Cus_Refference" class="form-control" placeholder="Refference" name="Cus_Refference" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Cus_MobileNumber">Customer Mobile Number</label>
-                                        <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber">
+                                        <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -62,28 +64,30 @@
                                     <label id="Attachment" class="file center-block">
                                         <input type="file" id="file" name="file" style="margin:15px">
                                         <span class="file-custom"></span>
-                                        <span id="error-message"></span>
+                                        <span id="error-message-attachement"></span>
                                     </label>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="Dep_Id">Department</label>
+                                    <label for="Dep_Id">Department</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                     <select id="Dep_Id" name="Dep_Id" class="form-control" asp-items="ViewBag.Dep_Id">
                                         <option value="">-- Select --</option>
                                     </select>
+                                    <span id="error-message-dep"></span>
                                 </div>
                             </div>
                             <div class="row" style="margin-top:20px">
                                 <div class="col-md-6">
-                                    <label for="Nature_Id">Nature</label>
+                                    <label for="Nature_Id">Nature</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                     <select id="Nature_Id" name="Nature_Id" class="form-control">
                                         <option value="">-- Select --</option>
                                     </select>
+                                    <span id="error-message-nature"></span>
                                 </div>
                                 <div class="col-md-6" style="position: relative;">
                                     <label for="Priority">Priority</label>
                                     <div class="row" style="margin-left:5px">
                                         <div class="custom-control custom-checkbox col-md-2.5">
-                                            <input type="checkbox" class="custom-control-input" id="PriorityL" name="Priority" value="Low" onclick="handlePriority(this)">
+                                            <input type="checkbox" class="custom-control-input" id="PriorityL" name="Priority" value="Low" onclick="handlePriority(this)" checked>
                                             <label class="custom-control-label" for="PriorityL">Low</label>
                                         </div>
                                         <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
@@ -98,8 +102,9 @@
                                 </div>
                             </div>
                             <div class="form-group" style="margin-top:10px">
-                                <label for="Compaint">Compaint</label>
+                                <label for="Compaint">Compaint</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                 <textarea id="Compaint" rows="5" class="form-control" name="Compaint" placeholder="About Compaint"></textarea>
+                                <span id="error-message-complaint"></span>
                             </div>
                         </div>
 
@@ -122,8 +127,9 @@
                         <div class="row" style="margin-top:7px" id="revolveT">
                             <hr />
                             <div class="col-md-12">
-                                <strong>Remark :</strong>
+                                <strong>Remark :</strong><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                 <textarea id="Remarktxt" class="form-control" placeholder="Remark." name="ResolvedRemark" rows="6" cols="100" style="margin-top:10px"></textarea>
+                                <span id="error-message-remark"></span>
                             </div>
                         </div>
                         <br />
@@ -149,9 +155,9 @@
 
 </div>
 
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/vendors.min.js"></script>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> 
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script src="~/js/feather.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/forms/toggle/switchery.min.js"></script>
@@ -162,6 +168,7 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/checkbox-radio.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+
 
 <script>
     $('#savenresolved').hide();
@@ -222,7 +229,7 @@
     });
     document.addEventListener('DOMContentLoaded', function () {
         const fileInput = document.getElementById('file');
-        const errorMessageContainer = document.getElementById('error-message');
+        const errorMessageContainer = document.getElementById('error-message-attachement');
         const allowedExtension = '.pdf';
         const button = document.getElementById("savensend");
         fileInput.addEventListener('change', function () {
@@ -268,6 +275,244 @@
     });
     $('#savensend').on('click', function () {
         var form = $('#complainForm');
+        const button = document.getElementById("savensend");
+        const errorMessageMthodContainer = document.getElementById('error-message-method');
+        const errorMessageDepContainer = document.getElementById('error-message-dep');
+        const errorMessageNatureContainer = document.getElementById('error-message-nature');
+        const errorMessageComplaintContainer = document.getElementById('error-message-complaint');
+            
+        var Method = document.getElementById("ComplaintMethod_Id").value;            
+        var Dep = document.getElementById("Dep_Id").value;
+        var Nature = document.getElementById("Nature_Id").value;
+        var Compaint = document.getElementById("Compaint").value;
+            
+        if(Method == "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';            
+            errorMessageMthodContainer.style.color = 'red';                 
+            
+            errorMessageDepContainer.textContent = 'Please Select the Department.';            
+            errorMessageDepContainer.style.color = 'red';   
+            
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;    
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        }
+        else if(Method != "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        }  else if(Method != "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        }
+
         // Change action dynamically
         Swal.fire({
             title: 'Are you sure?',
@@ -287,13 +532,255 @@
                     showConfirmButton: false
                 }).then(() => {
                     form.attr('action', '/ComplaintManageProcess/SubmitAndSendComplain');
-                    form.submit();
+                    // form.submit();
                 })            
             }
         })
     });
     $('#savenresolved').on('click', function () {
         var form = $('#complainForm');
+        const errorMessageMthodContainer = document.getElementById('error-message-method');
+        const errorMessageDepContainer = document.getElementById('error-message-dep');
+        const errorMessageNatureContainer = document.getElementById('error-message-nature');
+        const errorMessageComplaintContainer = document.getElementById('error-message-complaint');
+        const errorMessageRemarkContainer = document.getElementById('error-message-remark');
+
+        var Method = document.getElementById("ComplaintMethod_Id").value;
+        var Dep = document.getElementById("Dep_Id").value;
+        var Nature = document.getElementById("Nature_Id").value;
+        var Compaint = document.getElementById("Compaint").value;
+        var Remarktxt = document.getElementById("Remarktxt").value;
+
+        if(Method == "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        }
+        else if(Method != "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Remarktxt == ""){
+            errorMessageRemarkContainer.textContent = 'Please enter Remark.';
+            errorMessageRemarkContainer.style.color = 'red';
+            return;
+        }
         // Change action dynamically
         Swal.fire({
             title: 'Are you sure?',

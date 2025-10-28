@@ -73,20 +73,13 @@
 
     </div>
 </div>
-
-
-
 <div class="modal-footer">
     <button type="button" class="btn grey btn-success" onclick="CentralComplainResolve('@Model.Id')">Save & Close</button>
     <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
 </div>
-
-
-
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
-
-<script>
-        function CentralComplainResolve(complaintId) {
+<script>        
+    function CentralComplainResolve(complaintId) {
         var remark = document.getElementById("Remarktxt").value;         
         
         if (remark.trim() === "") {
@@ -98,43 +91,41 @@
              });
 
         }else{
-         $.ajax({
-                    url: '@Url.Action("CentralComplainResolve", "ComplaintManageProcess")',
-                    type: 'POST',
-                    data: { id: complaintId, remark:remark },
-                    success: function (response) {                        
-                        if (response.success) {                            
-                            Swal.fire({
-                                title: 'Success!',
-                                    text: 'Successfully Complain Resolve.',
-                                icon: 'success',
-                                timer: 2000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.href = '@Url.Action("CentralProcess", "ComplaintManageProcess")';
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'Complain Resolve Failed.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Error Complain Resolve.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                });
-               
-                
-                }
-    }
+         $.ajax({                
+             url: '@Url.Action("ComplainResolve", "ComplaintManageProcess")',                
+             type: 'POST',                
+             data: { id: complaintId, remark:remark },                
+             success: function (response) {                      
+                 if (response.success) {                                        
+                     Swal.fire({                
+                         title: 'Success!',                
+                         text: 'Successfully Complain Resolve.',                
+                         icon: 'success',                
+                         timer: 2000,                
+                         showConfirmButton: false                
+                     }).then(() => {                
+                         window.location.href = '@Url.Action("CentralProcess", "ComplaintManageProcess")';                
+                     });                
+                 } else {                
+                     Swal.fire({                
+                         title: 'Error!',                
+                         text: response.message || 'Complain Resolve Failed.',                
+                         icon: 'error',                
+                         confirmButtonText: 'OK'                
+                     });                
+                 }                
+             },                
+             error: function () {                
+                 Swal.fire({                
+                     title: 'Error!',                
+                     text: 'Error Complain Resolve.',                
+                     icon: 'error',                
+                     confirmButtonText: 'OK'                
+                 });                
+             }                
+         });                    
+     }   
+ }
 </script>
 
 

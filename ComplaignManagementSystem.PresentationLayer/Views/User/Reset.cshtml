@@ -1,8 +1,8 @@
-﻿@model ComplaignManagementSystem.Data.Models.LoginViewModel
+﻿@model ComplaignManagementSystem.Data.Context.DapperContext
 
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Password Reset";
     Layout = null;
 }
 
@@ -17,15 +17,15 @@
     <meta name="description" content="Chameleon Admin is a modern Bootstrap 4 webapp &amp; admin dashboard html template with a large number of components, elegant design, clean and organized code.">
     <meta name="keywords" content="admin template, Chameleon admin template, dashboard template, gradient admin template, responsive admin template, webapp, eCommerce dashboard, analytic dashboard">
     <meta name="author" content="ThemeSelect">
-    <title>Login</title>
+    <title>Reset</title>
     <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
+
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/vendors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/toggle/switchery.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
-    @* <link href="~/demo/chameleon-admin-template/app-assets/css/core/colors/palette-switch.min.css" rel="stylesheet" /> *@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />
@@ -36,7 +36,6 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/line-awesome/css/line-awesome.min.css" rel="stylesheet" />
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/feather/style.min.css" rel="stylesheet" />
-
 </head>
 <!-- END: Head-->
 <!-- BEGIN: Body-->
@@ -57,39 +56,35 @@
                                         <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/logo/logo.png" alt="branding logo" />
                                     </div>
                                     <div class="font-large-1  text-center">
-                                        Complaint Management Login
+                                        Reset Your Password
                                     </div>
                                 </div>
                                 <div class="card-content">
-
-                                    <div class="card-body">
-                                        <form class="form-horizontal" asp-action="Login" asp-controller="User" method="post" id="loginForm">
+                                    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "ResetForm" }))
+                                    {
+                                        <div class="card-body">
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="UserName" name="username" class="form-control round" placeholder="Your Username" required />
-                                                <div class="form-control-position" style="margin-top:10px">
-                                                    <i class="ft-user"></i>
-                                                </div>
-                                            </fieldset>
-
-                                            <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="Password" name="password" type="password" class="form-control round" placeholder="Enter Password" required />
-                                                <div class="form-control-position" style="margin-top:10px">
+                                                <input name="NewPassword" id="NewPassword" type="password" class="form-control round" placeholder="Enter New Password" autocomplete="off" required />
+                                                <div class="form-control-position" style="margin-top:13px">
                                                     <i class="ft-lock"></i>
                                                 </div>
                                             </fieldset>
 
+                                            <fieldset class="form-group position-relative has-icon-left">
+                                                <input name="ConPassword" id="ConPassword" type="password" class="form-control round" autocomplete="off" placeholder="Enter Confirm Password" required />
+                                                <div class="form-control-position" style="margin-top:13px">
+                                                    <i class="ft-lock"></i>
+                                                </div>
+                                            </fieldset>
+                                            <span id="error-message"></span>
                                             <div class="form-group text-center">
-                                                <button type="button" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1" onclick="submitLogin()">Login</button>
+                                                <button type="button" id="ResetId" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">
+                                                    Reset
+                                                </button>
                                             </div>
-                                            <div class="alert alert-danger text-center" id="Error" style="display:none;"></div>
-                                        </form>
-                                    </div>
-                                    <p class="card-subtitle text-muted text-right font-small-3 mx-2 my-1">
-                                        <span>
-                                            Don't have an account?
-                                            <a asp-controller="User" asp-action="Register" class="card-link">Sign Up</a>
-                                        </span>
-                                    </p>
+                                        </div>
+                                    }
+                                
                                 </div>
                             </div>
                         </div>
@@ -112,42 +107,41 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
 
-    <script type="text/javascript">            
-        $("#Error").hide();
-        function submitLogin() {
-            var form = $("#loginForm");
-            $.ajax({            
-                url: form.attr("/User/Login"), // Uses the form's asp-action and asp-controller            
-                type: "POST",            
-                data: form.serialize(),            
-                headers: { "X-Requested-With": "XMLHttpRequest" },   // Collects all form inputs            
-                success: function (response) {            
-                    // ✅ If your controller returns JSON            
-                    if (response.success) {              
-                        Swal.fire({            
-                            title: 'Successfully Login!',            
-                            text: 'Welcome to Complaint Management System.',            
-                            icon: 'success',            
-                            timer: 2000,            
-                            showConfirmButton: false            
-                        }).then(() => {            
-                            window.location.href = response.redirectUrl;            
-                        });            
-                    } else if(response.redirectUrl != null){
-                         window.location.href = response.redirectUrl
+    <script type="text/javascript">
+
+        $("#Error").hide();            
+        $('#ResetId').on('click', function (e) {
+            e.preventDefault();
+
+            var data = {
+                NewPassword: $('#NewPassword').val(),
+                ConPassword: $('#ConPassword').val()
+            };
+            $.ajax({
+                url: '/User/ResetPassword',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Successfully Reset!',
+                            text: 'Please Login Using new Password.',
+                            icon: 'info',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = response.redirectUrl;
+                        });
                     } else{
                         $("#Error").text("Invalid username or password!").show();
-                    }          
-                },            
-                error: function (xhr, status, error) {            
-                    Swal.fire({            
-                        icon: 'error',            
-                        title: 'Error',            
-                        text: 'Something went wrong! Please try again.'            
-                    });            
-                }            
+                    }
+                },
+                error: function () {
+                    $('#error-message').text('An error occurred. Please try again.');
+                    $('#success-message').text('');
+                }
             });
-        }
+        });
     </script>
 </body>
 

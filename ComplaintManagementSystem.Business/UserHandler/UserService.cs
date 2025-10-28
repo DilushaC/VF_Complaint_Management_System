@@ -3,6 +3,7 @@ using ComplaignManagementSystem.Data.Models;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.Helpers;
 using Dapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,7 +46,8 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                                               BranchId = row.Field<int?>("BranchId"),
                                               Dep_Id = row.Field<int?>("Dep_Id"),
                                               CreatedDate = row.Field<System.DateTime>("CreatedDate"),
-                                              Active = row.Field<bool>("Active")
+                                              Active = row.Field<bool>("Active"),
+                                              IsReset = row.Field<bool>("IsReset")
                                           })
                                           .ToList();
 
@@ -55,6 +57,28 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 
             bool isValid = PasswordHelper.VerifyPassword(password, user.Password, user.SaltKey);
             return isValid ? user : null;
+        }
+
+        public async Task ResetPassword(string userId, string saltKey, string NewPassword)
+        {
+            try
+            {
+                string EncryptNewPassword = PasswordHelper.EncrypthPassword(NewPassword, saltKey);
+                string query = $@"UPDATE Complaint_User SET IsReset=1, Password=@NewPAssword WHERE Id=@Id";
+                //string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 1, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id={Id} ";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Convert.ToInt32(userId), DbType.Int64);
+                parameters.Add("@NewPAssword", EncryptNewPassword, DbType.String);
+
+                _connectionService.ExecuteWithPara(query, parameters);
+                //_connectionService.Return(query);
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public UserPermissionModel getAccessPerimissions(UserModel user)

@@ -2,7 +2,7 @@
 @* @model IEnumerable<ComplaignManagementSystem.Data.Context.DapperContext> *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Complaint Master";
     ViewData["MenuTab"] = "ComplaintMenu";
     ViewData["SubMenuTab"] = "ComplaintMaster";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -82,7 +82,7 @@
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 28.7969px;">Complaint</th>
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Created Branch</th>
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 74.6094px;">Priotity</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 594px;">Action</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 794px;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -98,14 +98,17 @@
                                                         <td>@item.Complaint</td>
                                                         <td>@item.Branch</td>
                                                         <td>@item.Priority</td>
-                                                        <td>
+                                                        <td style="width:50px">
                                                             <div class="row">
                                                                 <div class="col-md-2">
                                                                     <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)"><i class="ft-eye"></i></button>
                                                                 </div>
-                                                                <div class="col-md-2" style="margin-left:30px">
-                                                                    <button type="button" class="btn btn-outline-warning" onclick="ComplaintEdit(@item.Id)"><i class="icon-note"></i></button>
-                                                                </div>
+                                                                @if (item.Status == "Created")
+                                                                {
+                                                                    <div class="col-md-2" style="margin-left:30px;margin-right:20px">
+                                                                        <button type="button" class="btn btn-outline-warning" onclick="ComplaintEdit(@item.Id)"><i class="ft-edit"></i></button>
+                                                                    </div>
+                                                                }
                                                             </div>
 
                                                         </td>
@@ -304,6 +307,36 @@
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");                    
                         // Add the type class                    
                         toastEl.classList.add("toast-warning");                    
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));                    
+                        var options = { delay: 3000 }; // 3 seconds                    
+                        var toast = new bootstrap.Toast(toastEl, options);                    
+                        toast.show();                
+                    } else {                
+                        console.error("Toast body element not found.");                
+                    }
+                }
+                else if(ToastMessage == 'sentDepSuccessfully!'){
+                    if (toastMsg) {                    
+                        toastMsg.textContent = "Successfully Sent to Department";                    
+                        toastTitle.textContent = "Success";                    
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");                    
+                        // Add the type class                    
+                        toastEl.classList.add("toast-success");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));                    
+                        var options = { delay: 3000 }; // 3 seconds                    
+                        var toast = new bootstrap.Toast(toastEl, options);                    
+                        toast.show();                
+                    } else {                
+                        console.error("Toast body element not found.");                
+                    }
+                }
+                else if(ToastMessage == 'resolvedSuccessfully!'){
+                    if (toastMsg) {                    
+                        toastMsg.textContent = "Successfully Resolved";                    
+                        toastTitle.textContent = "Success";                    
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");                    
+                        // Add the type class                    
+                        toastEl.classList.add("toast-success");
                         var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));                    
                         var options = { delay: 3000 }; // 3 seconds                    
                         var toast = new bootstrap.Toast(toastEl, options);                    

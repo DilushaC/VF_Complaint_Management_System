@@ -1,4 +1,5 @@
 ﻿using ComplaignManagementSystem.Data.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 {
     public interface IUserService
     {
+        Task ResetPassword(string userId, string saltKey, string NewPassword);
         Task<UserModel> ValidateUserAsync(string username, string password);
         UserPermissionModel getAccessPerimissions(UserModel user);
         List<UserPageCapabilityModel> getAccessPages(UserModel user, UserPermissionModel uPermission);
