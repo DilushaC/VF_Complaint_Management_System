@@ -164,6 +164,42 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                 throw ex;
             }
         }
+
+        public DepartmentModel GetDepartmentDetails(int DepId)
+        {
+            try
+            {
+                const string query = @"SELECT * FROM Complaint_Department_Master WHERE Id = @Id AND Active = 1";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", DepId);
+
+                // Use the centralized connection handler for DB access
+                var departments = _connectionService.ReturnWithPara(query, parameters)
+                                              .AsEnumerable()
+                                              .Select(row => new DepartmentModel
+                                              {
+                                                  Id = row.Field<int>("Id"),
+                                                  Name = row.Field<string>("Name"),
+                                                  Code = row.Field<string>("Code"),
+                                                  CreatedDate = row.Field<System.DateTime>("CreatedDate"),
+                                                  Active = row.Field<bool>("Active"),
+                                                  Status = row.Field<bool>("Status")
+                                              })
+                                              .ToList();
+
+                var department = departments.FirstOrDefault();
+                if (department == null)
+                    return null;
+
+                return department;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
 

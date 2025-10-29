@@ -768,7 +768,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {
                 var httpContext = _httpContextAccessor.HttpContext;
                 var UserName = httpContext?.Session.GetString("UserName");
-                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 3, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id=@Id ";
+                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 1, Status = 3 , IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id=@Id ";
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", Convert.ToInt64(Id), DbType.Int64);

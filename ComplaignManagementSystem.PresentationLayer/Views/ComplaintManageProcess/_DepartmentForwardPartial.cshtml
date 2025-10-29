@@ -76,40 +76,41 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
 
 <script>
-        function ForwardToCentral(complaintId) {               
-         $.ajax({
-                    url: '@Url.Action("ForwardToCentral", "ComplaintManageProcess")',
-                    type: 'POST',
-                    data: { id: complaintId },
-                    success: function (response) {
-                        if (response.success) {                            
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Successfully forwarded to the central office.',
-                                icon: 'success',
-                                timer: 2000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.href = '@Url.Action("DepartmentProcess", "ComplaintManageProcess")';                                
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'Sent to central Failed.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Error Sent to central.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                });
+        
+    function ForwardToCentral(complaintId) {               
+         $.ajax({            
+             url: '@Url.Action("ForwardToCentral", "ComplaintManageProcess")',            
+             type: 'POST',            
+             data: { id: complaintId },            
+             success: function (response) {            
+                 if (response.success) {                                     
+                     Swal.fire({            
+                         title: 'Success!',            
+                         text: 'Successfully forwarded to the central office.',            
+                         icon: 'success',            
+                         timer: 2000,            
+                         showConfirmButton: false            
+                     }).then(() => {            
+                         window.location.href = '@Url.Action("DepartmentProcess", "ComplaintManageProcess")';                               
+                     });            
+                 } else {            
+                     Swal.fire({            
+                         title: 'Error!',            
+                         text: response.message || 'Sent to central Failed.',            
+                         icon: 'error',            
+                         confirmButtonText: 'OK'            
+                     });            
+                 }            
+             },            
+             error: function () {           
+                 Swal.fire({            
+                     title: 'Error!',            
+                     text: 'Error Sent to central.',            
+                     icon: 'error',            
+                     confirmButtonText: 'OK'            
+                 });            
+             }            
+         });
     }
 </script>
 

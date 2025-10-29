@@ -1,5 +1,6 @@
 ﻿@model ComplaignManagementSystem.Data.Models.ComplaintMaster // Change this to your actual model namespace
 
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
 
 <hr />
 <div class="row">
@@ -70,7 +71,7 @@
                 <div class="mb-2">
           
                     <div class="form-group">                        
-                        <select id="Dep_Id" name="Dep_Id" class="form-control" asp-items="ViewBag.Dep_Id">
+                        <select id="Dep_Id" name="Dep_Id" class="form-control" asp-items="ViewBag.Dep_Id" style="width:100%">
                             <option value="">-- Select --</option>
                         </select>
                     </div>
@@ -90,46 +91,51 @@
 </div>
 
 
-
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
 
-<script>
-        function ForwardToDepartment(complaintId) {
+<script>          
+    $("#Dep_Id").select2({
+      allowClear:true,
+      placeholder: 'Select Department',
+      dropdownParent: $('#CentralForwardModal')
+    });
+    function ForwardToDepartment(complaintId) {
         var Department = document.getElementById("Dep_Id").value;
 
-         $.ajax({
-                    url: '@Url.Action("ForwardToDepartment", "ComplaintManageProcess")',
-                    type: 'POST',
-                    data: { id: complaintId , Department : Department },
-                    success: function (response) {
-                        if (response.success) {                            
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Successfully forwarded to the Department.',
-                                icon: 'success',
-                                timer: 2000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.href = '@Url.Action("CentralProcess", "ComplaintManageProcess")';
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'Sent to central Failed.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Error Sent to central.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                });
+         $.ajax({               
+             url: '@Url.Action("ForwardToDepartment", "ComplaintManageProcess")',               
+             type: 'POST',               
+             data: { id: complaintId , Department : Department },               
+             success: function (response) {               
+                 if (response.success) {                        
+                     Swal.fire({               
+                         title: 'Success!',               
+                         text: 'Successfully forwarded to the Department.',               
+                         icon: 'success',               
+                         timer: 2000,               
+                         showConfirmButton: false               
+                     }).then(() => {               
+                         window.location.href = '@Url.Action("CentralProcess", "ComplaintManageProcess")';               
+                     });               
+                 } else {               
+                     Swal.fire({               
+                         title: 'Error!',               
+                         text: response.message || 'Sent to central Failed.',               
+                         icon: 'error',               
+                         confirmButtonText: 'OK'               
+                     });              
+                 }               
+             },               
+             error: function () {               
+                 Swal.fire({               
+                     title: 'Error!',               
+                     text: 'Error Sent to central.',               
+                     icon: 'error',               
+                     confirmButtonText: 'OK'               
+                 });               
+             }               
+         });
     }
 
                
