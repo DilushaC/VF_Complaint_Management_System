@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card-header">
-                <h1>Department Master</h1>
+                <h1>@Context.Session.GetString("UserDepName") Department Master</h1>
                 <hr />
             </div>
            
@@ -102,12 +102,16 @@
                                                                 <div class="col-md-2">
                                                                     <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)"><i class="ft-eye"></i></button>
                                                                 </div>
-                                                                <div class="col-md-2" style="margin-left:30px">
-                                                                    <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)"><i class="ft-fast-forward"></i></button>
-                                                                </div>
-                                                                <div class="col-md-2" style="margin-left:30px">
-                                                                    <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)"><i class="ft-check-square"></i></button>
-                                                                </div>
+                                                                @if (item.Status == "Sent Department")
+                                                                {
+                                                                    <div class="col-md-2" style="margin-left:30px">
+                                                                        <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)"><i class="ft-fast-forward"></i></button>
+                                                                    </div>
+                                                                    <div class="col-md-2" style="margin-left:30px">
+                                                                        <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)"><i class="ft-check-square"></i></button>
+                                                                    </div>
+                                                                }
+
                                                             </div>
 
                                                         </td>
@@ -323,9 +327,9 @@
             if (toastEl) {
                 var toastTitle = toastEl.querySelector('.toast-title');
                 var toastMsg = toastEl.querySelector('.toast-message');
-                if(ToastMessage == 'SubmittedSuccessfully!'){
+                if(ToastMessage == 'SentToCentralSuccess!'){
                     if (toastMsg) {
-                        toastMsg.textContent = "Successfully Saved Complaint";
+                        toastMsg.textContent = "Successfully Sent to Central";
                         toastTitle.textContent = "Success";
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
                         // Add the type class
@@ -338,13 +342,13 @@
                         console.error("Toast body element not found.");
                     }
                 }
-                else if(ToastMessage == 'EditedSuccessfully!'){
+                else if(ToastMessage == 'resolvedSuccessfully!'){
                     if (toastMsg) {
-                        toastMsg.textContent = "Successfully Edited Complaint";
+                        toastMsg.textContent = "Successfully Resolved";
                         toastTitle.textContent = "Success";
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
                         // Add the type class
-                        toastEl.classList.add("toast-warning");
+                        toastEl.classList.add("toast-success");
                         var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
                         var options = { delay: 3000 }; // 3 seconds
                         var toast = new bootstrap.Toast(toastEl, options);

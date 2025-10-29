@@ -18,29 +18,58 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public ActionResult Dashboard()
+        private bool IsUserLoggedIn()
         {
-            return View();
+            return !string.IsNullOrEmpty(HttpContext.Session.GetString("UserName"));
         }
 
-        // GET: ComplaintManageProcessController/Create
+        public ActionResult Dashboard()
+        {
+            if (!IsUserLoggedIn())
+                return RedirectToAction("Login", "User");
+
+            ViewBag.CurrYear = System.DateTime.Now.Year;
+            return View();
+        } 
+
         public ActionResult Create()
         {
+            if (!IsUserLoggedIn())
+                return RedirectToAction("Login", "User");
             var getAllDeps = _complainProcess.getDepList();
             var getAllMethods = _complainProcess.getMethodList();
             ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
             ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name");
-
             return View();
         }
 
-        // POST: ComplaintManageProcessController/Create
         [HttpPost]
-        public ActionResult SubmitComplain(IFormCollection collection, IFormFile file)
+        public ActionResult SaveComplaint(IFormCollection collection, IFormFile file)
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
                 _complainProcess.CreateComplaint(collection, file);
+                TempData["ToastMessage"] = "SubmittedSuccessfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult SubmitAndSendComplain(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
+                _complainProcess.CreateAndSendComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
                 return RedirectToAction(nameof(Index));
             }
@@ -62,6 +91,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
                 PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getComplaintList(pageNumber, pageSize, searchString);
                 ViewBag.ComplainLists = paginationResult.Items;
 
@@ -168,8 +200,38 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
                 _complainProcess.UpdateComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult UpdateSendComplaint(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
+                _complainProcess.UpdateSendComplaint(collection, file);
+                var ResolvedStatus = collection["ResolvedStatus"].ToString();
+
+                if(ResolvedStatus == "No")
+                {
+                    TempData["ToastMessage"] = "sentDepSuccessfully!";
+                }
+                else
+                {
+                    TempData["ToastMessage"] = "resolvedSuccessfully!";
+                }                    
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -182,8 +244,11 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
                 PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getDepComplaintList(pageNumber, pageSize, searchString);
-                ViewBag.ComplainLists = paginationResult.Items;
+                ViewBag.ComplainLists = paginationResult.Items.OrderByDescending(a => a.Status == "Sent Department").ToList();
 
                 //Also pass the total count for building the pagination links
                 ViewBag.TotalCount = paginationResult.TotalCount;
@@ -226,6 +291,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 _complainProcess.UpdateForwardToCentral(Id);
+                TempData["ToastMessage"] = "SentToCentralSuccess!";
                 return Json(new { success = true, message = "Sent to central successfully." });
 
             }
@@ -260,7 +326,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
-                _complainProcess.DepartmentComplainResolve(Id, Remark);
+                _complainProcess.ComplainResolve(Id, Remark);
+                TempData["ToastMessage"] = "resolvedSuccessfully!";
                 return Json(new { success = true, message = "Complain Resolve successfully." });
 
             }
@@ -279,7 +346,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getCentralComplaintList(pageNumber, pageSize, searchString);
-                ViewBag.ComplainLists = paginationResult.Items;
+                ViewBag.ComplainLists = paginationResult.Items.OrderByDescending(a => a.Status == "Sent Central").ToList();
 
                 //Also pass the total count for building the pagination links
                 ViewBag.TotalCount = paginationResult.TotalCount;
@@ -322,6 +389,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 _complainProcess.UpdateForwardToDepartment(Id, Department);
+                TempData["ToastMessage"] = "sentDepSuccessfully!";
                 return Json(new { success = true, message = "Sent to Department successfully." });
 
             }
@@ -337,7 +405,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
-                _complainProcess.CentralComplainResolve(Id, Remark);
+                _complainProcess.ComplainResolve(Id, Remark);
+                TempData["ToastMessage"] = "resolvedSuccessfully!";
                 return Json(new { success = true, message = "Complain Resolve successfully." });
 
             }

@@ -1,120 +1,152 @@
 ﻿@model ComplaignManagementSystem.Data.Context.DapperContext
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Form";
     ViewData["MenuTab"] = "ComplaintMenu";
     ViewData["SubMenuTab"] = "CreateFormScreen";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
-<link href="~/plugins/demo/chameleon-admin-template/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
-<link href="~/plugins/demo/chameleon-admin-template/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
-<link href="~/plugins/demo/chameleon-admin-template/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
 <div class="row">
     <div class="col-md-12">
         <div class="card" style="margin-top:15px">
             <div class="card-content collapse show">
                 <div class="card-body">
-                    @using (Html.BeginForm("SubmitComplain", "ComplaintManageProcess", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @using (Html.BeginForm("SubmitComplain", "ComplaintManageProcess", FormMethod.Post, new { enctype = "multipart/form-data", id = "complainForm" }))
                     {
-                        <form class="form">
-                            <div class="form-body">
-                                <h4 class="form-section">
-                                    <i class="ft-flag"></i> Complain Create Form
-                                </h4>
-                                <div class="form-group">
-                                    <label for="Complaint Method">Complaint Method</label>
-                                    <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
+                        <div class="form-body">
+                            <h4 class="form-section">
+                                <i class="ft-flag"></i> Complain Create Form
+                            </h4>
+                            <div class="form-group">
+                                <label for="Complaint Method">Complaint Method</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
+                                    <option value="">-- Select --</option>
+                                </select>
+                                <span id="error-message-method"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Cus_Name">Customer Name</label>
+                                        <input type="text" id="Cus_Name" class="form-control" placeholder="Customer Name" name="Cus_Name" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Cus_Nic">Customer NIC</label>
+                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Refference">Refference</label>
+                                        <input type="text" id="Cus_Refference" class="form-control" placeholder="Facility / Ticket No / FD Number / etc..." name="Cus_Refference" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Cus_MobileNumber">Customer Mobile Number</label>
+                                        <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="col-md-3 label-control">Select File</label>
+                                    <label id="Attachment" class="file center-block">
+                                        <input type="file" id="file" name="file" style="margin:15px">
+                                        <span class="file-custom"></span>
+                                        <span id="error-message-attachement"></span>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="Dep_Id">Department</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                    <select id="Dep_Id" name="Dep_Id" class="form-control" asp-items="ViewBag.Dep_Id">
                                         <option value="">-- Select --</option>
                                     </select>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="Cus_Name">Customer Name</label>
-                                            <input type="text" id="Cus_Name" class="form-control" placeholder="Customer Name" name="Cus_Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="Cus_Nic">Customer NIC</label>
-                                            <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="Refference">Refference</label>
-                                            <input type="text" id="Cus_Refference" class="form-control" placeholder="Refference" name="Cus_Refference">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="Cus_MobileNumber">Customer Mobile Number</label>
-                                            <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="col-md-3 label-control">Select File</label>
-                                        <label id="Attachment" class="file center-block">
-                                            <input type="file" id="file" name="file" style="margin:15px">
-                                            <span class="file-custom"></span>
-                                            <span id="error-message"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Dep_Id">Department</label>
-                                        <select id="Dep_Id" name="Dep_Id" class="form-control" asp-items="ViewBag.Dep_Id">
-                                            <option value="">-- Select --</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row" style="margin-top:20px">
-                                    <div class="col-md-6">
-                                        <label for="Nature_Id">Nature</label>
-                                        <select id="Nature_Id" name="Nature_Id" class="form-control">
-                                            <option value="">-- Select --</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-6" style="position: relative;">
-                                        <label for="Priority">Priority</label>
-                                        <div class="row" style="margin-left:5px">
-                                            <div class="custom-control custom-checkbox col-md-2.5">
-                                                <input type="checkbox" class="custom-control-input" id="PriorityL" name="Priority" value="Low" onclick="handlePriority(this)">
-                                                <label class="custom-control-label" for="PriorityL">Low</label>
-                                            </div>
-                                            <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
-                                                <input type="checkbox" class="custom-control-input" id="PriorityM" name="Priority" value="Medium" onclick="handlePriority(this)">
-                                                <label class="custom-control-label" for="PriorityM">Medium</label>
-                                            </div>
-                                            <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
-                                                <input type="checkbox" class="custom-control-input" id="PriorityH" name="Priority" value="High" onclick="handlePriority(this)">
-                                                <label class="custom-control-label" for="PriorityH">High</label>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="form-group" style="margin-top:10px">
-                                    <label for="Compaint">Compaint</label>
-                                    <textarea id="Compaint" rows="5" class="form-control" name="Compaint" placeholder="About Compaint"></textarea>
+                                    <span id="error-message-dep"></span>
                                 </div>
                             </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-danger mr-1">
-                                    Clear
-                                </button>
-                                <button type="submit" class="btn btn-success" id="savensend">
-                                    Save
-                                </button>
+                            <div class="row" style="margin-top:20px">
+                                <div class="col-md-6">
+                                    <label for="Nature_Id">Nature of Complaint</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                    <select id="Nature_Id" name="Nature_Id" class="form-control">
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                    <span id="error-message-nature"></span>
+                                </div>
+                                <div class="col-md-6" style="position: relative;">
+                                    <label for="Priority">Priority</label>
+                                    <div class="row" style="margin-left:5px">
+                                        <div class="custom-control custom-checkbox col-md-2.5">
+                                            <input type="checkbox" class="custom-control-input" id="PriorityL" name="Priority" value="Low" onclick="handlePriority(this)" checked>
+                                            <label class="custom-control-label" for="PriorityL">Low</label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
+                                            <input type="checkbox" class="custom-control-input" id="PriorityM" name="Priority" value="Medium" onclick="handlePriority(this)">
+                                            <label class="custom-control-label" for="PriorityM">Medium</label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox col-md-2.5" style="margin-left:25px">
+                                            <input type="checkbox" class="custom-control-input" id="PriorityH" name="Priority" value="High" onclick="handlePriority(this)">
+                                            <label class="custom-control-label" for="PriorityH">High</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
+                            <div class="form-group" style="margin-top:10px">
+                                <label for="Complaint">Complaint</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <textarea id="Complaint" rows="5" class="form-control" name="Complaint" placeholder="About Complaint"></textarea>
+                                <span id="error-message-complaint"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top:10px">
+                            <h3> If you resolved this Complaint?</h3>
+                            <br />
+                            <div class="row" style="margin-left:10px">
+
+                                <div class="col-md-2">
+                                    <label for="ResolvedStatus-Yes">Yes</label>
+                                    <input class="form-control" type="radio" id="ResolvedStatus-Yes" name="ResolvedStatus" value="Yes" style="block-size:20px;margin:-28px;margin-left:0px">
+                                </div>
+                                <div class="col-md-2" style="margin-left:-40px">
+                                    <label for="ResolvedStatus-No">No</label>
+                                    <input class="form-control" type="radio" id="ResolvedStatus-No" name="ResolvedStatus" value="No" style="block-size:20px;margin:-28px" checked>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row" style="margin-top:7px" id="revolveT">
+                            <hr />
+                            <div class="col-md-12">
+                                <strong>Remark :</strong><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <textarea id="Remarktxt" class="form-control" placeholder="Remark." name="ResolvedRemark" rows="6" cols="100" style="margin-top:10px"></textarea>
+                                <span id="error-message-remark"></span>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-danger mr-1">
+                                Clear
+                            </button>
+                            <button type="button" class="btn btn-success" id="save">
+                                Save
+                            </button>
+                            <button type="button" class="btn btn-info" id="savensend">
+                                Save and send
+                            </button>
+                            <button type="button" class="btn btn-primary" id="savenresolved">
+                                Save and Resolved
+                            </button>
+                        </div>
                     }
                 </div>
             </div>
@@ -123,9 +155,9 @@
 
 </div>
 
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/vendors.min.js"></script>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> 
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script src="~/js/feather.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/forms/toggle/switchery.min.js"></script>
@@ -135,7 +167,12 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/checkbox-radio.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+
+
 <script>
+    $('#savenresolved').hide();
+    $('#revolveT').hide();
     $("#ComplaintMethod_Id").select2({
       allowClear:true,
       placeholder: 'Select Method'
@@ -165,7 +202,6 @@
             document.getElementById("PriorityH").checked = false;
         }
     }
-
     $('#Dep_Id').on('change', function () {
         let selectedDepId = $(this).val();
         let selectedText = $(this).find('option:selected').text();
@@ -193,7 +229,7 @@
     });
     document.addEventListener('DOMContentLoaded', function () {
         const fileInput = document.getElementById('file');
-        const errorMessageContainer = document.getElementById('error-message');
+        const errorMessageContainer = document.getElementById('error-message-attachement');
         const allowedExtension = '.pdf';
         const button = document.getElementById("savensend");
         fileInput.addEventListener('change', function () {
@@ -206,13 +242,568 @@
                 if (fileExtension !== allowedExtension) {
                     errorMessageContainer.textContent = 'Only PDF files are allowed.';
                     errorMessageContainer.style.color = 'red';
-                    fileInput.value = '';                            
+                    fileInput.value = '';
                     button.disabled = true;
                 }else{
                      button.disabled = false;
                 }
             }
         });
+    });
+    $('input[name="ResolvedStatus"]').on('change', function () {
+      var selectedValue = $(this).val();
+      onStatusChange(selectedValue);
+    });
+    function onStatusChange(value) {
+      // alert("Selected status: " + value);
+      if(value == "Yes"){
+          $('#revolveT').show();              
+          $('#savenresolved').show();
+          $('#savensend').hide();
+      }else{
+          $('#revolveT').hide();
+          $('#savenresolved').hide();
+          $('#savensend').show();
+      }
+    }
+
+    $('#save').on('click', function () {
+        var form = $('#complainForm');
+        // Change action dynamically
+        form.attr('action', '/ComplaintManageProcess/SaveComplaint');
+        form.submit();
+    });
+    $('#savensend').on('click', function () {
+        var form = $('#complainForm');
+        const button = document.getElementById("savensend");
+        const errorMessageMthodContainer = document.getElementById('error-message-method');
+        const errorMessageDepContainer = document.getElementById('error-message-dep');
+        const errorMessageNatureContainer = document.getElementById('error-message-nature');
+        const errorMessageComplaintContainer = document.getElementById('error-message-complaint');
+            
+        var Method = document.getElementById("ComplaintMethod_Id").value;            
+        var Dep = document.getElementById("Dep_Id").value;
+        var Nature = document.getElementById("Nature_Id").value;
+        var Compaint = document.getElementById("Complaint").value;
+            
+        if(Method == "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';            
+            errorMessageMthodContainer.style.color = 'red';                 
+            
+            errorMessageDepContainer.textContent = 'Please Select the Department.';            
+            errorMessageDepContainer.style.color = 'red';   
+            
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;    
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        }
+        else if(Method != "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        }  else if(Method != "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            //return;
+        }
+
+        // Change action dynamically
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to Send this Complaint?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Send it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Successfully Sent Complain.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    form.attr('action', '/ComplaintManageProcess/SubmitAndSendComplain');
+                    form.submit();
+                })            
+            }
+        })
+    });
+    $('#savenresolved').on('click', function () {
+        var form = $('#complainForm');
+        const errorMessageMthodContainer = document.getElementById('error-message-method');
+        const errorMessageDepContainer = document.getElementById('error-message-dep');
+        const errorMessageNatureContainer = document.getElementById('error-message-nature');
+        const errorMessageComplaintContainer = document.getElementById('error-message-complaint');
+        const errorMessageRemarkContainer = document.getElementById('error-message-remark');
+
+        var Method = document.getElementById("ComplaintMethod_Id").value;
+        var Dep = document.getElementById("Dep_Id").value;
+        var Nature = document.getElementById("Nature_Id").value;
+        var Compaint = document.getElementById("Complaint").value;
+        var Remarktxt = document.getElementById("Remarktxt").value;
+
+        if(Method == "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        }
+        else if(Method != "" && Dep != "" && Nature == "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = '';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature != "" && Compaint == ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method == "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = 'Please Select the Method.';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep == "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = 'Please Select the Department.';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature == "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            return;
+        } else if(Method != "" && Dep != "" && Nature != "" && Compaint != ""){
+            errorMessageMthodContainer.textContent = '';
+            errorMessageMthodContainer.style.color = 'red';
+
+            errorMessageDepContainer.textContent = '';
+            errorMessageDepContainer.style.color = 'red';
+
+            errorMessageNatureContainer.textContent = '';
+            errorMessageNatureContainer.style.color = 'red';
+
+            errorMessageComplaintContainer.textContent = '';
+            errorMessageComplaintContainer.style.color = 'red';
+            button.disabled = false;
+            //return;
+        } else if(Remarktxt == ""){
+            errorMessageRemarkContainer.textContent = 'Please enter Remark.';
+            errorMessageRemarkContainer.style.color = 'red';
+            return;
+        }
+        // Change action dynamically
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to Resolved this Complaint?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Resolved it!'
+        }).then((result) => {               
+            if (result.isConfirmed) {                
+                Swal.fire({              
+                    title: 'Success!',              
+                    text: 'Successfully Complain Resolved.',              
+                    icon: 'success',              
+                    timer: 2000,              
+                    showConfirmButton: false              
+                }).then(() => {              
+                    form.attr('action', '/ComplaintManageProcess/SubmitAndSendComplain');                                               
+                    form.submit();              
+                })
+            }
+        })
     });
 </script>
 

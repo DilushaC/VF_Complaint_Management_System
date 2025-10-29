@@ -15,6 +15,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string CreatedUser { get; set; }
         public string Branch { get; set; }
         public string Priority { get; set; }
+        public string Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Active { get; set; }
         public string AttachmentPath { get; set; }

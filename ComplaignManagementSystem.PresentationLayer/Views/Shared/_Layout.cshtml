@@ -14,31 +14,76 @@
     <meta name="description" content="Chameleon Admin is a modern Bootstrap 4 webapp &amp; admin dashboard html template with a large number of components, elegant design, clean and organized code.">
     <meta name="keywords" content="admin template, Chameleon admin template, dashboard template, gradient admin template, responsive admin template, webapp, eCommerce dashboard, analytic dashboard">
     <meta name="author" content="ThemeSelect">
-    <title>@ViewData["Title"] - ComplaignManagementSystem.PresentationLayer</title>
+    <title>@ViewData["Title"] - Complaint Management System</title>
     <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/vendors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/toggle/switchery.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/switch.min.css" rel="stylesheet" />
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-gradient.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
-
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
-    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />    
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/menu/menu-types/vertical-menu.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-gradient.min.css" rel="stylesheet" />
-    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-gradient.min.css" rel="stylesheet" />
+    <link href="~/plugins/demo/chameleon-admin-template/assets/css/style.css" rel="stylesheet" />
+
+
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/feather/style.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/line-awesome/css/line-awesome.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/animation/css/animate.min.css" rel="stylesheet" />
-    <link href="~/plugins/demo/chameleon-admin-template/assets/css/style.css" rel="stylesheet" />
+
+
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/pages/dashboard-ecommerce.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/simple-line-icons/style.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/pages/dashboard-analytics.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <style>
+        // .navigation .nav-item.has-sub > a i {
+        //     display: inline-block !important;
+        //     opacity: 1 !important;
+        //     visibility: visible !important;
+        //     margin-right: 10px;
+        //     position: relative;
+        // }
 
+        // .navigation .nav-item.has-sub > a i {
+        //     display: inline-block !important;
+        //     opacity: 1 !important;
+        //     visibility: visible !important;
+        //     margin-right: 10px;
+        // }
+
+        .navigation .nav-item.has-sub > a:after {
+            display: none !important;
+        }
+        /* Optional: remove the default arrow if you don’t need it */
+
+
+        // .navigation .has-sub > a:after {
+        //     content: "\e844"; /* arrow icon */
+        //     font-family: Feather;
+        // }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 10px 0;
+            text-align: left;
+            border-top: 1px solid #dee2e6;
+            z-index: 1000;
+        }
+        // .sidebarImage{
+        //     background-image: url('/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg');
+        // }
+    </style>
 </head>
 
 
@@ -79,21 +124,7 @@
                                 <i class="ficon ft-maximize"></i>
                             </a>
                         </li>
-                        <li class="nav-item dropdown navbar-search">
-                            <a class="nav-link dropdown-toggle hide" data-toggle="dropdown" href="#"><i class="ficon ft-search"></i></a>
-                            <ul class="dropdown-menu">
-                                <li class="arrow_box">
-                                    <form>
-                                        <div class="input-group search-box">
-                                            <div class="position-relative has-icon-right full-width">
-                                                <input class="form-control" id="search" type="text" placeholder="Search here...">
-                                                <div class="form-control-position navbar-search-close"><i class="ft-x"></i></div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
+
                     </ul>
                     <li class="dropdown dropdown-user nav-item">
                         <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
@@ -106,28 +137,17 @@
                                 <a class="dropdown-item" href="#">
                                     <span class="avatar avatar-online">
                                         <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/portrait/small/avatar-s-19.png" alt="avatar" />
-                                        <span class="user-name text-bold-700 ml-1">John Doe</span>
+                                        <span class="user-name text-bold-700 ml-1">@Context.Session.GetString("UserName")</span>
                                     </span>
                                 </a>
                                 <div class="dropdown-divider">
                                 </div>
-                                <a class="dropdown-item" href="user-profile.html">
-                                    <i class="ft-user"></i> Edit Profile
-                                </a>
-                                <a class="dropdown-item" href="email-application.html">
-                                    <i class="ft-mail"></i> My Inbox
-                                </a>
-                                <a class="dropdown-item" href="project-summary.html">
-                                    <i class="ft-check-square"></i> Task
-                                </a>
-                                <a class="dropdown-item" href="chat-application.html">
-                                    <i class="ft-message-square"></i> Chats
-                                </a>
-                                <div class="dropdown-divider">
-                                </div>
-                                <a class="dropdown-item" href="login.html">
-                                    <i class="ft-power"></i> Logout
-                                </a>
+                                <form asp-controller="User" asp-action="Login" method="get" style="display:inline;">
+                                    <button type="submit" class="dropdown-item" style="background:none; border:none; width:100%; text-align:left;">
+                                        <i class="ft-power"></i> Logout
+                                    </button>
+                                </form>
+
                             </div>
                         </div>
                     </li>
@@ -135,55 +155,190 @@
             </div>
         </div>
     </nav>
-    <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg">
-        <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="../../../app-assets/images/backgrounds/02.jpg">
+    <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/04.jpg">
+        <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/04.jpg">
             <div class="navbar-header">
                 <ul class="nav navbar-nav flex-row">
                     <li class="nav-item mr-auto">
-                        <a class="navbar-brand" href="index-2.html">
+                        <a class="navbar-brand" href="#">
                             <img class="brand-logo" src="~/plugins/demo/chameleon-admin-template/app-assets/images/logo/logo.png" />
-                            <h3 class="brand-text">Chameleon</h3>
+                            <h3 class="brand-text" style="font-size:17px">Comlpaint Management</h3>
                         </a>
                     </li>
                     <li class="nav-item d-md-none"><a class="nav-link close-navbar"><i class="ft-x"></i></a></li>
                 </ul>
             </div>
-            @* <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg" /> *@
-            @* <div class="navigation-background" style="background-image: url("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg");"></div> *@
-            @* <div class="navigation-background" style="background-image: url("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg");"></div> *@
-            <div class="navigation-background" style="background-image: url('@Url.Content("~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg")');"></div>
-            @* <div class="navigation-background" style="background-image: url('/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg');"></div> *@
-
-            @* <div class="navigation-background" style="background-image: url("~/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg");"></div> *@
+            <div class="navigation-background"
+                 style="background-image: url('@Url.Content("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/04.jpg")');">
+            </div>
             <div class="main-menu-content ps ps--active-y" style="height: 704px;">
 
                 <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-
-                    <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")"><a href="/ComplaintManageProcess/Dashboard"><i class="ft-home"></i><span class="menu-title" data-i18n="">Dashboard</span></a>
-                    <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
-                        <a href="#"><i class="ft-file-text"></i>Create Form</a>
-                        <ul class="menu-content">
-                            <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
-                                <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
-                            </li>
-                            <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
-                                <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
-                            </li>
-                        </ul>
+                    <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
+                        <a href="/ComplaintManageProcess/Dashboard">
+                            <i class="ft-home"></i>
+                            <span class="menu-title" data-i18n="">Dashboard</span>
+                        </a>
                     </li>
-                    <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                        <a href="#"><i class="ft-file-text"></i>Complaint Forms</a>
-                        <ul class="menu-content">
-                            <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
-                                <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
-                            </li>
-                            <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
-                                <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
-                            </li>
+                    @if (Context.Session.GetString("UserPermission") == "Admin ")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                </li>
 
-                        </ul>
-                    </li>
-
+                            </ul>
+                        </li>
+                    }
+                    else if (Context.Session.GetString("UserPermission") == "Supper User")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
+                        {
+                            <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <ul class="menu-content">
+                                    @if (Context.Session.GetString("DepartmentPermission") != "")
+                                    {
+                                        <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                        </li>
+                                    }
+                                    @if (Context.Session.GetString("CentralPermission") != "")
+                                    {
+                                        <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else if (Context.Session.GetString("UserPermission") == "User")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
+                        {
+                            <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <ul class="menu-content">
+                                    @if (Context.Session.GetString("DepartmentPermission") != "Department User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                        </li>
+                                    }
+                                    @if (Context.Session.GetString("CentralPermission") != "Central User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else if (Context.Session.GetString("UserPermission") == "Central User")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
+                        {
+                            <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <ul class="menu-content">
+                                    @if (Context.Session.GetString("DepartmentPermission") != "Department User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                        </li>
+                                    }
+                                    @if (Context.Session.GetString("CentralPermission") != "Central User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else if (Context.Session.GetString("UserPermission") == "Dep User")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
+                        {
+                            <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <ul class="menu-content">
+                                    @if (Context.Session.GetString("DepartmentPermission") != "Department User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                        </li>
+                                    }
+                                    @if (Context.Session.GetString("CentralPermission") != "Central User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
                 </ul>
 
             </div>
@@ -203,7 +358,7 @@
 
     <footer class="border-top footer text-muted bottom">
         <div class="container">
-            &copy; 2025 - ComplaignManagementSystem.PresentationLayer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @ViewBag.CurrYear - Complaint Maneagement System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -219,14 +374,16 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
+
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/pages/dashboard-analytics.min.js"></script>
+
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+
+
 </body>
 </html>
 
-<script>
-    feather.replace();
-</script>
 

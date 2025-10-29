@@ -1,15 +1,12 @@
-﻿@model ComplaignManagementSystem.Data.Models.LoginViewModel
-
+﻿@model ComplaignManagementSystem.Data.Models.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Register";
     Layout = null;
 }
 
-
+<!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
-<!-- BEGIN: Head-->
-<!-- Mirrored from themeselection.com/demo/chameleon-admin-template/html/ltr/vertical-menu-template/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 30 Nov 2020 04:59:17 GMT -->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,15 +14,18 @@
     <meta name="description" content="Chameleon Admin is a modern Bootstrap 4 webapp &amp; admin dashboard html template with a large number of components, elegant design, clean and organized code.">
     <meta name="keywords" content="admin template, Chameleon admin template, dashboard template, gradient admin template, responsive admin template, webapp, eCommerce dashboard, analytic dashboard">
     <meta name="author" content="ThemeSelect">
-    <title>Login</title>
-    <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
+    <title>Login - Chameleon Admin - Modern Bootstrap 4 WebApp & Dashboard HTML Template + UI Kit</title>
+    <link rel="apple-touch-icon" href="../../../app-assets/images/ico/apple-icon-120.png">
+    @*     <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
+ *@@*     <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
+ *@
+
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/vendors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/toggle/switchery.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
-    @* <link href="~/demo/chameleon-admin-template/app-assets/css/core/colors/palette-switch.min.css" rel="stylesheet" /> *@
+    <link href="~/demo/chameleon-admin-template/app-assets/css/core/colors/palette-switch.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />
@@ -37,17 +37,18 @@
 
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/feather/style.min.css" rel="stylesheet" />
 
+
 </head>
-<!-- END: Head-->
-<!-- BEGIN: Body-->
-<body class="vertical-layout vertical-menu 1-column  bg-full-screen-image blank-page blank-page" data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="1-column">
-    <!-- BEGIN: Content-->
+
+<body class="vertical-layout vertical-menu 1-column bg-full-screen-image blank-page blank-page"
+      data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="1-column">
+
     <div class="app-content content">
         <div class="content-wrapper">
             <div class="content-wrapper-before"></div>
-            <div class="content-header row">
-            </div>
+            <div class="content-header row"></div>
             <div class="content-body">
+
                 <section class="flexbox-container">
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="col-lg-4 col-md-6 col-10 box-shadow-2 p-0">
@@ -56,38 +57,52 @@
                                     <div class="text-center mb-1">
                                         <img src="~/plugins/demo/chameleon-admin-template/app-assets/images/logo/logo.png" alt="branding logo" />
                                     </div>
-                                    <div class="font-large-1  text-center">
-                                        Complaint Management Login
+                                    <div class="font-large-1 text-center">
+                                        Become A Member
                                     </div>
                                 </div>
-                                <div class="card-content">
 
+                                <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form-horizontal" asp-action="Login" asp-controller="User" method="post" id="loginForm">
+                                        <form class="form-horizontal" asp-action="Register" asp-controller="User" method="post">
+                                            @Html.AntiForgeryToken()
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="UserName" name="username" class="form-control round" placeholder="Your Username" required />
+                                                <input asp-for="UserName" class="form-control round" placeholder="Choose Username" required />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-user"></i>
                                                 </div>
                                             </fieldset>
 
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="Password" name="password" type="password" class="form-control round" placeholder="Enter Password" required />
+                                                <input asp-for="Email" type="email" class="form-control round" placeholder="Your Email Address" required />
+                                                <div class="form-control-position" style="margin-top:10px">
+                                                    <i class="ft-mail"></i>
+                                                </div>
+                                            </fieldset>
+
+                                            <fieldset class="form-group position-relative has-icon-left">
+                                                <input asp-for="Password" type="password" class="form-control round" placeholder="Enter Password" required />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-lock"></i>
                                                 </div>
                                             </fieldset>
 
                                             <div class="form-group text-center">
-                                                <button type="button" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1" onclick="submitLogin()">Login</button>
+                                                <button type="submit" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">
+                                                    Register
+                                                </button>
                                             </div>
-                                            <div class="alert alert-danger text-center" id="Error" style="display:none;"></div>
+
+                                            @if (ViewBag.Error != null)
+                                            {
+                                                <div class="alert alert-danger text-center">@ViewBag.Error</div>
+                                            }
                                         </form>
                                     </div>
                                     <p class="card-subtitle text-muted text-right font-small-3 mx-2 my-1">
                                         <span>
-                                            Don't have an account?
-                                            <a asp-controller="User" asp-action="Register" class="card-link">Sign Up</a>
+                                            Already a member?
+                                            <a asp-controller="Login" asp-action="Index" class="card-link">Sign In</a>
                                         </span>
                                     </p>
                                 </div>
@@ -110,47 +125,5 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/form-login-register.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-    <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
-
-    <script type="text/javascript">            
-        $("#Error").hide();
-        function submitLogin() {
-            var form = $("#loginForm");
-            $.ajax({            
-                url: form.attr("/User/Login"), // Uses the form's asp-action and asp-controller            
-                type: "POST",            
-                data: form.serialize(),            
-                headers: { "X-Requested-With": "XMLHttpRequest" },   // Collects all form inputs            
-                success: function (response) {            
-                    // ✅ If your controller returns JSON            
-                    if (response.success) {              
-                        Swal.fire({            
-                            title: 'Successfully Login!',            
-                            text: 'Welcome to Complaint Management System.',            
-                            icon: 'success',            
-                            timer: 2000,            
-                            showConfirmButton: false            
-                        }).then(() => {            
-                            window.location.href = response.redirectUrl;            
-                        });            
-                    } else if(response.redirectUrl != null){
-                         window.location.href = response.redirectUrl
-                    } else{
-                        $("#Error").text("Invalid username or password!").show();
-                    }          
-                },            
-                error: function (xhr, status, error) {            
-                    Swal.fire({            
-                        icon: 'error',            
-                        title: 'Error',            
-                        text: 'Something went wrong! Please try again.'            
-                    });            
-                }            
-            });
-        }
-    </script>
 </body>
-
 </html>
-
-
