@@ -67,7 +67,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
-                string Query = $"SELECT * FROM Complaint_Department_Master WHERE Active=1";
+                string Query = $"SELECT * FROM Complaint_Department_Master WHERE Active=1 AND Status=1";
                 var Data = _connection.Return(Query);
                 var Row = Data.Rows[0];
 
@@ -392,7 +392,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var UserName = httpContext?.Session.GetString("UserName");
                 var UserDep_Id = httpContext?.Session.GetString("UserDep_Id");
 
-                string whereClause = $"WHERE cmp.Active = 1 AND cmp.Status =1 AND cmp.IsSentDep =1 AND cmp.IsSentCentral = 0 AND cmp.Dep_Id = {Convert.ToInt32(UserDep_Id)} AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
+                string whereClause = $"WHERE cmp.Active = 1 AND cmp.Status =2 AND cmp.IsSentDep =1 AND cmp.IsSentCentral = 0 AND cmp.Dep_Id = {Convert.ToInt32(UserDep_Id)} AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
@@ -768,7 +768,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {
                 var httpContext = _httpContextAccessor.HttpContext;
                 var UserName = httpContext?.Session.GetString("UserName");
-                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 1, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id=@Id ";
+                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 3, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id=@Id ";
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", Convert.ToInt64(Id), DbType.Int64);
@@ -838,7 +838,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         {
             try
             {
-                string whereClause = "WHERE cmp.Active = 1 AND cmp.IsSentCentral = 1";
+                string whereClause = "WHERE cmp.Active = 1";
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
@@ -919,7 +919,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {
                 var httpContext = _httpContextAccessor.HttpContext;
                 var UserName = httpContext?.Session.GetString("UserName");
-                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 0 WHERE Id={Id} ";
+                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 0, Dep_Id={Department} , Status=2 WHERE Id={Id} ";
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", Convert.ToInt64(Id), DbType.Int64);
@@ -940,7 +940,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 depParameters.Add("depId", Convert.ToInt64(Department), DbType.Int64);
                 depParameters.Add("esMatrix", depSendCount + 1, DbType.Int64);
                 depParameters.Add("active", 1, DbType.Int32);
-                depParameters.Add("status", 2, DbType.Int32);
+                depParameters.Add("status", 1, DbType.Int32);
                 depParameters.Add("forUser", UserName, DbType.String);
                 depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 _connection.ReturnWithPara(depQuery, depParameters);

@@ -43,14 +43,11 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 UserPermissionModel getPermissions = _loginService.getAccessPerimissions(user);
                 var getAccessPages = _loginService.getAccessPages(user, getPermissions);
 
-
-
-
                 var DepUCount = getAccessPages.Where(a => a.Page == "Department Master" && a.Active == true).Count();
                 var CentUCount = getAccessPages.Where(a => a.Page == "Central Master" && a.Active == true).Count();
 
                 HttpContext.Session.SetString("UserPermission", getPermissions.Role);
-                if(DepUCount != 0)
+                if(getPermissions.Role != "User" && DepUCount != 0)
                 {
                     HttpContext.Session.SetString("DepartmentPermission", "Department User");
                 }
@@ -58,7 +55,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 {
                     HttpContext.Session.SetString("DepartmentPermission", "");
                 }
-                if(CentUCount != 0)
+                if(getPermissions.Role != "User" && CentUCount != 0)
                 {
                     HttpContext.Session.SetString("CentralPermission", "Central User");
                 }

@@ -252,13 +252,81 @@
                             <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
                                 <a href="#"><i class="ft-command"></i>Complaint Forms</a>
                                 <ul class="menu-content">
-                                    @if (Context.Session.GetString("DepartmentPermission") != "")
+                                    @if (Context.Session.GetString("DepartmentPermission") != "Department User")
                                     {
                                         <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
                                             <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
                                         </li>
                                     }
-                                    @if (Context.Session.GetString("CentralPermission") != "")
+                                    @if (Context.Session.GetString("CentralPermission") != "Central User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else if (Context.Session.GetString("UserPermission") == "Central User")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
+                        {
+                            <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <ul class="menu-content">
+                                    @if (Context.Session.GetString("DepartmentPermission") != "Department User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                        </li>
+                                    }
+                                    @if (Context.Session.GetString("CentralPermission") != "Central User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else if (Context.Session.GetString("UserPermission") == "Dep User")
+                    {
+                        <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
+                                </li>
+                                <li class="@(activeSubMenuTab == "ComplaintMaster" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/Index">Complaint Master</a>
+                                </li>
+                            </ul>
+                        </li>
+                        if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
+                        {
+                            <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
+                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <ul class="menu-content">
+                                    @if (Context.Session.GetString("DepartmentPermission") != "Department User")
+                                    {
+                                        <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
+                                        </li>
+                                    }
+                                    @if (Context.Session.GetString("CentralPermission") != "Central User")
                                     {
                                         <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
                                             <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>

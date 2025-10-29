@@ -327,9 +327,9 @@
             if (toastEl) {
                 var toastTitle = toastEl.querySelector('.toast-title');
                 var toastMsg = toastEl.querySelector('.toast-message');
-                if(ToastMessage == 'SubmittedSuccessfully!'){
+                if(ToastMessage == 'SentToCentralSuccess!'){
                     if (toastMsg) {
-                        toastMsg.textContent = "Successfully Saved Complaint";
+                        toastMsg.textContent = "Successfully Sent to Central";
                         toastTitle.textContent = "Success";
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
                         // Add the type class
@@ -342,13 +342,13 @@
                         console.error("Toast body element not found.");
                     }
                 }
-                else if(ToastMessage == 'EditedSuccessfully!'){
+                else if(ToastMessage == 'resolvedSuccessfully!'){
                     if (toastMsg) {
-                        toastMsg.textContent = "Successfully Edited Complaint";
+                        toastMsg.textContent = "Successfully Resolved";
                         toastTitle.textContent = "Success";
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
                         // Add the type class
-                        toastEl.classList.add("toast-warning");
+                        toastEl.classList.add("toast-success");
                         var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
                         var options = { delay: 3000 }; // 3 seconds
                         var toast = new bootstrap.Toast(toastEl, options);
