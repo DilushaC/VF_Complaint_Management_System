@@ -434,5 +434,45 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         }
 
 
+
+
+        // -------Dashboard----------------------------------------------------------->
+
+        //public async Task<IActionResult> DashboardComplaintCount()
+        //{
+        //    // Get complaint counts
+        //    var complaintCounts = await _complainProcess.GetDashboardComplaintCounts();
+        //    ViewBag.TotalComplaintCount = complaintCounts.TotalCount;
+        //    ViewBag.PendingComplaintCount = complaintCounts.PendingCount;
+        //    ViewBag.ResolveComplaintCount = complaintCounts.ResolveCount;
+
+        //    return View();
+        //}
+
+        public async Task<IActionResult> DashboardComplaintCount()
+        {
+            try
+            {
+                var complaintCounts = await _complainProcess.GetDashboardComplaintCounts();
+
+                return Json(new
+                {                    
+                    total = complaintCounts.TotalCount,
+                    pending = complaintCounts.PendingCount,
+                    resolved = complaintCounts.ResolveCount,
+                    fromCreatedDate = complaintCounts.FromCreatedDate,
+                    toCreatedDate = complaintCounts.ToCreatedDate,
+                    methods = complaintCounts.ComplaintMethodCounts
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+       
+
+
     }
 }
