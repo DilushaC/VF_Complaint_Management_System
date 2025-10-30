@@ -1,11 +1,17 @@
-using ComplaignManagementSystem.Data.Context;
+﻿using ComplaignManagementSystem.Data.Context;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.Helpers;
 using ComplaintManagementSystem.Business.LoginHandler; 
 using Microsoft.AspNetCore.Http;
+using ComplaignManagementSystem.Presentation.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<SessionCheckAttribute>();
+});
 
 builder.Services.AddControllersWithViews();
 

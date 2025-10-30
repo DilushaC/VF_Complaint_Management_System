@@ -1,4 +1,5 @@
 ﻿using ComplaignManagementSystem.Data.Models;
+using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
+    [SessionCheck]
     public class ComplaintManageProcessController : Controller
     {
         private readonly IComplaintManageProcessService _complainProcess;

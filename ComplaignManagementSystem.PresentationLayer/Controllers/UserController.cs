@@ -1,9 +1,11 @@
 ﻿using ComplaignManagementSystem.Data.Models;
+using ComplaignManagementSystem.Presentation.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
+    [SessionCheck]
     public class UserController : Controller
     {
         // GET: UserController
