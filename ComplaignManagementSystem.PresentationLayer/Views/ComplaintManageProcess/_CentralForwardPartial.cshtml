@@ -23,6 +23,22 @@
         </div>
         <div class="row" style="margin-top:7px">
             <div class="col-md-3">
+                <strong>Complaint Department</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Department)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Nature of the Complaint</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Nature)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
                 <strong>Complaint</strong>
             </div>
             <div class="col-md-6">
@@ -75,15 +91,18 @@
                             <option value="">-- Select --</option>
                         </select>
                     </div>
-
                 </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:15px">
+            <div class="col-md-12">
+                <strong>Remark :</strong>
+                <textarea id="Remarktxt" class="form-control" placeholder="Remark." name="w3review" rows="6" cols="100" style="margin-top:10px"></textarea>
             </div>
         </div>
 
     </div>
 </div>
-
-
 
 <div class="modal-footer">
     <button type="button" class="btn grey btn-success" onclick="ForwardToDepartment('@Model.Id')">Forward to Department</button>
@@ -102,11 +121,11 @@
     });
     function ForwardToDepartment(complaintId) {
         var Department = document.getElementById("Dep_Id").value;
-
+        var remark = document.getElementById("Remarktxt").value;
          $.ajax({               
              url: '@Url.Action("ForwardToDepartment", "ComplaintManageProcess")',               
              type: 'POST',               
-             data: { id: complaintId , Department : Department },               
+             data: { id: complaintId , Department : Department, remark : remark },
              success: function (response) {               
                  if (response.success) {                        
                      Swal.fire({               

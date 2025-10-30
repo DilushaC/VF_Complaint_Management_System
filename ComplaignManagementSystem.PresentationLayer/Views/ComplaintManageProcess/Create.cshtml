@@ -40,7 +40,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Cus_Nic">Customer NIC</label>
-                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off">
+                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off" onkeyup="nicChange()">
+                                        <small id="nicError" style="color:red; display:none;">Invalid NIC</small>
                                     </div>
                                 </div>
                             </div>
@@ -54,7 +55,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Cus_MobileNumber">Customer Mobile Number</label>
-                                        <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off">
+                                        <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off" onkeyup="mobileChange()" maxlength="10">
+                                        <small id="mobileError" style="color:red; display:none;">Invalid Mobile Number</small>
                                     </div>
                                 </div>
                             </div>
@@ -157,17 +159,13 @@
 
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> 
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
-<script src="~/js/feather.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/forms/toggle/switchery.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/switch.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app-menu.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/checkbox-radio.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 
 
 <script>
@@ -185,6 +183,54 @@
       allowClear:true,
       placeholder: 'Select Nature'
     });
+    function nicChange(){               
+        const nic = document.getElementById("Cus_Nic").value;   
+        //alert(Compaint);   
+        const oldNicPattern = /^[0-9]{9}[VXvx]$/;  // Old format    
+        const newNicPattern = /^[0-9]{12}$/;      // New format
+        const save = document.getElementById("save");
+        const savensend = document.getElementById("savensend");
+        const savenresolved = document.getElementById("savenresolved");
+
+        if (nic === "") {    
+            document.getElementById("Cus_Nic").style.borderColor = "";    
+            return;    
+        }    
+        if (oldNicPattern.test(nic) || newNicPattern.test(nic)) {    
+            // Valid NIC    
+            document.getElementById("Cus_Nic").style.borderColor = "green";
+            document.getElementById("nicError").style.display = "none";
+            save.disabled = false;
+            savensend.disabled = false;
+            savenresolved.disabled = false;
+        } else {    
+            // Invalid NIC    
+            document.getElementById("Cus_Nic").style.borderColor = "red";  
+            document.getElementById("nicError").style.display = "inline";
+            save.disabled = true;
+            savensend.disabled = true;
+            savenresolved.disabled = true;
+        }
+    }
+        
+    function mobileChange() {
+        const mobile = document.getElementById("Cus_MobileNumber").value.trim();
+        const mobilePattern = /^07[0-9]{8}$/; // 10 digits starting with 07
+
+        if (mobilePattern.test(mobile)) {
+            document.getElementById("Cus_MobileNumber").style.borderColor = "green";
+            document.getElementById("mobileError").style.display = "none";                        
+            save.disabled = false;
+            savensend.disabled = false;
+            savenresolved.disabled = false;
+        } else {
+            document.getElementById("Cus_MobileNumber").style.borderColor = "red";
+            document.getElementById("mobileError").style.display = "inline";                        
+            save.disabled = true;
+            savensend.disabled = true;
+            savenresolved.disabled = true;
+        }
+    }
     function handlePriority(checkbox) {
         const clickedCheckboxId = checkbox.id;
         if(checkbox.id == "PriorityL"){

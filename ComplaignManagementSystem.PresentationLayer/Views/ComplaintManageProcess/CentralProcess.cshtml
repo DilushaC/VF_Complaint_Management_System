@@ -2,7 +2,7 @@
 @* @model IEnumerable<ComplaignManagementSystem.Data.Context.DapperContext> *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Central Master";
     ViewData["MenuTab"] = "MainProcessMenu";
     ViewData["SubMenuTab"] = "CentralMenu";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,7 +15,7 @@
     var pageNumber = (int)ViewBag.PageNumber;
     var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 }
-
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/tables/datatable/datatables.min.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
@@ -41,8 +41,8 @@
                 <div class="card-body card-dashboard">
                     <div class="table-responsive">
                         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
+                            <div class="row" style="margin-bottom:-10px">
+                                <div class="col-sm-12 col-md-3">
                                     <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
                                         <div class="dataTables_length" id="DataTables_Table_0_length">
                                             <label>
@@ -57,12 +57,53 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-sm-12 col-md-6">
+
+                                <div class="col-sm-12 col-md-6" style="margin-left:-40px">
+                                    <form id="filterForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
+                                                    <option value="">Methods...</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4" style="margin-left:150px">
+                                                <select id="priorityFilter" name="priority" class="form-control form-control-sm">
+                                                    <option value="">Priorities...</option>
+                                                    @if (ViewBag.Priority == "High")
+                                                    {
+                                                        <option value="High" selected>High</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="High">High</option>
+                                                    }
+                                                    @if (ViewBag.Priority == "Medium")
+                                                    {
+                                                        <option value="Medium" selected>Medium</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="Medium">Medium</option>
+                                                    }
+                                                    @if (ViewBag.Priority == "Low")
+                                                    {
+                                                        <option value="Low" selected>Low</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="Low">Low</option>
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                 <div class="col-sm-12 col-md-3" style="margin-left:40px;margin-bottom:10px">
                                     <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
                                         <div id="DataTables_Table_0_filter" class="dataTables_filter">
                                             <label>
                                                 Search:
-                                                @* <input type="search" name="searchString" value="@searchString" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0"> *@
                                                 <input type="search" id="searchInput" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0">
                                             </label>
                                             <input type="hidden" name="pageSize" value="@pageSize" />
@@ -80,8 +121,9 @@
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 91.6406px;">Complaint Method</th>
                                                 @* <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 28.7969px;">Complaint</th> *@
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Created Branch</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 74.6094px;">Priotity</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 8000px;">Action</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Priotity</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Created Date</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 2000px;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -90,32 +132,68 @@
                                                 int i = 1;
                                                 @foreach (var item in ViewBag.ComplainLists)
                                                 {
-                                                    <tr role="row" class="odd">
-                                                        <td class="sorting_1">@i</td>
-                                                        <td>@item.Refference</td>
-                                                        <td>@item.Method</td>
-                                                        @* <td>@item.Complaint</td> *@
-                                                        <td>@item.Branch</td>
-                                                        <td>@item.Priority</td>
-                                                        <td>
-                                                            <div class="row">
-                                                                <div class="col-md-2">
-                                                                    <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)"><i class="ft-eye"></i></button>
-                                                                </div>
-                                                                @if (item.Status == "Sent Central")
-                                                                {
-                                                                    <div class="col-md-2" style="margin-left:30px">
-                                                                        <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)"><i class="ft-fast-forward"></i></button>
+                                                    if (item.Priority == "High")
+                                                    {
+                                                        <tr role="row" class="odd" style="background-color:red">
+                                                            <td class="sorting_1 text-white">@i</td>
+                                                            <td class="text-white">@item.Refference</td>
+                                                            <td class="text-white">@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td class="text-white">@item.Branch</td>
+                                                            <td class="text-white">@item.Priority</td>
+                                                            <td class="text-white">@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
                                                                     </div>
-                                                                    <div class="col-md-2" style="margin-left:30px">
-                                                                        <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)"><i class="ft-check-square"></i></button>
-                                                                    </div>
-                                                                }
-                                                            </div>
+                                                                    @if (item.Status == "Sent Central")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
+                                                                        </div>
+                                                                    }
 
-                                                        </td>
-                                                    </tr>
-                                                    i++;
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr role="row" class="odd">
+                                                            <td class="sorting_1">@i</td>
+                                                            <td>@item.Refference</td>
+                                                            <td>@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td>@item.Branch</td>
+                                                            <td>@item.Priority</td>
+                                                            <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
+                                                                    </div>
+                                                                    @if (item.Status == "Sent Central")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
+                                                                        </div>
+                                                                    }
+
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
                                                 }
                                             }
                                             else
@@ -133,6 +211,7 @@
                                                 @* <th rowspan="1" colspan="1">Complaint</th> *@
                                                 <th rowspan="1" colspan="1">Created Branch</th>
                                                 <th rowspan="1" colspan="1">Priotity</th>
+                                                <th rowspan="1" colspan="1">Created Date</th>
                                                 <th rowspan="1" colspan="1">Action</th>
                                             </tr>
                                         </tfoot>
@@ -226,8 +305,36 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script type="text/javascript">
+    $("#ComplaintMethod_Id").select2({
+      allowClear:true,
+      placeholder: 'Methods...'
+    });
+    $("#priorityFilter").select2({
+      allowClear:true,
+      placeholder: 'Priorities...'
+    });
 
+    $('#ComplaintMethod_Id').on('change', function () {
+        const form = document.getElementById('filterForm');
+        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
+        var priorityFilter = document.getElementById("priorityFilter").value;
+
+        var url = `/ComplaintManageProcess/CentralProcess?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
+        // Redirect to that URL (submit form automatically)
+        window.location.href = url;
+    });
+    $('#priorityFilter').on('change', function () {
+        const form = document.getElementById('filterForm');
+        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
+        var priorityFilter = document.getElementById("priorityFilter").value;
+
+        var url = `/ComplaintManageProcess/CentralProcess?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
+        // Redirect to that URL (submit form automatically)
+        window.location.href = url;
+    });
     function ComplaintDetils(Id) {
         $.ajax({
             url: '@Url.Action("ComplaintDetails", "ComplaintManageProcess")',
@@ -259,7 +366,7 @@
                 $("#CentralForwardModal").modal('show');
             },
             error: function (xhr, status, error) {
-                console.error("Failed to load modal content:", error);                
+                console.error("Failed to load modal content:", error);
                 // Optionally show an error message in the modal
                 $("#CentralForwardModal .modal-body").html("<p class='text-danger'>Error loading details.</p>");
                 $("#CentralForwardModal").modal('show');

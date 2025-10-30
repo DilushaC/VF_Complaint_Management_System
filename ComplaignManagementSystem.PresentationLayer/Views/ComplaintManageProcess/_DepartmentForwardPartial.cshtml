@@ -22,6 +22,22 @@
         </div>
         <div class="row" style="margin-top:7px">
             <div class="col-md-3">
+                <strong>Complaint Department</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Department)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Nature of the Complaint</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Nature)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
                 <strong>Complaint</strong>
             </div>
             <div class="col-md-6">
@@ -61,6 +77,12 @@
                 :  @Html.DisplayFor(m => m.CreatedUser)
             </div>
         </div>
+        <div class="row" style="margin-top:15px">
+            <div class="col-md-12">
+                <strong>Remark :</strong>
+                <textarea id="Remarktxt" class="form-control" placeholder="Remark." name="w3review" rows="6" cols="100" style="margin-top:10px"></textarea>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -71,17 +93,14 @@
     <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
 </div>
 
-
-
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
-
-<script>
-        
-    function ForwardToCentral(complaintId) {               
+<script>        
+    function ForwardToCentral(complaintId) {    
+        var remark = document.getElementById("Remarktxt").value;
          $.ajax({            
              url: '@Url.Action("ForwardToCentral", "ComplaintManageProcess")',            
              type: 'POST',            
-             data: { id: complaintId },            
+             data: { id: complaintId, remark:remark },
              success: function (response) {            
                  if (response.success) {                                     
                      Swal.fire({            
