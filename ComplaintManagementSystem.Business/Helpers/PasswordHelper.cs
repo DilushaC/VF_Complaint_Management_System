@@ -1,15 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ComplaintManagementSystem.Business.Helpers
 {
-    public static class PasswordHelper
+    public class PasswordHelper
     {
-        public static string GenerateSalt()
+        private readonly string _saltKey;
+
+        public PasswordHelper(IConfiguration configuration)
+        {
+            _saltKey = configuration["UserEncryption:SaltKey"];
+
+            if (string.IsNullOrWhiteSpace(_saltKey))
+                throw new InvalidOperationException("SaltKey is missing or empty in appsettings.json (AppSettings:SaltKey).");
+        }
+
+        public string GenerateSalt()
         {
             byte[] saltBytes = new byte[16];
             using (var rng = new RNGCryptoServiceProvider())
@@ -19,9 +27,9 @@ namespace ComplaintManagementSystem.Business.Helpers
             return Convert.ToBase64String(saltBytes);
         }
 
-        public static string ComputeHmac(string salt, string password)
+        public string ComputeHmac(string password)
         {
-            var keyBytes = Encoding.UTF8.GetBytes(salt);
+            var keyBytes = Encoding.UTF8.GetBytes(_saltKey);
             var passwordBytes = Encoding.UTF8.GetBytes(password);
             using (var hmac = new HMACSHA256(keyBytes))
             {
@@ -30,9 +38,9 @@ namespace ComplaintManagementSystem.Business.Helpers
             }
         }
 
-        public static bool VerifyPassword(string enteredPassword, string storedHash, string storedSalt)
+        public bool VerifyPassword(string enteredPassword, string storedHash)
         {
-            var computedHash = ComputeHmac(storedSalt, enteredPassword);
+            var computedHash = ComputeHmac(enteredPassword);
             return storedHash == computedHash;
         }
 
