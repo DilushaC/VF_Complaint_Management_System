@@ -21,7 +21,7 @@ builder.Services.AddScoped<_ConnectionService>();
 
 builder.Services.AddScoped<IComplaintManageProcessService, ComplaintManageProcessService>();
 
-builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddSession(options =>
 {

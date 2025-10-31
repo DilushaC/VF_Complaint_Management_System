@@ -10,7 +10,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 {
     public interface IUserService
     {
-        Task ResetPassword(string userId, string saltKey, string NewPassword);
+        Task ResetPassword(string userId, string NewPassword);
         Task<UserModel> ValidateUserAsync(string username, string password);
         DepartmentModel GetDepartmentDetails(int DepId);
         UserPermissionModel getAccessPerimissions(UserModel user);

@@ -4,9 +4,11 @@ using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.Helpers;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -19,10 +21,12 @@ namespace ComplaintManagementSystem.Business.LoginHandler
     public class UserService : IUserService
     {
         private readonly _ConnectionService _connectionService;
+        private readonly PasswordHelper _passwordHelper;
 
-        public UserService(_ConnectionService connectionService)
+        public UserService(_ConnectionService connectionService,IConfiguration configuration)
         {
             _connectionService = connectionService;
+            _passwordHelper = new PasswordHelper(configuration);
         }
 
         public async Task<UserModel> ValidateUserAsync(string username, string password)
@@ -55,15 +59,15 @@ namespace ComplaintManagementSystem.Business.LoginHandler
             if (user == null)
                 return null;
 
-            bool isValid = PasswordHelper.VerifyPassword(password, user.Password, user.SaltKey);
+            bool isValid = _passwordHelper.VerifyPassword(password, user.Password);
             return isValid ? user : null;
         }
 
-        public async Task ResetPassword(string userId, string saltKey, string NewPassword)
+        public async Task ResetPassword(string userId, string NewPassword)
         {
             try
             {
-                string EncryptNewPassword = PasswordHelper.EncrypthPassword(NewPassword, saltKey);
+                string EncryptNewPassword = _passwordHelper.EncryptPassword(NewPassword);
                 string query = $@"UPDATE Complaint_User SET IsReset=1, Password=@NewPAssword WHERE Id=@Id";
                 //string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 1, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id={Id} ";
 

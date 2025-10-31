@@ -99,7 +99,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 var UserId = HttpContext.Session.GetString("UserId");
                 var SaltKey = HttpContext.Session.GetString("SaltKey");
 
-                _loginService.ResetPassword(UserId, SaltKey, NewPassword);
+                _loginService.ResetPassword(UserId, NewPassword);
                 return Json(new { success = true, redirectUrl = Url.Action("Login", "User") });
                 //return RedirectToAction(nameof(Login));
             }
