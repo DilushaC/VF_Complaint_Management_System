@@ -5,6 +5,9 @@ using ComplaintManagementSystem.Business.Helpers;
 using ComplaintManagementSystem.Business.LoginHandler; 
 using Microsoft.AspNetCore.Http;
 using ComplaignManagementSystem.Presentation.Filters;
+using ComplaintManagementSystem.Business.DepartmentHandler;
+using ComplaintManagementSystem.Business.NatureHandler;
+using ComplaintManagementSystem.Business.MethodHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +22,17 @@ builder.Services.AddScoped<DapperContext>();
 
 builder.Services.AddScoped<_ConnectionService>();
 
+builder.Services.AddScoped<PasswordHelper>();
+
 builder.Services.AddScoped<IComplaintManageProcessService, ComplaintManageProcessService>();
 
-builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+
+builder.Services.AddScoped<INatureService, NatureService>();
+
+builder.Services.AddScoped<IMethodService, MethodService>();
 
 builder.Services.AddSession(options =>
 {

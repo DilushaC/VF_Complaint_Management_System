@@ -1,0 +1,44 @@
+﻿@model ComplaignManagementSystem.Data.Models.DepartmentModel // Change this to your actual model namespace
+
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3">
+                <strong>Department Name</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Name)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Department Code</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Code)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Department Status</strong>
+            </div>
+            <div class="col-md-3">
+                @if (Model.Status == true)
+                {
+                    <span>: yes</span>
+                }
+                else
+                {
+                    <span>: No</span>
+                }
+            </div>
+        </div>      
+    </div>
+</div>
+
+
+<div class="modal-footer">
+    <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

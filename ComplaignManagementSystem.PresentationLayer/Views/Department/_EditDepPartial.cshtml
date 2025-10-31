@@ -1,0 +1,113 @@
+﻿@model ComplaignManagementSystem.Data.Models.DepartmentModel
+
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Edit", "Department", FormMethod.Post, new { id = "EditForm" }))
+        {
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Dep_Names">Department Name</label>
+                            <input type="text" id="Dep_Names" class="form-control" placeholder="Deaprtment Name" name="Dep_Names" value="@Model.Name" autocomplete="off">
+                            <span id="error-message-EDepName"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Dep_Codes">Department code</label>
+                            <input type="text" id="Dep_Codes" class="form-control" placeholder="Department Code" name="Dep_Codes" value="@Model.Code" autocomplete="off">
+                            <span id="error-message-EDepCode"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:10px">
+                <label for="Status">Complaint Department</label>
+                <br />
+                <div class="row" style="margin-left:10px">
+                    <div class="col-md-2">
+                        <label for="Status-Yes">Yes</label>
+                        <input class="form-control" type="radio" id="Status-Yes" name="Status" value="1" style="block-size:15px;margin:-25px;margin-left:-10px" @(Model.Status == true ? "checked" : "")>
+                    </div>
+                </div>
+                <div class="row" style="margin-left:10px">
+                    <div class="col-md-2" style="margin-left:120px">
+                        <label for="Status-No">No</label>
+                        <input class="form-control" type="radio" id="Status-No" name="Status" value="0" style="block-size:15px;margin-left:5px;margin-top:-25px" @(Model.Status == false ? "checked" : "")>
+                    </div>
+
+                </div>
+            </div>
+            <br />
+            <input tyepe="text" id="Id" name="Id" value="@Model.Id" hidden></input>
+            <div class="form-actions">
+                <button type="reset" class="btn btn-danger mr-1">
+                    Clear
+                </button>
+                <button type="button" class="btn btn-success" id="saven">
+                    Save
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+
+<script type="text/javascript">
+    $('#saven').on('click', function () {
+        var form = $('#EditForm');
+        const errorMessageDepNameContainer = document.getElementById('error-message-EDepName');
+        const errorMessageDepCodeContainer = document.getElementById('error-message-EDepCode');
+        var Dep_Name = document.getElementById("Dep_Names").value;
+        var Dep_Code = document.getElementById("Dep_Codes").value;
+        if(Dep_Name == "" && Dep_Code == ""){
+            errorMessageDepNameContainer.textContent = 'Please Enter Department Name.';
+            errorMessageDepNameContainer.style.color = 'red';
+
+            errorMessageDepCodeContainer.textContent = 'Please Enter Department Code.';
+            errorMessageDepCodeContainer.style.color = 'red';
+            return;
+        } else if(Dep_Name != "" && Dep_Code == ""){
+            errorMessageDepNameContainer.textContent = '';
+            errorMessageDepNameContainer.style.color = 'red';
+
+            errorMessageDepCodeContainer.textContent = 'Please Enter Department Code.';
+            errorMessageDepCodeContainer.style.color = 'red';
+            return;
+        } else if(Dep_Name == "" && Dep_Code != ""){
+            errorMessageDepNameContainer.textContent = 'Please Enter Department Name.';
+            errorMessageDepNameContainer.style.color = 'red';
+
+            errorMessageDepCodeContainer.textContent = '';
+            errorMessageDepCodeContainer.style.color = 'red';
+            return;
+        }else{            
+            errorMessageDepNameContainer.textContent = '';
+            errorMessageDepNameContainer.style.color = 'red';
+
+            errorMessageDepCodeContainer.textContent = '';
+            errorMessageDepCodeContainer.style.color = 'red';
+                               
+        }
+        //alert(Dep_Name +  " " + Dep_Code);
+        // Change action dynamically
+        form.attr('action', '/Department/Edit');
+        form.submit();
+    });
+
+</script>

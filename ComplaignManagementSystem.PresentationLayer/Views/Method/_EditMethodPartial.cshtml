@@ -1,0 +1,95 @@
+﻿@model ComplaignManagementSystem.Data.Models.Complaint_Method_MasterModel
+
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Edit", "Method", FormMethod.Post, new { id = "EditForm" }))
+        {
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Methods">Method Name</label>
+                            <input type="text" id="Methods" class="form-control" placeholder="Method Name" name="Methods" value="@Model.Method" autocomplete="off">
+                            <span id="error-message-EMethod"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Codes">Method code</label>
+                            <input type="text" id="Codes" class="form-control" placeholder="Method Code" name="Codes" value="@Model.Code" autocomplete="off">
+                            <span id="error-message-ECode"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <input tyepe="text" id="Id" name="Id" value="@Model.Id" hidden></input>
+            <div class="form-actions">
+                <button type="reset" class="btn btn-danger mr-1">
+                    Clear
+                </button>
+                <button type="button" class="btn btn-success" id="saven">
+                    Save
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+
+<script type="text/javascript">
+    $('#saven').on('click', function () {
+        var form = $('#EditForm');
+        const errorMessageMethodContainer = document.getElementById('error-message-EMethod');
+        const errorMessageCodeContainer = document.getElementById('error-message-ECode');
+        var Methods = document.getElementById("Methods").value;
+        var Codes = document.getElementById("Codes").value;
+        if(Methods == "" && Codes == ""){
+            errorMessageMethodContainer.textContent = 'Please Enter Method Name.';
+            errorMessageMethodContainer.style.color = 'red';
+
+            errorMessageCodeContainer.textContent = 'Please Enter Method Code.';
+            errorMessageCodeContainer.style.color = 'red';
+            return;
+        } else if(Methods != "" && Codes == ""){
+            errorMessageMethodContainer.textContent = '';
+            errorMessageMethodContainer.style.color = 'red';
+
+            errorMessageCodeContainer.textContent = 'Please Enter Method Code.';
+            errorMessageCodeContainer.style.color = 'red';
+            return;
+        } else if(Methods == "" && Codes != ""){
+            errorMessageMethodContainer.textContent = 'Please Enter Method Name.';
+            errorMessageMethodContainer.style.color = 'red';
+
+            errorMessageCodeContainer.textContent = '';
+            errorMessageCodeContainer.style.color = 'red';
+            return;
+        }else{
+            errorMessageMethodContainer.textContent = '';
+            errorMessageMethodContainer.style.color = 'red';
+
+            errorMessageCodeContainer.textContent = '';
+            errorMessageCodeContainer.style.color = 'red';
+
+        }
+        //alert(Dep_Name +  " " + Dep_Code);
+        // Change action dynamically
+        form.attr('action', '/Method/Edit');
+        form.submit();
+    });
+
+</script>

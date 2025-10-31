@@ -1,0 +1,90 @@
+﻿
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
+<div class="card" style="margin-top:-10px">
+    <div class="card-content collapse show">
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "Method", FormMethod.Post, new { id = "CreateForm" }))
+            {
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Method">Method Name</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <input type="text" id="Method" class="form-control" placeholder="Method Name" name="Method" autocomplete="off">
+                                <span id="error-message-Method"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Code">Method code</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <input type="text" id="Code" class="form-control" placeholder="Method Code" name="Code" autocomplete="off">
+                                <span id="error-message-Code"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-danger mr-1">
+                        Clear
+                    </button>
+                    <button type="button" class="btn btn-success" id="save">
+                        Save
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script type="text/javascript">
+    $('#save').on('click', function () {
+        var form = $('#CreateForm');
+        const errorMessageMethodContainer = document.getElementById('error-message-Method');
+        const errorMessageCodeContainer = document.getElementById('error-message-Code');
+        var Method = document.getElementById("Method").value;
+        var Code = document.getElementById("Code").value;
+
+
+        if(Method == "" && Code == ""){
+            errorMessageMethodContainer.textContent = 'Please Enter Method Name.';
+            errorMessageMethodContainer.style.color = 'red';
+            errorMessageCodeContainer.textContent = 'Please Enter Method Code.';
+            errorMessageCodeContainer.style.color = 'red';
+            return;
+        } else if(Method != "" && Code == ""){
+            errorMessageMethodContainer.textContent = '';
+            errorMessageMethodContainer.style.color = 'red';
+            errorMessageCodeContainer.textContent = 'Please Enter Method Code.';
+            errorMessageCodeContainer.style.color = 'red';
+            return;
+        } else if(Method == "" && Code != ""){
+            errorMessageMethodContainer.textContent = 'Please Enter Method Name.';
+            errorMessageMethodContainer.style.color = 'red';
+            errorMessageCodeContainer.textContent = '';
+            errorMessageCodeContainer.style.color = 'red';
+            return;
+        } else {
+            errorMessageMethodContainer.textContent = '';
+            errorMessageMethodContainer.style.color = 'red';
+            errorMessageCodeContainer.textContent = '';
+            errorMessageCodeContainer.style.color = 'red';
+        }
+        // Change action dynamically
+        form.attr('action', '/Method/Create');
+        form.submit();
+    });
+
+</script>

@@ -19,10 +19,12 @@ namespace ComplaintManagementSystem.Business.LoginHandler
     public class UserService : IUserService
     {
         private readonly _ConnectionService _connectionService;
+        private readonly PasswordHelper _passwordHelper;
 
-        public UserService(_ConnectionService connectionService)
+        public UserService(_ConnectionService connectionService, PasswordHelper passwordHelper)
         {
             _connectionService = connectionService;
+            _passwordHelper = passwordHelper;
         }
 
         public async Task<UserModel> ValidateUserAsync(string username, string password)
@@ -55,7 +57,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
             if (user == null)
                 return null;
 
-            bool isValid = PasswordHelper.VerifyPassword(password, user.Password, user.SaltKey);
+            bool isValid = _passwordHelper.VerifyPassword(password, user.Password);
             return isValid ? user : null;
         }
 
@@ -63,7 +65,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
         {
             try
             {
-                string EncryptNewPassword = PasswordHelper.EncrypthPassword(NewPassword, saltKey);
+                string EncryptNewPassword = _passwordHelper.ComputeHmac(NewPassword);
                 string query = $@"UPDATE Complaint_User SET IsReset=1, Password=@NewPAssword WHERE Id=@Id";
                 //string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 1, IsSentCentralDateTime = @IsSentCentralDateTime WHERE Id={Id} ";
 
@@ -117,8 +119,6 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 
                 throw ex;
             }
-
-
         }
 
         public List<UserPageCapabilityModel> getAccessPages(UserModel user, UserPermissionModel uPermission)
