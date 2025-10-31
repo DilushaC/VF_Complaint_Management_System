@@ -1,0 +1,147 @@
+﻿@model ComplaignManagementSystem.Data.Models.ComplaintMaster // Change this to your actual model namespace
+
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3">
+                <strong>Refference</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Refference)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Complaint Method</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Method)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Complaint Department</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Department)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Nature of the Complaint</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Nature)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Complaint</strong>
+            </div>
+            <div class="col-md-6">
+                :  @Html.DisplayFor(m => m.Complaint)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Acttachment</strong>
+            </div>
+            <div class="col-md-3">
+                : @if (!string.IsNullOrEmpty(Model.AttachmentPath))
+                {
+                    <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
+                        <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
+                    </a>
+                }
+                 else
+                {
+                    <span>No attachment</span>
+                }
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Foreward By</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Branch)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Foreward Name</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.CreatedUser)
+            </div>
+        </div>
+        <br />
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-12">
+                <strong>Remark :</strong>
+                <textarea id="Remarktxt" class="form-control" placeholder="Remark." name="w3review" rows="6" cols="100" style="margin-top:10px"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn grey btn-success" onclick="DepComplainResolve('@Model.Id')">Save & Close</button>
+    <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+<script>        
+    function DepComplainResolve(complaintId) {
+        var remark = document.getElementById("Remarktxt").value;      
+        if (remark.trim() === "") {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'Remark is a required field. Please enter a remark.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+             });
+        }
+                        
+        else{
+         $.ajax({                    
+             url: '@Url.Action("DepComplainResolve", "ComplaintManageProcess")',                    
+             type: 'POST',                    
+             data: { id: complaintId, remark : remark },                    
+             success: function (response) {                                      
+                 if (response.success) {                                   
+                     Swal.fire({                    
+                         title: 'Success!',                    
+                         text: 'Successfully Complain Resolve.',                    
+                         icon: 'success',                    
+                         timer: 2000,                    
+                         showConfirmButton: false                    
+                     }).then(() => {                    
+                         window.location.href = '@Url.Action("DepartmentProcess", "ComplaintManageProcess")';                                       
+                     });                    
+                 } else {                    
+                     Swal.fire({                    
+                         title: 'Error!',                    
+                         text: response.message || 'Complain Resolve Failed.',                    
+                         icon: 'error',                    
+                         confirmButtonText: 'OK'                    
+                     });                    
+                 }                    
+             },                    
+             error: function () {                    
+                 Swal.fire({                    
+                     title: 'Error!',                    
+                     text: 'Error Complain Resolve.',                    
+                     icon: 'error',                    
+                     confirmButtonText: 'OK'                    
+                 });                    
+             }                
+         });                          
+     }   
+ }
+</script>
+
+
+
+

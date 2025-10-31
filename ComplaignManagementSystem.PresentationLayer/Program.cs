@@ -21,15 +21,16 @@ builder.Services.AddScoped<_ConnectionService>();
 
 builder.Services.AddScoped<IComplaintManageProcessService, ComplaintManageProcessService>();
 
-builder.Services.AddScoped<PasswordHelper>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(1); 
+    options.IdleTimeout = TimeSpan.FromMinutes(5); 
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -50,6 +51,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    pattern: "{controller=User}/{action=Login}/{id?}");
 
 app.Run();

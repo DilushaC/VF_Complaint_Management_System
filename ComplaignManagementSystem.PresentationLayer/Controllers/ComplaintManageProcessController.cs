@@ -20,31 +20,58 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        private bool IsUserLoggedIn()
+        {
+            return !string.IsNullOrEmpty(HttpContext.Session.GetString("UserName"));
+        }
+
         public ActionResult Dashboard()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            if (!IsUserLoggedIn())
+                return RedirectToAction("Login", "User");
+
+            ViewBag.CurrYear = System.DateTime.Now.Year;
             return View();
         }
 
         public ActionResult Create()
         {
+            if (!IsUserLoggedIn())
+                return RedirectToAction("Login", "User");
             var getAllDeps = _complainProcess.getDepList();
             var getAllMethods = _complainProcess.getMethodList();
             ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
             ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name");
-
             return View();
         }
 
         [HttpPost]
-        public ActionResult SubmitComplain(IFormCollection collection, IFormFile file)
+        public ActionResult SaveComplaint(IFormCollection collection, IFormFile file)
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
                 _complainProcess.CreateComplaint(collection, file);
+                TempData["ToastMessage"] = "SubmittedSuccessfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult SubmitAndSendComplain(IFormCollection collection, IFormFile file)
+        {
+            try
+            {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
+                _complainProcess.CreateAndSendComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
                 return RedirectToAction(nameof(Index));
             }
@@ -62,17 +89,27 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         }
 
         // GET: ComplaintManageProcessController
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
         {
             try
             {
-                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getComplaintList(pageNumber, pageSize, searchString);
-                ViewBag.ComplainLists = paginationResult.Items;
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
 
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getComplaintList(pageNumber, pageSize, searchString, ComplaintMethod_Id, priority);
+                ViewBag.ComplainLists = paginationResult.Items;
+                var getAllMethods = _complainProcess.getMethodList();
+                if (ComplaintMethod_Id == null)
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
+                else
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method", Convert.ToInt32(ComplaintMethod_Id));
                 //Also pass the total count for building the pagination links
                 ViewBag.TotalCount = paginationResult.TotalCount;
                 ViewBag.PageSize = pageSize;
                 ViewBag.PageNumber = pageNumber;
+                ViewBag.SearchString = searchString;
+                ViewBag.Priority = priority;
+
                 //TempData["ToastMessage"] = "EditedSuccessfully!";
 
                 return View();
@@ -86,7 +123,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         public async Task<IActionResult> ComplaintDetails(int id)
         {
             // SQL query to retrieve the master data for the given complaint ID
-            
+
             ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
             if (complaintData == null)
             {
@@ -166,12 +203,14 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-
         [HttpPost]
         public ActionResult UpdateComplaint(IFormCollection collection, IFormFile file)
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
                 _complainProcess.UpdateComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
                 return RedirectToAction(nameof(Index));
@@ -182,21 +221,25 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-
-
-        // GET: ComplaintManageProcessController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ComplaintManageProcessController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult UpdateSendComplaint(IFormCollection collection, IFormFile file)
         {
             try
             {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
+                _complainProcess.UpdateSendComplaint(collection, file);
+                var ResolvedStatus = collection["ResolvedStatus"].ToString();
+
+                if (ResolvedStatus == "No")
+                {
+                    TempData["ToastMessage"] = "sentDepSuccessfully!";
+                }
+                else
+                {
+                    TempData["ToastMessage"] = "resolvedSuccessfully!";
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -205,25 +248,209 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-        // GET: ComplaintManageProcessController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ComplaintManageProcessController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DepartmentProcess(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getDepComplaintList(pageNumber, pageSize, searchString, ComplaintMethod_Id, priority);
+                ViewBag.ComplainLists = paginationResult.Items.OrderByDescending(a => a.Status == "Sent Department").ToList();
+                var getAllMethods = _complainProcess.getMethodList();
+                if (ComplaintMethod_Id == null)
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
+                else
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method", Convert.ToInt32(ComplaintMethod_Id));
+                //Also pass the total count for building the pagination links
+                ViewBag.TotalCount = paginationResult.TotalCount;
+                ViewBag.PageSize = pageSize;
+                ViewBag.PageNumber = pageNumber;
+                ViewBag.SearchString = searchString;
+                ViewBag.Priority = priority;
+
                 return View();
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
+
+
+        public async Task<IActionResult> ComplaintForwardDetails(int id)
+        {
+            // SQL query to retrieve the master data for the given complaint ID
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound(); // Or return an error partial view
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+            // Return the data to the partial view
+            return PartialView("_DepartmentForwardPartial", complaintData);
+        }
+
+
+
+
+        [HttpPost]
+        public JsonResult ForwardToCentral(int Id, string remark)
+        {
+            try
+            {
+                _complainProcess.UpdateForwardToCentral(Id, remark);
+                TempData["ToastMessage"] = "SentToCentralSuccess!";
+                return Json(new { success = true, message = "Sent to central successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        public async Task<IActionResult> ComplaintResolveDetails(int id)
+        {
+            // SQL query to retrieve the master data for the given complaint ID
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound(); // Or return an error partial view
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+            // Return the data to the partial view
+            return PartialView("_DepartmentResolvePartial", complaintData);
+        }
+
+
+
+        [HttpPost]
+        public JsonResult DepComplainResolve(int Id, string Remark)
+        {
+            try
+            {
+                _complainProcess.ComplainResolve(Id, Remark);
+                TempData["ToastMessage"] = "resolvedSuccessfully!";
+                return Json(new { success = true, message = "Complain Resolve successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+        //------------------------ Central Process ------------------------------------>    
+
+        public async Task<IActionResult> CentralProcess(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
+        {
+            try
+            {
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getCentralComplaintList(pageNumber, pageSize, searchString, ComplaintMethod_Id, priority);
+                ViewBag.ComplainLists = paginationResult.Items.OrderByDescending(a => a.Status == "Sent Central").ToList();
+                var getAllMethods = _complainProcess.getMethodList();
+                if (ComplaintMethod_Id == null)
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
+                else
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method", Convert.ToInt32(ComplaintMethod_Id));
+                //Also pass the total count for building the pagination links
+                ViewBag.TotalCount = paginationResult.TotalCount;
+                ViewBag.PageSize = pageSize;
+                ViewBag.PageNumber = pageNumber;
+                ViewBag.SearchString = searchString;
+                ViewBag.Priority = priority;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> CentralComplaintForwardDetails(int id)
+        {
+            Complaint_ManageProcessModel complaint = _complainProcess.getComplainProcessUsingId(id);
+            var getAllDeps = _complainProcess.getDepList();
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound();
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+
+            ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name", complaint.Dep_Id);
+            return PartialView("_CentralForwardPartial", complaintData);
+        }
+
+
+
+        [HttpPost]
+        public JsonResult ForwardToDepartment(int Id, int Department, string Remark)
+        {
+            try
+            {
+                _complainProcess.UpdateForwardToDepartment(Id, Department, Remark);
+                TempData["ToastMessage"] = "sentDepSuccessfully!";
+                return Json(new { success = true, message = "Sent to Department successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult CentralComplainResolve(int Id, string Remark)
+        {
+            try
+            {
+                _complainProcess.ComplainResolve(Id, Remark);
+                TempData["ToastMessage"] = "resolvedSuccessfully!";
+                return Json(new { success = true, message = "Complain Resolve successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public async Task<IActionResult> CentralComplaintResolveDetails(int id)
+        {
+            // SQL query to retrieve the master data for the given complaint ID
+
+            ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            if (complaintData == null)
+            {
+                return NotFound(); // Or return an error partial view
+            }
+            if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
+            {
+                complaintData.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
+            }
+            // Return the data to the partial view
+            return PartialView("_CentralResolvePartial", complaintData);
+        }
+
+
     }
 }

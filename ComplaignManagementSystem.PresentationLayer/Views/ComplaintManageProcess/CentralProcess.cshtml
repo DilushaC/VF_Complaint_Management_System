@@ -2,9 +2,9 @@
 @* @model IEnumerable<ComplaignManagementSystem.Data.Context.DapperContext> *@
 
 @{
-    ViewData["Title"] = "Complaint Master";
-    ViewData["MenuTab"] = "ComplaintMenu";
-    ViewData["SubMenuTab"] = "ComplaintMaster";
+    ViewData["Title"] = "Central Master";
+    ViewData["MenuTab"] = "MainProcessMenu";
+    ViewData["SubMenuTab"] = "CentralMenu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var successMessage = TempData["SuccessMessage"] as string;
@@ -28,36 +28,22 @@
         z-index: 1055 !important;
     }
 </style>
+
 <div class="card" style="margin-top:20px">
     <div class="row">
         <div class="col-md-12">
             <div class="card-header">
-                <h1>Complaint Master</h1>
+                <h1>Central Master</h1>
                 <hr />
             </div>
+
             <div class="card-content collapse show">
                 <div class="card-body card-dashboard">
                     <div class="table-responsive">
-                        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4" style="margin-top:-10px">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-3" style="margin-left:-30px;margin-bottom:-30px">
-                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
-                                        <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                                            <label>
-                                                Search:
-                                                <input type="search" id="searchInput" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0">
-                                            </label>
-                                            <input type="hidden" name="pageSize" value="@pageSize" />
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div style="text-align:right; margin-right:5px;margin-bottom:0px">
-                                <button type="button" class="btn btn-bg-gradient-x-purple-blue col-md-3 mr-1 mb-1" onclick="goToCreate()"> Create New Complaint</button>
-                            </div>
-                            <div class="row">
+                        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                            <div class="row" style="margin-bottom:-10px">
                                 <div class="col-sm-12 col-md-3">
-                                    <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
+                                    <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
                                         <div class="dataTables_length" id="DataTables_Table_0_length">
                                             <label>
                                                 Show
@@ -72,8 +58,8 @@
                                     </form>
                                 </div>
 
-                                <div class="col-sm-12 col-md-6" style="margin-left:-10px">
-                                    <form id="filterForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
+                                <div class="col-sm-12 col-md-6" style="margin-left:-40px">
+                                    <form id="filterForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
@@ -113,6 +99,17 @@
                                         </div>
                                     </form>
                                 </div>
+                                 <div class="col-sm-12 col-md-3" style="margin-left:40px;margin-bottom:10px">
+                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="CentralProcess" method="get">
+                                        <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                                            <label>
+                                                Search:
+                                                <input type="search" id="searchInput" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0">
+                                            </label>
+                                            <input type="hidden" name="pageSize" value="@pageSize" />
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
@@ -126,7 +123,7 @@
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Created Branch</th>
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Priotity</th>
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Created Date</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 150px;">Action</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 2000px;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -135,30 +132,68 @@
                                                 int i = 1;
                                                 @foreach (var item in ViewBag.ComplainLists)
                                                 {
-                                                    <tr role="row" class="odd">
-                                                        <td class="sorting_1">@i</td>
-                                                        <td>@item.Refference</td>
-                                                        <td>@item.Method</td>
-                                                        @* <td>@item.Complaint</td> *@
-                                                        <td>@item.Branch</td>
-                                                        <td>@item.Priority</td>
-                                                        <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                                        <td style="width:50px">
-                                                            <div class="row">
-                                                                <div class="col-md-2">
-                                                                    <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
-                                                                </div>
-                                                                @if (item.Status == "Created")
-                                                                {
-                                                                    <div class="col-md-2" style="margin-left:30px;margin-right:20px">
-                                                                        <button type="button" class="btn btn-outline-warning" onclick="ComplaintEdit(@item.Id)" style="width:30px;height:30px"><i class="ft-edit"></i></button>
+                                                    if (item.Priority == "High")
+                                                    {
+                                                        <tr role="row" class="odd" style="background-color:red">
+                                                            <td class="sorting_1 text-white">@i</td>
+                                                            <td class="text-white">@item.Refference</td>
+                                                            <td class="text-white">@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td class="text-white">@item.Branch</td>
+                                                            <td class="text-white">@item.Priority</td>
+                                                            <td class="text-white">@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
                                                                     </div>
-                                                                }
-                                                            </div>
+                                                                    @if (item.Status == "Sent Central")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
+                                                                        </div>
+                                                                    }
 
-                                                        </td>
-                                                    </tr>
-                                                    i++;
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr role="row" class="odd">
+                                                            <td class="sorting_1">@i</td>
+                                                            <td>@item.Refference</td>
+                                                            <td>@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td>@item.Branch</td>
+                                                            <td>@item.Priority</td>
+                                                            <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
+                                                                    </div>
+                                                                    @if (item.Status == "Sent Central")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
+                                                                        </div>
+                                                                        <div class="col-md-2" style="margin-left:20px">
+                                                                            <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
+                                                                        </div>
+                                                                    }
+
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
                                                 }
                                             }
                                             else
@@ -194,18 +229,18 @@
                                     <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
                                         <ul class="pagination">
                                             <li class="paginate_button page-item previous @(pageNumber <= 1 ? "disabled" : "")">
-                                                <a href="@Url.Action("Index", new { pageNumber = pageNumber - 1, pageSize = pageSize })"
+                                                <a href="@Url.Action("CentralProcess", new { pageNumber = pageNumber - 1, pageSize = pageSize })"
                                                    aria-controls="DataTables_Table_0" tabindex="0" class="page-link">Previous</a>
                                             </li>
                                             @for (int i = 1; i <= totalPages; i++)
                                             {
                                                 <li class="paginate_button page-item @(i == pageNumber ? "active" : "")">
-                                                    <a href="@Url.Action("Index", new { pageNumber = i, pageSize = pageSize })"
+                                                    <a href="@Url.Action("CentralProcess", new { pageNumber = i, pageSize = pageSize })"
                                                        aria-controls="DataTables_Table_0" tabindex="0" class="page-link">@i</a>
                                                 </li>
                                             }
                                             <li class="paginate_button page-item next @(pageNumber >= totalPages ? "disabled" : "")" id="DataTables_Table_0_next">
-                                                <a href="@Url.Action("Index", new { pageNumber = pageNumber + 1, pageSize = pageSize })"
+                                                <a href="@Url.Action("CentralProcess", new { pageNumber = pageNumber + 1, pageSize = pageSize })"
                                                    aria-controls="DataTables_Table_0" tabindex="0" class="page-link">Next</a>
                                             </li>
                                         </ul>
@@ -231,49 +266,75 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
             </div>
             <div class="modal-body">
-                @* <partial name="_ComplaintDetailsPartial" /> *@
-                @* @Html.Partial("_ComplaintDetailsPartial")  *@
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="editComplaintModal" tabindex="-1" role="dialog" aria-labelledby="editComplaintModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+<div class="modal fade" id="CentralForwardModal" tabindex="-1" role="dialog" aria-labelledby="complaintModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title" id="editComplaintModalLabel">Complaint Edit Details</h1>
-
+                <h2 class="modal-title" id="CentralForwardModalLabel">Complaint Forward</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
             </div>
-            <div class="modal-body" id="editComplaintContent">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="DepResolveModal" tabindex="-1" role="dialog" aria-labelledby="complaintModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="DepResolveModalLabel">Complain Resolve</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body">
             </div>
         </div>
     </div>
 </div>
 
 
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
-
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
-<script src="~/js/feather.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/forms/toggle/switchery.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/switch.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app-menu.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/checkbox-radio.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
-
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script type="text/javascript">
-    function goToCreate() {
-        window.location.href = '/ComplaintManageProcess/Create';
-    }
+    $("#ComplaintMethod_Id").select2({
+      allowClear:true,
+      placeholder: 'Methods...'
+    });
+    $("#priorityFilter").select2({
+      allowClear:true,
+      placeholder: 'Priorities...'
+    });
+
+    $('#ComplaintMethod_Id').on('change', function () {
+        const form = document.getElementById('filterForm');
+        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
+        var priorityFilter = document.getElementById("priorityFilter").value;
+
+        var url = `/ComplaintManageProcess/CentralProcess?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
+        // Redirect to that URL (submit form automatically)
+        window.location.href = url;
+    });
+    $('#priorityFilter').on('change', function () {
+        const form = document.getElementById('filterForm');
+        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
+        var priorityFilter = document.getElementById("priorityFilter").value;
+
+        var url = `/ComplaintManageProcess/CentralProcess?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
+        // Redirect to that URL (submit form automatically)
+        window.location.href = url;
+    });
     function ComplaintDetils(Id) {
         $.ajax({
             url: '@Url.Action("ComplaintDetails", "ComplaintManageProcess")',
@@ -293,51 +354,47 @@
             }
         });
     }
-    function ComplaintEdit(id) {
+
+    function ComplaintForward(Id) {
         $.ajax({
-            url: '/ComplaintManageProcess/EditComplaint',
-            type: 'GET',
-            data: { id: id },
+            url: '@Url.Action("CentralComplaintForwardDetails", "ComplaintManageProcess")',
+            type: "GET",
+            data: { id: Id },
             dataType: 'html',
-            success: function (html) {
-                $('#editComplaintContent').html(html);
-                $('#editComplaintModal').modal('show');
-                //bindEditFormSubmit(); // Bind form submit after loading content
+            success: function (result) {
+                $("#CentralForwardModal .modal-body").html(result);
+                $("#CentralForwardModal").modal('show');
             },
-            error: function () {
-                alert('Could not load complaint data.');
+            error: function (xhr, status, error) {
+                console.error("Failed to load modal content:", error);
+                // Optionally show an error message in the modal
+                $("#CentralForwardModal .modal-body").html("<p class='text-danger'>Error loading details.</p>");
+                $("#CentralForwardModal").modal('show');
+            }
+        });
+    }
+
+    function ComplaintDepResolve(Id) {
+        $.ajax({
+            url: '@Url.Action("CentralComplaintResolveDetails", "ComplaintManageProcess")',
+            type: "GET",
+            data: { id: Id },
+            dataType: 'html',
+            success: function (result) {
+                $("#DepResolveModal .modal-body").html(result);
+                $("#DepResolveModal").modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to load modal content:", error);
+                alert("Error");
+                // Optionally show an error message in the modal
+                $("#DepResolveModal .modal-body").html("<p class='text-danger'>Error loading details.</p>");
+                $("#DepResolveModal").modal('show');
             }
         });
     }
 
 
-    $("#ComplaintMethod_Id").select2({
-      allowClear:true,
-      placeholder: 'Methods...'
-    });
-    $("#priorityFilter").select2({
-      allowClear:true,
-      placeholder: 'Priorities...'
-    });
-
-    $('#ComplaintMethod_Id').on('change', function () {
-        const form = document.getElementById('filterForm');
-        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
-        var priorityFilter = document.getElementById("priorityFilter").value;
-
-        var url = `/ComplaintManageProcess/Index?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
-        // Redirect to that URL (submit form automatically)
-        window.location.href = url;
-    });
-    $('#priorityFilter').on('change', function () {
-        const form = document.getElementById('filterForm');
-        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
-        var priorityFilter = document.getElementById("priorityFilter").value;
-
-        var url = `/ComplaintManageProcess/Index?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
-        // Redirect to that URL (submit form automatically)
-        window.location.href = url;
-    });
     $(document).ready(function() {
         // Find the select element and attach a change event handler
         $('#DataTables_Table_0_length select').on('change', function() {
@@ -366,43 +423,16 @@
             searchTimeout = setTimeout(submitSearch, 500); // 500ms delay
         });
 
+
+
+
         var ToastMessage = '@(TempData.ContainsKey("ToastMessage") ? TempData["ToastMessage"] as string : "")';
         if (ToastMessage) {
             var toastEl = document.getElementById('toastId');
             if (toastEl) {
                 var toastTitle = toastEl.querySelector('.toast-title');
                 var toastMsg = toastEl.querySelector('.toast-message');
-                if(ToastMessage == 'SubmittedSuccessfully!'){
-                    if (toastMsg) {
-                        toastMsg.textContent = "Successfully Saved Complaint";
-                        toastTitle.textContent = "Success";
-                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
-                        // Add the type class
-                        toastEl.classList.add("toast-success");
-                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
-                        var options = { delay: 3000 }; // 3 seconds
-                        var toast = new bootstrap.Toast(toastEl, options);
-                        toast.show();
-                    } else {
-                        console.error("Toast body element not found.");
-                    }
-                }
-                else if(ToastMessage == 'EditedSuccessfully!'){
-                    if (toastMsg) {
-                        toastMsg.textContent = "Successfully Edited Complaint";
-                        toastTitle.textContent = "Success";
-                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
-                        // Add the type class
-                        toastEl.classList.add("toast-warning");
-                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
-                        var options = { delay: 3000 }; // 3 seconds
-                        var toast = new bootstrap.Toast(toastEl, options);
-                        toast.show();
-                    } else {
-                        console.error("Toast body element not found.");
-                    }
-                }
-                else if(ToastMessage == 'sentDepSuccessfully!'){
+                if(ToastMessage == 'sentDepSuccessfully!'){
                     if (toastMsg) {
                         toastMsg.textContent = "Successfully Sent to Department";
                         toastTitle.textContent = "Success";

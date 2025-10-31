@@ -8,7 +8,7 @@ namespace ComplaignManagementSystem.Presentation.Filters
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var controllerName = context.ActionDescriptor.RouteValues["controller"];
-            if (controllerName != null && controllerName.Equals("Login", StringComparison.OrdinalIgnoreCase))
+            if (controllerName != null && controllerName.Equals("User", StringComparison.OrdinalIgnoreCase))
             {
                 base.OnActionExecuting(context);
                 return;
@@ -18,7 +18,7 @@ namespace ComplaignManagementSystem.Presentation.Filters
 
             if (string.IsNullOrEmpty(session))
             {
-                context.Result = new RedirectToActionResult("Index", "Login", null);
+                context.Result = new RedirectToActionResult("Login", "User", null);
             }
 
             base.OnActionExecuting(context);

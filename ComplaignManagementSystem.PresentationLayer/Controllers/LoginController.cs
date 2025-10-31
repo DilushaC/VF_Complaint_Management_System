@@ -7,21 +7,21 @@ namespace ComplaignManagementSystem.Presentation.Controllers
     [SessionCheck]
     public class LoginController : Controller
     {
-        private readonly ILoginService _loginService;
+        private readonly IUserService _loginService;
 
-        public LoginController(ILoginService loginService)
+        public LoginController(IUserService loginService)
         {
             _loginService = loginService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Login()
         {
             return View("~/Views/User/Login.cshtml");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string username, string password)
+        public async Task<IActionResult> Login(string username, string password)
         {
             var user = await _loginService.ValidateUserAsync(username, password);
 

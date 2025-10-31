@@ -18,5 +18,6 @@ namespace ComplaignManagementSystem.Data.Models
         public int? Dep_Id { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Active { get; set; }
+        public bool IsReset { get; set; }
     }
 }
