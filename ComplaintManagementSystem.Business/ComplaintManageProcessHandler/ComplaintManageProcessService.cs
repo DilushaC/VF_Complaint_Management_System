@@ -977,20 +977,39 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 GROUP BY ct.Method
                 ORDER BY ComplaintCount DESC";
 
+                string query2 = @"
+                SELECT 
+                d.Id, d.Name AS DepName, COUNT(c.Id) AS ComplaintCount
+                FROM Complaint_Department_Master d
+                LEFT JOIN Complaint_ManageProcess c ON d.Id = c.Dep_Id
+                GROUP BY d.Id, d.Name
+                ORDER BY ComplaintCount DESC";
+
                 var dt = await _connection.SingleQueryReturn(query,0);
                 if (dt.Rows.Count == 0)
                     return new DashboardComplaintCountModel();
 
                 var row = dt.Rows[0];
 
-                var dt2 = await _connection.SingleQueryReturn(query1, 0);
+                var dt1 = await _connection.SingleQueryReturn(query1, 0);
+                var dt2 = await _connection.SingleQueryReturn(query2, 0);
 
                 List<ComplaintMethodCountModel> methodCounts = new List<ComplaintMethodCountModel>();
-                foreach (DataRow methodRow in dt2.Rows)
+                List<ComplaintDepartmentCountModel> DepCounts = new List<ComplaintDepartmentCountModel>();
+                foreach (DataRow methodRow in dt1.Rows)
                 {
                     methodCounts.Add(new ComplaintMethodCountModel
                     {
                         Method = methodRow["Method"].ToString(),
+                        ComplaintCount = Convert.ToInt32(methodRow["ComplaintCount"])
+                    });
+                }
+
+                foreach (DataRow methodRow in dt2.Rows)
+                {
+                    DepCounts.Add(new ComplaintDepartmentCountModel
+                    {
+                        Department = methodRow["DepName"].ToString(),
                         ComplaintCount = Convert.ToInt32(methodRow["ComplaintCount"])
                     });
                 }
@@ -1002,7 +1021,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                     ResolveCount = Convert.ToInt32(row["ResolveCount"]),
                     FromCreatedDate = Convert.ToDateTime(row["FromCreatedDate"]),
                     ToCreatedDate = Convert.ToDateTime(row["ToCreatedDate"]),
-                    ComplaintMethodCounts = methodCounts
+                    ComplaintMethodCounts = methodCounts,
+                    ComplaintDepartmentCounts = DepCounts
                 };
             }
             catch (Exception ex)

@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 style="margin-top:20px">Dashboard</h1>
+<h1 style="margin-top:20px"></h1>
 
 <div class="row">
-    <div class="col-md-12 col-lg-8">
+    <div class="col-md-12 col-lg-6">
         <div class="card">
             <div class="card-header p-1">
                 <h4 class="card-title float-left">Complaint progress - 
@@ -45,11 +45,11 @@
 
         @* --------------------------------------- *@
 
-        <div class="card" style="height: 368.25px;">
+        <div class="card" style="height: 55%;">
             <div class="card-content">
                 <div id="product-summary" class="media-list position-relative">
-                    <div class="table-responsive">
-                        <table class="table table-padded table-xl mb-0" id="product-summary-table">
+                    <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                        <table class="table table-padded table-xl mb-0" id="product-summary-table" style="border-collapse: collapse; border-spacing: 0 !important; width:100%;">
                             <thead>
                                 <tr>
                                     <th class="border-top-0">Type</th>                                    
@@ -69,65 +69,27 @@
     </div>
 
 
-    <div class="col-md-12 col-lg-4">   
-            <div class="col-12">
-                <div class="card pull-up bg-gradient-directional-danger">
-                    <div class="card-header bg-hexagons-danger">
-                        <h4 class="card-title white">Analytics</h4>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <ul class="list-inline mb-0">
-                                <li>
-                                    <a class="btn btn-sm btn-white danger box-shadow-1 round btn-min-width pull-right" href="#" target="_blank">Report <i class="ft-bar-chart pl-1"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-content collapse show bg-hexagons-danger">
-                        <div class="card-body">
-                            <div class="media d-flex">
-                                <div class="align-self-center width-100">
-                                    <div id="Analytics-donut-chart" class="height-100 donutShadow"><svg xmlns:ct="http://gionkunz.github.com/chartist-js/ct" width="100%" height="100%" class="ct-chart-donut" style="width: 100%; height: 100%;"><g class="ct-series ct-series-a"><path d="M50.002,5A45.01,45.01,0,1,0,50.01,5L50.01,10A40.01,40.01,0,1,1,50.003,10Z" class="ct-slice-donut-solid" ct:value="100"></path></g><g><text dx="50.0098876953125" dy="54.759857177734375" text-anchor="middle" class="ct-label" font-family="feather"></text></g><defs><linearGradient id="donutGradient1" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="rgba(250,203,205,1)"></stop><stop offset="95%" stop-color="rgba(250,203,205, 0.7)"></stop></linearGradient></defs></svg></div>
-                                </div>
-                                <div class="media-body text-right mt-1">
-                                    <h3 class="font-large-2 white">12,515</h3>
-                                    <h6 class="mt-1"><span class="text-muted white">Analytics in the <a href="#" class="darken-2 white">last year.</a></span></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="col-md-12 col-lg-6">
+
+        <div class="card">
+            <div class="card-header p-1">
+                <h4 class="card-title float-left">
+                    Complaints by Department 
+                </h4>
+                <br>
+                <hr>
+            </div>
+           <div class="container-fluid">
+        <div class="card shadow rounded-4 full-height">
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="complaintChart"></canvas>
                 </div>
             </div>
-
-
-            <div class="col-12">
-                <div class="card pull-up bg-gradient-directional-info">
-                    <div class="card-header bg-hexagons-info">
-                        <h4 class="card-title white">Analytics</h4>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <ul class="list-inline mb-0">
-                                <li>
-                                    <a class="btn btn-sm btn-white info box-shadow-1 round btn-min-width pull-right" href="#" target="_blank">Report <i class="ft-bar-chart pl-1"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-content collapse show bg-hexagons-info">
-                        <div class="card-body">
-                            <div class="media d-flex">
-                                <div class="align-self-center width-100">
-                                    <div id="Analytics-donut-chart" class="height-100 donutShadow"><svg xmlns:ct="http://gionkunz.github.com/chartist-js/ct" width="100%" height="100%" class="ct-chart-donut" style="width: 100%; height: 100%;"><g class="ct-series ct-series-a"><path d="M50.002,5A45.01,45.01,0,1,0,50.01,5L50.01,10A40.01,40.01,0,1,1,50.003,10Z" class="ct-slice-donut-solid" ct:value="100"></path></g><g><text dx="50.0098876953125" dy="54.759857177734375" text-anchor="middle" class="ct-label" font-family="feather"></text></g><defs><linearGradient id="donutGradient1" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="rgba(250,203,205,1)"></stop><stop offset="95%" stop-color="rgba(250,203,205, 0.7)"></stop></linearGradient></defs></svg></div>
-                                </div>
-                                <div class="media-body text-right mt-1">
-                                    <h3 class="font-large-2 white">12,515</h3>
-                                    <h6 class="mt-1"><span class="text-muted white">Analytics in the <a href="#" class="darken-2 white">last year.</a></span></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
+        </div>
+            
     </div>
 </div>
 
@@ -136,6 +98,54 @@
 
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@* <script>
+        const ctx = document.getElementById('complaintChart').getContext('2d');
+
+        // Example data
+        const complaintChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: ['Fixed Deposit', 'Recovery', 'IT', 'Central', 'Others'],
+                datasets: [{
+                    label: 'Complaints Count',
+                    data: [45, 30, 20, 10, 5],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 1500, // Animation duration
+                    easing: 'easeOutBounce' // Easing effect
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Complaints by Type',
+                        font: { size: 16 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 10 }
+                    }
+                }
+            }
+        });
+    </script> *@
 
 <script type="text/javascript">
     
@@ -160,7 +170,7 @@
                     
 
                     var row = `
-                        <tr>
+                        <tr >
                             <td>
                                 <button class="btn btn-sm btn-outline-${color} round" type="button">${m.method}</button>
                             </td>
@@ -194,13 +204,87 @@
                     + " - " +
                     new Date(result.toCreatedDate).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
                         
-                    $("#dateRange").text(daterange);    
-                },error: function (xhr, status, error) {    
-                    console.error("Failed to load modal content:", error);    
-                    alert("Error");                                          
-                }    
-            });    
-        }
+                    $("#dateRange").text(daterange);  
+                    
+                    // ==============================
+                    // Update Bar Chart dynamically
+                    // ==============================
+                    let complaintChart;
+
+                    const labels = [];
+                    const data = [];
+                    const bgColors = [];
+                        
+                    const colors1 = [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ];
+            
+                    console.log(result);
+                    result.department.forEach(function(dep, index){
+
+                        let Depname = dep.department;
+                        if(Depname === 'Information Technology') Depname = 'IT';
+
+                        labels.push(Depname);               // department name
+                        data.push(dep.complaintCount);       // count
+                        // bgColors.push(`rgba(${50 + index*30}, ${100 + index*20}, ${150 + index*10}, 0.8)`); // dynamic colors
+                        bgColors.push(colors1[index % colors1.length]);
+                    });
+            
+                    const ctx = document.getElementById('complaintChart').getContext('2d');
+            
+                    if (complaintChart) {
+                        // If chart already exists, update it
+                        complaintChart.data.labels = labels;
+                        complaintChart.data.datasets[0].data = data;
+                        complaintChart.data.datasets[0].backgroundColor = bgColors;
+                        complaintChart.update();
+                    } else {
+                        // Create chart first time
+                        complaintChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Complaints Count',
+                                    data: data,
+                                    backgroundColor: bgColors,
+                                    borderRadius: 10
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                animation: {
+                                    duration: 1500,
+                                    easing: 'easeOutBounce'
+                                },
+                                plugins: {
+                                    legend: { display: false },
+                                    title: {
+                                        display: true,
+                                        text: '',
+                                        font: { size: 16 }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                        },error: function (xhr, status, error) {    
+                            console.error("Failed to load modal content:", error);    
+                            alert("Error");                                          
+                        }    
+                    });    
+                }
 
 
 

@@ -16,6 +16,9 @@ namespace ComplaignManagementSystem.Data.Models
 
 
         public List<ComplaintMethodCountModel> ComplaintMethodCounts { get; set; }
+        public List<ComplaintDepartmentCountModel> ComplaintDepartmentCounts { get; set; }
+
+        
 
     }
 
@@ -23,6 +26,12 @@ namespace ComplaignManagementSystem.Data.Models
     public class ComplaintMethodCountModel
     {
         public string Method { get; set; }
+        public int ComplaintCount { get; set; }
+    }
+
+    public class ComplaintDepartmentCountModel
+    {
+        public string Department { get; set; }
         public int ComplaintCount { get; set; }
     }
 }

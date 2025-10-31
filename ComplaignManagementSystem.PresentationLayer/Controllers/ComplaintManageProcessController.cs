@@ -462,7 +462,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                     resolved = complaintCounts.ResolveCount,
                     fromCreatedDate = complaintCounts.FromCreatedDate,
                     toCreatedDate = complaintCounts.ToCreatedDate,
-                    methods = complaintCounts.ComplaintMethodCounts
+                    methods = complaintCounts.ComplaintMethodCounts,
+                    department = complaintCounts.ComplaintDepartmentCounts
                 });
             }
             catch (Exception ex)
@@ -471,7 +472,21 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-       
+
+        //------------------------ Complaint History ------------------------------------>    
+
+        public async Task<IActionResult> ComplaintHistoryProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        {
+            try
+            {             
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
 
     }
