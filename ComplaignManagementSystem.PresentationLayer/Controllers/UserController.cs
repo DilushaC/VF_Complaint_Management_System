@@ -1,4 +1,5 @@
 ﻿using ComplaignManagementSystem.Data.Models;
+using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.LoginHandler;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
+    [SessionCheck]
     public class UserController : Controller
     {
         private readonly IUserService _loginService;

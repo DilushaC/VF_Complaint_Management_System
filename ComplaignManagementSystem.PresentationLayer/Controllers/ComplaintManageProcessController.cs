@@ -1,4 +1,5 @@
 ﻿using ComplaignManagementSystem.Data.Models;
+using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
+    [SessionCheck]
     public class ComplaintManageProcessController : Controller
     {
         private readonly IComplaintManageProcessService _complainProcess;
@@ -30,7 +32,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
             ViewBag.CurrYear = System.DateTime.Now.Year;
             return View();
-        } 
+        }
 
         public ActionResult Create()
         {
@@ -87,20 +89,27 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         }
 
         // GET: ComplaintManageProcessController
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
         {
             try
             {
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
 
-                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getComplaintList(pageNumber, pageSize, searchString);
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getComplaintList(pageNumber, pageSize, searchString, ComplaintMethod_Id, priority);
                 ViewBag.ComplainLists = paginationResult.Items;
-
+                var getAllMethods = _complainProcess.getMethodList();
+                if (ComplaintMethod_Id == null)
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
+                else
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method", Convert.ToInt32(ComplaintMethod_Id));
                 //Also pass the total count for building the pagination links
                 ViewBag.TotalCount = paginationResult.TotalCount;
                 ViewBag.PageSize = pageSize;
                 ViewBag.PageNumber = pageNumber;
+                ViewBag.SearchString = searchString;
+                ViewBag.Priority = priority;
+
                 //TempData["ToastMessage"] = "EditedSuccessfully!";
 
                 return View();
@@ -114,7 +123,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         public async Task<IActionResult> ComplaintDetails(int id)
         {
             // SQL query to retrieve the master data for the given complaint ID
-            
+
             ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
             if (complaintData == null)
             {
@@ -194,7 +203,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-
         [HttpPost]
         public ActionResult UpdateComplaint(IFormCollection collection, IFormFile file)
         {
@@ -224,14 +232,14 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 _complainProcess.UpdateSendComplaint(collection, file);
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
 
-                if(ResolvedStatus == "No")
+                if (ResolvedStatus == "No")
                 {
                     TempData["ToastMessage"] = "sentDepSuccessfully!";
                 }
                 else
                 {
                     TempData["ToastMessage"] = "resolvedSuccessfully!";
-                }                    
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -240,21 +248,26 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-        public async Task<IActionResult> DepartmentProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        public async Task<IActionResult> DepartmentProcess(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
         {
             try
             {
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
 
-                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getDepComplaintList(pageNumber, pageSize, searchString);
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getDepComplaintList(pageNumber, pageSize, searchString, ComplaintMethod_Id, priority);
                 ViewBag.ComplainLists = paginationResult.Items.OrderByDescending(a => a.Status == "Sent Department").ToList();
-
+                var getAllMethods = _complainProcess.getMethodList();
+                if (ComplaintMethod_Id == null)
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
+                else
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method", Convert.ToInt32(ComplaintMethod_Id));
                 //Also pass the total count for building the pagination links
                 ViewBag.TotalCount = paginationResult.TotalCount;
                 ViewBag.PageSize = pageSize;
                 ViewBag.PageNumber = pageNumber;
-                //TempData["ToastMessage"] = "EditedSuccessfully!";
+                ViewBag.SearchString = searchString;
+                ViewBag.Priority = priority;
 
                 return View();
             }
@@ -283,14 +296,14 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         }
 
 
-       
+
 
         [HttpPost]
-        public JsonResult ForwardToCentral(int Id)
+        public JsonResult ForwardToCentral(int Id, string remark)
         {
             try
             {
-                _complainProcess.UpdateForwardToCentral(Id);
+                _complainProcess.UpdateForwardToCentral(Id, remark);
                 TempData["ToastMessage"] = "SentToCentralSuccess!";
                 return Json(new { success = true, message = "Sent to central successfully." });
 
@@ -341,18 +354,23 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
         //------------------------ Central Process ------------------------------------>    
 
-        public async Task<IActionResult> CentralProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        public async Task<IActionResult> CentralProcess(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
         {
             try
             {
-                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getCentralComplaintList(pageNumber, pageSize, searchString);
+                PaginationResultsModel<ComplaintMaster> paginationResult = await _complainProcess.getCentralComplaintList(pageNumber, pageSize, searchString, ComplaintMethod_Id, priority);
                 ViewBag.ComplainLists = paginationResult.Items.OrderByDescending(a => a.Status == "Sent Central").ToList();
-
+                var getAllMethods = _complainProcess.getMethodList();
+                if (ComplaintMethod_Id == null)
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
+                else
+                    ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method", Convert.ToInt32(ComplaintMethod_Id));
                 //Also pass the total count for building the pagination links
                 ViewBag.TotalCount = paginationResult.TotalCount;
                 ViewBag.PageSize = pageSize;
                 ViewBag.PageNumber = pageNumber;
-                //TempData["ToastMessage"] = "EditedSuccessfully!";
+                ViewBag.SearchString = searchString;
+                ViewBag.Priority = priority;
 
                 return View();
             }
@@ -370,7 +388,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
             if (complaintData == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
             if (!string.IsNullOrEmpty(complaintData.AttachmentPath))
             {
@@ -384,11 +402,11 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
 
         [HttpPost]
-        public JsonResult ForwardToDepartment(int Id, int Department)
+        public JsonResult ForwardToDepartment(int Id, int Department, string Remark)
         {
             try
             {
-                _complainProcess.UpdateForwardToDepartment(Id, Department);
+                _complainProcess.UpdateForwardToDepartment(Id, Department, Remark);
                 TempData["ToastMessage"] = "sentDepSuccessfully!";
                 return Json(new { success = true, message = "Sent to Department successfully." });
 

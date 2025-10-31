@@ -1,0 +1,38 @@
+﻿@model ComplaignManagementSystem.Data.Models.NatureModel // Change this to your actual model namespace
+
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3">
+                <strong>Department Name</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Dep_Name)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Nature</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Nature)
+            </div>
+        </div>
+        <div class="row" style="margin-top:7px">
+            <div class="col-md-3">
+                <strong>Nature Code</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Code)
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+<div class="modal-footer">
+    <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

@@ -15,10 +15,12 @@
     var pageNumber = (int)ViewBag.PageNumber;
     var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 }
-
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/tables/datatable/datatables.min.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-gradient.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-tooltip.min.css" rel="stylesheet" />
 <style>
     .modal {
         z-index: 1060 !important; /* higher than sidebar */
@@ -35,15 +37,28 @@
                 <h1>Complaint Master</h1>
                 <hr />
             </div>
-            <div style="text-align:right; margin-right:10px;margin-bottom:-30px">
-                <button type="button" class="btn btn-bg-gradient-x-purple-blue col-md-3 mr-1 mb-1" onclick="goToCreate()"> Create New Complaint</button>
-            </div>
             <div class="card-content collapse show">
                 <div class="card-body card-dashboard">
                     <div class="table-responsive">
-                        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4" style="margin-top:-10px">
                             <div class="row">
-                                <div class="col-sm-12 col-md-6">
+                                <div class="col-sm-12 col-md-3" style="margin-left:-30px;margin-bottom:-30px">
+                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
+                                        <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                                            <label>
+                                                Search:
+                                                <input type="search" id="searchInput" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0">
+                                            </label>
+                                            <input type="hidden" name="pageSize" value="@pageSize" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div style="text-align:right; margin-right:5px;margin-bottom:0px">
+                                <button type="button" class="btn btn-bg-gradient-x-purple-blue col-md-3 mr-1 mb-1" onclick="goToCreate()"> Create New Complaint</button>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
                                     <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
                                         <div class="dataTables_length" id="DataTables_Table_0_length">
                                             <label>
@@ -58,15 +73,45 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
-                                        <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                                            <label>
-                                                Search:
-                                                @* <input type="search" name="searchString" value="@searchString" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0"> *@
-                                                <input type="search" id="searchInput" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-sm" placeholder="" aria-controls="DataTables_Table_0">
-                                            </label>
-                                            <input type="hidden" name="pageSize" value="@pageSize" />
+
+                                <div class="col-sm-12 col-md-6" style="margin-left:-10px">
+                                    <form id="filterForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
+                                                    <option value="">Methods...</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4" style="margin-left:150px">
+                                                <select id="priorityFilter" name="priority" class="form-control form-control-sm">
+                                                    <option value="">Priorities...</option>
+                                                    @if (ViewBag.Priority == "High")
+                                                    {
+                                                        <option value="High" selected>High</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="High">High</option>
+                                                    }
+                                                    @if (ViewBag.Priority == "Medium")
+                                                    {
+                                                        <option value="Medium" selected>Medium</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="Medium">Medium</option>
+                                                    }
+                                                    @if (ViewBag.Priority == "Low")
+                                                    {
+                                                        <option value="Low" selected>Low</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="Low">Low</option>
+                                                    }
+
+                                                </select>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -79,10 +124,11 @@
                                                 <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="0" colspan="0" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 126.391px;">#</th>
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 196.859px;">Refference</th>
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 91.6406px;">Complaint Method</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 28.7969px;">Complaint</th>
+                                                @* <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 28.7969px;">Complaint</th> *@
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Created Branch</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 74.6094px;">Priotity</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 794px;">Action</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Priotity</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Created Date</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 150px;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -91,29 +137,58 @@
                                                 int i = 1;
                                                 @foreach (var item in ViewBag.ComplainLists)
                                                 {
-                                                    <tr role="row" class="odd">
-                                                        <td class="sorting_1">@i</td>
-                                                        <td>@item.Refference</td>
-                                                        <td>@item.Method</td>
-                                                        <td>@item.Complaint</td>
-                                                        <td>@item.Branch</td>
-                                                        <td>@item.Priority</td>
-                                                        <td style="width:50px">
-                                                            <div class="row">
-                                                                <div class="col-md-2">
-                                                                    <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)"><i class="ft-eye"></i></button>
-                                                                </div>
-                                                                @if (item.Status == "Created")
-                                                                {
-                                                                    <div class="col-md-2" style="margin-left:30px;margin-right:20px">
-                                                                        <button type="button" class="btn btn-outline-warning" onclick="ComplaintEdit(@item.Id)"><i class="ft-edit"></i></button>
+                                                    if (item.Priority == "High")
+                                                    {
+                                                        <tr role="row" class="odd" style="background-color:red">
+                                                            <td class="sorting_1 text-white">@i</td>
+                                                            <td class="text-white">@item.Refference</td>
+                                                            <td class="text-white">@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td class="text-white">@item.Branch</td>
+                                                            <td class="text-white">@item.Priority</td>
+                                                            <td class="text-white">@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td style="width:50px">
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" data-toggle="tooltip" data-placement="top" title="View" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
                                                                     </div>
-                                                                }
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                    i++;
+                                                                    @if (item.Status == "Created")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:30px;margin-right:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title="Edit" onclick="ComplaintEdit(@item.Id)" style="width:30px;height:30px"><i class="ft-edit"></i></button>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr role="row" class="odd">
+                                                            <td class="sorting_1">@i</td>
+                                                            <td>@item.Refference</td>
+                                                            <td>@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td>@item.Branch</td>
+                                                            <td>@item.Priority</td>
+                                                            <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td style="width:50px">
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" data-toggle="tooltip" data-placement="top" title="View" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
+                                                                    </div>
+                                                                    @if (item.Status == "Created")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:30px;margin-right:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title="Edit" onclick="ComplaintEdit(@item.Id)" style="width:30px;height:30px"><i class="ft-edit"></i></button>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
                                                 }
                                             }
                                             else
@@ -128,9 +203,10 @@
                                                 <th rowspan="1" colspan="1">#</th>
                                                 <th rowspan="1" colspan="1">Refference</th>
                                                 <th rowspan="1" colspan="1">Complaint Method</th>
-                                                <th rowspan="1" colspan="1">Complaint</th>
+                                                @* <th rowspan="1" colspan="1">Complaint</th> *@
                                                 <th rowspan="1" colspan="1">Created Branch</th>
                                                 <th rowspan="1" colspan="1">Priotity</th>
+                                                <th rowspan="1" colspan="1">Created Date</th>
                                                 <th rowspan="1" colspan="1">Action</th>
                                             </tr>
                                         </tfoot>
@@ -206,16 +282,22 @@
     </div>
 </div>
 
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+@* <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+ *@<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/datatables/js/datatables.bootstrap4.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
+        
+
     function goToCreate() {
         window.location.href = '/ComplaintManageProcess/Create';
-    }        
+    }
     function ComplaintDetils(Id) {
         $.ajax({
             url: '@Url.Action("ComplaintDetails", "ComplaintManageProcess")',
@@ -249,8 +331,37 @@
             error: function () {
                 alert('Could not load complaint data.');
             }
-        });    
+        });
     }
+
+
+    $("#ComplaintMethod_Id").select2({
+      allowClear:true,
+      placeholder: 'Methods...'
+    });
+    $("#priorityFilter").select2({
+      allowClear:true,
+      placeholder: 'Priorities...'
+    });
+
+    $('#ComplaintMethod_Id').on('change', function () {
+        const form = document.getElementById('filterForm');
+        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
+        var priorityFilter = document.getElementById("priorityFilter").value;
+
+        var url = `/ComplaintManageProcess/Index?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
+        // Redirect to that URL (submit form automatically)
+        window.location.href = url;
+    });
+    $('#priorityFilter').on('change', function () {
+        const form = document.getElementById('filterForm');
+        var ComplaintMethod_Id = document.getElementById("ComplaintMethod_Id").value;
+        var priorityFilter = document.getElementById("priorityFilter").value;
+
+        var url = `/ComplaintManageProcess/Index?ComplaintMethod_Id=${ComplaintMethod_Id}&priority=${priorityFilter}`;
+        // Redirect to that URL (submit form automatically)
+        window.location.href = url;
+    });
     $(document).ready(function() {
         // Find the select element and attach a change event handler
         $('#DataTables_Table_0_length select').on('change', function() {
@@ -288,66 +399,66 @@
                 if(ToastMessage == 'SubmittedSuccessfully!'){
                     if (toastMsg) {
                         toastMsg.textContent = "Successfully Saved Complaint";
-                        toastTitle.textContent = "Success";                    
+                        toastTitle.textContent = "Success";
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
-                        // Add the type class                    
-                        toastEl.classList.add("toast-success");                    
-                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));                    
-                        var options = { delay: 3000 }; // 3 seconds                    
-                        var toast = new bootstrap.Toast(toastEl, options);                   
-                        toast.show();             
-                    } else {                    
-                        console.error("Toast body element not found.");               
+                        // Add the type class
+                        toastEl.classList.add("toast-success");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
                     }
                 }
                 else if(ToastMessage == 'EditedSuccessfully!'){
-                    if (toastMsg) {                    
-                        toastMsg.textContent = "Successfully Edited Complaint";                    
-                        toastTitle.textContent = "Success";                    
-                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");                    
-                        // Add the type class                    
-                        toastEl.classList.add("toast-warning");                    
-                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));                    
-                        var options = { delay: 3000 }; // 3 seconds                    
-                        var toast = new bootstrap.Toast(toastEl, options);                    
-                        toast.show();                
-                    } else {                
-                        console.error("Toast body element not found.");                
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Edited Complaint";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
+                        toastEl.classList.add("toast-warning");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
                     }
                 }
                 else if(ToastMessage == 'sentDepSuccessfully!'){
-                    if (toastMsg) {                    
-                        toastMsg.textContent = "Successfully Sent to Department";                    
-                        toastTitle.textContent = "Success";                    
-                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");                    
-                        // Add the type class                    
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Sent to Department";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
                         toastEl.classList.add("toast-success");
-                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));                    
-                        var options = { delay: 3000 }; // 3 seconds                    
-                        var toast = new bootstrap.Toast(toastEl, options);                    
-                        toast.show();                
-                    } else {                
-                        console.error("Toast body element not found.");                
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
                     }
                 }
                 else if(ToastMessage == 'resolvedSuccessfully!'){
-                    if (toastMsg) {                    
-                        toastMsg.textContent = "Successfully Resolved";                    
-                        toastTitle.textContent = "Success";                    
-                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");                    
-                        // Add the type class                    
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Resolved";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
                         toastEl.classList.add("toast-success");
-                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));                    
-                        var options = { delay: 3000 }; // 3 seconds                    
-                        var toast = new bootstrap.Toast(toastEl, options);                    
-                        toast.show();                
-                    } else {                
-                        console.error("Toast body element not found.");                
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
                     }
                 }
             } else {
                 console.error("Toast container element not found.");
             }
-        }             
+        }
     });
 </script>

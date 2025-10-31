@@ -33,7 +33,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Cus_Nic">Customer NIC</label>
-                                <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" value="@Model.Cus_Nic" autocomplete="off">
+                                <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off" onkeyup="nicChange()">
+                                <small id="nicError" style="color:red; display:none;">Invalid NIC</small>
                             </div>
                         </div>
                     </div>
@@ -47,7 +48,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Cus_MobileNumber">Customer Mobile Number</label>
-                                <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" value="@Model.Cus_MobileNumber" autocomplete="off">
+                                <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off" onkeyup="mobileChange()" maxlength="10">
+                                <small id="mobileError" style="color:red; display:none;">Invalid Mobile Number</small>
                             </div>
                         </div>
                     </div>
@@ -179,6 +181,54 @@
       placeholder: 'Select Nature',
       dropdownParent: $('#editComplaintModal')
     });
+    function nicChange(){
+        const nic = document.getElementById("Cus_Nic").value;
+        //alert(Compaint);
+        const oldNicPattern = /^[0-9]{9}[VXvx]$/;  // Old format
+        const newNicPattern = /^[0-9]{12}$/;      // New format
+        const save = document.getElementById("save");
+        const savensend = document.getElementById("savensend");
+        const savenresolved = document.getElementById("savenresolved");
+
+        if (nic === "") {fg
+            document.getElementById("Cus_Nic").style.borderColor = "";
+            return;
+        }
+        if (oldNicPattern.test(nic) || newNicPattern.test(nic)) {
+            // Valid NIC
+            document.getElementById("Cus_Nic").style.borderColor = "green";
+            document.getElementById("nicError").style.display = "none";
+            save.disabled = false;
+            savensend.disabled = false;
+            savenresolved.disabled = false;
+        } else {
+            // Invalid NIC
+            document.getElementById("Cus_Nic").style.borderColor = "red";
+            document.getElementById("nicError").style.display = "inline";
+            save.disabled = true;
+            savensend.disabled = true;
+            savenresolved.disabled = true;
+        }
+    }
+
+    function mobileChange() {
+        const mobile = document.getElementById("Cus_MobileNumber").value.trim();
+        const mobilePattern = /^07[0-9]{8}$/; // 10 digits starting with 07
+
+        if (mobilePattern.test(mobile)) {
+            document.getElementById("Cus_MobileNumber").style.borderColor = "green";
+            document.getElementById("mobileError").style.display = "none";
+            save.disabled = false;
+            savensend.disabled = false;
+            savenresolved.disabled = false;
+        } else {
+            document.getElementById("Cus_MobileNumber").style.borderColor = "red";
+            document.getElementById("mobileError").style.display = "inline";
+            save.disabled = true;
+            savensend.disabled = true;
+            savenresolved.disabled = true;
+        }
+    }
     function handlePriority(checkbox) {
         if(checkbox.id == "PriorityL"){
             document.getElementById("PriorityM").checked = false;

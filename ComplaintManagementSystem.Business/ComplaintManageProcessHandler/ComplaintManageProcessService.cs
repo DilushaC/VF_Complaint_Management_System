@@ -4,6 +4,7 @@ using ComplaintManagementSystem.Business.ConncetionHandler;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -302,7 +303,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-        public async Task<PaginationResultsModel<ComplaintMaster>> getComplaintList(int pageNumber, int pageSize, string searchString)
+        public async Task<PaginationResultsModel<ComplaintMaster>> getComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id, string priority)
         {
             try
             {
@@ -313,6 +314,16 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
+                }
+
+                if (!string.IsNullOrEmpty(ComplaintMethod_Id))
+                {
+                    whereClause += " AND cmp.ComplaintMethod_Id = @Method";
+                }
+
+                if (!string.IsNullOrEmpty(priority))
+                {
+                    whereClause += " AND cmp.Priority = @Priority";
                 }
 
                 int offset = (pageNumber - 1) * pageSize;
@@ -371,9 +382,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("@Offset", offset);
                 parameters.Add("@EndRow", endRow);
                 if (!string.IsNullOrEmpty(searchString))
-                {
                     parameters.Add("@SearchPattern", "%" + searchString + "%");
-                }
+
+                if (!string.IsNullOrEmpty(ComplaintMethod_Id))
+                    parameters.Add("@Method", Convert.ToInt32(ComplaintMethod_Id));
+
+                if (!string.IsNullOrEmpty(priority))
+                    parameters.Add("@Priority", priority);
 
                 return await _connection.QueryMultipleForPaginationAsync<ComplaintMaster>(query, parameters);
 
@@ -384,7 +399,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-        public async Task<PaginationResultsModel<ComplaintMaster>> getDepComplaintList(int pageNumber, int pageSize, string searchString)
+        public async Task<PaginationResultsModel<ComplaintMaster>> getDepComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id, string priority)
         {
             try
             {
@@ -398,6 +413,16 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                     whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
                 }
 
+                if (!string.IsNullOrEmpty(ComplaintMethod_Id))
+                {
+                    whereClause += " AND cmp.ComplaintMethod_Id = @Method";
+                }
+
+                if (!string.IsNullOrEmpty(priority))
+                {
+                    whereClause += " AND cmp.Priority = @Priority";
+                }
+
                 int offset = (pageNumber - 1) * pageSize;
                 int endRow = pageNumber * pageSize;
 
@@ -454,9 +479,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("@Offset", offset);
                 parameters.Add("@EndRow", endRow);
                 if (!string.IsNullOrEmpty(searchString))
-                {
                     parameters.Add("@SearchPattern", "%" + searchString + "%");
-                }
+
+                if (!string.IsNullOrEmpty(ComplaintMethod_Id))
+                    parameters.Add("@Method", Convert.ToInt32(ComplaintMethod_Id));
+
+                if (!string.IsNullOrEmpty(priority))
+                    parameters.Add("@Priority", priority);
 
                 return await _connection.QueryMultipleForPaginationAsync<ComplaintMaster>(query, parameters);
 
@@ -480,7 +509,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     cmp.Priority,
                                     cmp.CreatedDate,
                                     cmp.CreatedUser,
-                                    cb.Branch
+                                    cb.Branch,
+                                    cp.Name Department,
+                                    cn.Nature
                                 FROM Complaint_ManageProcess as cmp
                                 INNER JOIN Complaint_Method_Master as cm ON cm.Id = cmp.ComplaintMethod_Id
                                 INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
@@ -506,6 +537,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 complainModel.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
                 complainModel.CreatedUser = row["CreatedUser"].ToString();
                 complainModel.Branch = row["Branch"].ToString();
+                complainModel.Department = row["Department"].ToString();
+                complainModel.Nature = row["Nature"].ToString();
                 if (!File.Exists(FilePath))
                 {
                     complainModel.AttachmentPath = $"/wwwroot/Attachments/{FilePath}";
@@ -762,7 +795,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-        public void UpdateForwardToCentral(int Id)
+        public void UpdateForwardToCentral(int Id, string remark)
         {
             try
             {
@@ -781,8 +814,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var data = _connection.Return(dPuery);
                 var row = data.Rows[0];
                 var depSendCount = data.Rows.Count;
-                var depQuery = "INSERT INTO Complaint_Send_Departments(ComplaintMngProcess_Id, Dep_Id, EscalatiomMatrix, Active, Status, ForwardUser, CreatedDate)" +
-                   "VALUES (@comProccessId, @depId, @esMatrix, @active, @status, @forUser, @createdDate)";
+                var depQuery = "INSERT INTO Complaint_Send_Departments(ComplaintMngProcess_Id, Dep_Id, EscalatiomMatrix, Active, Status, ForwardUser, Remark, CreatedDate)" +
+                   "VALUES (@comProccessId, @depId, @esMatrix, @active, @status, @forUser, @remark, @createdDate)";
 
                 var depParameters = new DynamicParameters();
                 depParameters.Add("comProccessId", Convert.ToInt64(Id), DbType.Int64);
@@ -791,6 +824,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 depParameters.Add("active", 1, DbType.Int32);
                 depParameters.Add("status", 1, DbType.Int32);
                 depParameters.Add("forUser", UserName, DbType.String);
+                depParameters.Add("remark", remark, DbType.String);
                 depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 _connection.ReturnWithPara(depQuery, depParameters);
 
@@ -834,7 +868,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         }
 
         //------------------------ Central Process ------------------------------------>   
-        public async Task<PaginationResultsModel<ComplaintMaster>> getCentralComplaintList(int pageNumber, int pageSize, string searchString)
+        public async Task<PaginationResultsModel<ComplaintMaster>> getCentralComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id, string priority)
         {
             try
             {
@@ -843,6 +877,17 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 {
                     whereClause += " AND (cmp.Cus_Name LIKE @SearchPattern OR cmp.Refference LIKE @SearchPattern)";
                 }
+
+                if (!string.IsNullOrEmpty(ComplaintMethod_Id))
+                {
+                    whereClause += " AND cmp.ComplaintMethod_Id = @Method";
+                }
+
+                if (!string.IsNullOrEmpty(priority))
+                {
+                    whereClause += " AND cmp.Priority = @Priority";
+                }
+
 
                 int offset = (pageNumber - 1) * pageSize;
                 int endRow = pageNumber * pageSize;
@@ -900,9 +945,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("@Offset", offset);
                 parameters.Add("@EndRow", endRow);
                 if (!string.IsNullOrEmpty(searchString))
-                {
                     parameters.Add("@SearchPattern", "%" + searchString + "%");
-                }
+
+                if (!string.IsNullOrEmpty(ComplaintMethod_Id))
+                    parameters.Add("@Method", Convert.ToInt32(ComplaintMethod_Id));
+
+                if (!string.IsNullOrEmpty(priority))
+                    parameters.Add("@Priority", priority);
 
                 return await _connection.QueryMultipleForPaginationAsync<ComplaintMaster>(query, parameters);
 
@@ -913,7 +962,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-        public void UpdateForwardToDepartment(int Id, int Department)
+        public void UpdateForwardToDepartment(int Id, int Department, string remark)
         {
             try
             {
@@ -932,8 +981,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var data = _connection.Return(dPuery);
                 var row = data.Rows[0];
                 var depSendCount = data.Rows.Count;
-                var depQuery = "INSERT INTO Complaint_Send_Departments(ComplaintMngProcess_Id, Dep_Id, EscalatiomMatrix, Active, Status, ForwardUser, CreatedDate)" +
-                   "VALUES (@comProccessId, @depId, @esMatrix, @active, @status, @forUser, @createdDate)";
+                var depQuery = "INSERT INTO Complaint_Send_Departments(ComplaintMngProcess_Id, Dep_Id, EscalatiomMatrix, Active, Status, ForwardUser, Remark, CreatedDate)" +
+                   "VALUES (@comProccessId, @depId, @esMatrix, @active, @status, @forUser, @remark, @createdDate)";
 
                 var depParameters = new DynamicParameters();
                 depParameters.Add("comProccessId", Convert.ToInt64(Id), DbType.Int64);
@@ -942,6 +991,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 depParameters.Add("active", 1, DbType.Int32);
                 depParameters.Add("status", 1, DbType.Int32);
                 depParameters.Add("forUser", UserName, DbType.String);
+                depParameters.Add("remark", remark, DbType.String);
                 depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 _connection.ReturnWithPara(depQuery, depParameters);
 
