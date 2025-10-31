@@ -5,5 +5,302 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 style="margin-top:20px">Dashboard</h1>
+<h1 style="margin-top:20px"></h1>
+
+<div class="row">
+    <div class="col-md-12 col-lg-6">
+        <div class="card">
+            <div class="card-header p-1">
+                <h4 class="card-title float-left">Complaint progress - 
+                    @* <span class="blue-grey lighten-2 font-small-3 mb-0">24 DEC 2017 - 09 Oct 2025</span> *@
+                    <span class="blue-grey lighten-2 font-small-3 mb-0" id="dateRange">
+                        01 JAN 2025 -
+                    </span>
+                    </h4>
+                <span class="badge badge-pill badge-info float-right m-0">Approved</span>
+            </div>
+            <div class="card-content collapse show">
+                <div class="card-footer text-center p-1">
+                    <div class="row">
+                        <div class="col-md-3 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                            <p class="blue-grey lighten-2 mb-0">Total</p>
+                            <p class="font-medium-5 text-bold-400" id="TotalCountLbl">00</p>
+                        </div>
+                        <div class="col-md-3 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                            <p class="blue-grey lighten-2 mb-0">Completed</p>
+                            <p class="font-medium-5 text-bold-400" id="ResolvedCountLbl">00</p>
+                        </div>
+                        <div class="col-md-3 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                            <p class="blue-grey lighten-2 mb-0">Pending</p>
+                            <p class="font-medium-5 text-bold-400" id="PendingCountLbl">00</p>
+                        </div>
+                        <div class="col-md-3 col-12 text-center">
+                            <p class="blue-grey lighten-2 mb-0">Version</p>
+                            <p class="font-medium-5 text-bold-400">1.0v</p>
+                        </div>
+                    </div>                                    
+                </div>
+            </div>
+        </div>
+
+        @* --------------------------------------- *@
+
+        <div class="card" style="height: 55%;">
+            <div class="card-content">
+                <div id="product-summary" class="media-list position-relative">
+                    <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                        <table class="table table-padded table-xl mb-0" id="product-summary-table" style="border-collapse: collapse; border-spacing: 0 !important; width:100%;">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0">Type</th>                                    
+                                    <th class="border-top-0">Count</th>
+                                    <th class="border-top-0">Percentage </th>
+                                    <th class="border-top-0">Level</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ComplaintMethodTbody">                                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-md-12 col-lg-6">
+
+        <div class="card">
+            <div class="card-header p-1">
+                <h4 class="card-title float-left">
+                    Complaints by Department 
+                </h4>
+                <br>
+                <hr>
+            </div>
+           <div class="container-fluid">
+        <div class="card shadow rounded-4 full-height">
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="complaintChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+            
+    </div>
+</div>
+
+
+
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@* <script>
+        const ctx = document.getElementById('complaintChart').getContext('2d');
+
+        // Example data
+        const complaintChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: ['Fixed Deposit', 'Recovery', 'IT', 'Central', 'Others'],
+                datasets: [{
+                    label: 'Complaints Count',
+                    data: [45, 30, 20, 10, 5],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 1500, // Animation duration
+                    easing: 'easeOutBounce' // Easing effect
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Complaints by Type',
+                        font: { size: 16 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 10 }
+                    }
+                }
+            }
+        });
+    </script> *@
+
+<script type="text/javascript">
+    
+    $(document).ready(function() {
+               
+        DashboardComplaintCount();
+    
+        function DashboardComplaintCount() {               
+            $.ajax({    
+                url: '@Url.Action("DashboardComplaintCount", "ComplaintManageProcess")',    
+                type: "GET",    
+                data: { },    
+                dataType: 'json',    
+                success: function (result) {   
+                       
+                    var totalCount = result.total;
+                    var colors = ["danger", "info", "success", "warning"];
+
+                    result.methods.forEach(function(m,index) {
+                    var percentage = ((m.complaintCount / totalCount) * 100).toFixed(2);
+                    var color = colors[index % colors.length];
+                    
+
+                    var row = `
+                        <tr >
+                            <td>
+                                <button class="btn btn-sm btn-outline-${color} round" type="button">${m.method}</button>
+                            </td>
+                            <td class="text-truncate">${m.complaintCount}</td>
+                            <td class="text-truncate">
+                                <span><i class="ft-arrow-up success"></i> ${percentage}%</span>
+                            </td>
+                            <td>
+                                <div class="progress progress-sm mt-1 mb-0 box-shadow-2">
+                                    <div class="progress-bar bg-gradient-x-${color}"
+                                         role="progressbar"
+                                         style="width: ${percentage}%"
+                                         aria-valuenow="${percentage}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+
+                    $("#ComplaintMethodTbody").append(row);
+
+                    });
+
+                    $("#TotalCountLbl").text(result.total);    
+                    $("#PendingCountLbl").text(result.pending);    
+                    $("#ResolvedCountLbl").text(result.resolved);
+    
+                    var daterange = new Date(result.fromCreatedDate).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase()
+                    + " - " +
+                    new Date(result.toCreatedDate).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
+                        
+                    $("#dateRange").text(daterange);  
+                    
+                    // ==============================
+                    // Update Bar Chart dynamically
+                    // ==============================
+                    let complaintChart;
+
+                    const labels = [];
+                    const data = [];
+                    const bgColors = [];
+                        
+                    const colors1 = [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ];
+            
+                    console.log(result);
+                    result.department.forEach(function(dep, index){
+
+                        let Depname = dep.department;
+                        if(Depname === 'Information Technology') Depname = 'IT';
+
+                        labels.push(Depname);               // department name
+                        data.push(dep.complaintCount);       // count
+                        // bgColors.push(`rgba(${50 + index*30}, ${100 + index*20}, ${150 + index*10}, 0.8)`); // dynamic colors
+                        bgColors.push(colors1[index % colors1.length]);
+                    });
+            
+                    const ctx = document.getElementById('complaintChart').getContext('2d');
+            
+                    if (complaintChart) {
+                        // If chart already exists, update it
+                        complaintChart.data.labels = labels;
+                        complaintChart.data.datasets[0].data = data;
+                        complaintChart.data.datasets[0].backgroundColor = bgColors;
+                        complaintChart.update();
+                    } else {
+                        // Create chart first time
+                        complaintChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Complaints Count',
+                                    data: data,
+                                    backgroundColor: bgColors,
+                                    borderRadius: 10
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                animation: {
+                                    duration: 1500,
+                                    easing: 'easeOutBounce'
+                                },
+                                plugins: {
+                                    legend: { display: false },
+                                    title: {
+                                        display: true,
+                                        text: '',
+                                        font: { size: 16 }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                        },error: function (xhr, status, error) {    
+                            console.error("Failed to load modal content:", error);    
+                            alert("Error");                                          
+                        }    
+                    });    
+                }
+
+
+
+
+
+
+    
+    });
+
+
+
+        
+
+
+
+
+</script>
+
 

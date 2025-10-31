@@ -1003,5 +1003,83 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
+
+        //------------------------ Dashboard ------------------------------------>   
+
+        public async Task<DashboardComplaintCountModel> GetDashboardComplaintCounts()
+        {
+            try
+            {
+                string query = @"
+                SELECT 
+                MIN(cmp.CreatedDate) AS FromCreatedDate,
+                MAX(cmp.CreatedDate) AS ToCreatedDate,
+                COUNT(*) AS TotalCount,
+                SUM(CASE WHEN cmp.IsResolved = 1 THEN 1 ELSE 0 END) AS ResolveCount,
+                SUM(CASE WHEN cmp.IsResolved IS NULL OR cmp.IsResolved = 0 THEN 1 ELSE 0 END) AS PendingCount
+                FROM Complaint_ManageProcess AS cmp; ";
+
+                string query1 = @"
+                SELECT 
+                ct.Method, COUNT(c.Id) AS ComplaintCount
+                FROM Complaint_ManageProcess c
+                INNER JOIN Complaint_Method_Master ct ON c.ComplaintMethod_Id = ct.Id
+                GROUP BY ct.Method
+                ORDER BY ComplaintCount DESC";
+
+                string query2 = @"
+                SELECT 
+                d.Id, d.Name AS DepName, COUNT(c.Id) AS ComplaintCount
+                FROM Complaint_Department_Master d
+                LEFT JOIN Complaint_ManageProcess c ON d.Id = c.Dep_Id
+                GROUP BY d.Id, d.Name
+                ORDER BY ComplaintCount DESC";
+
+                var dt = await _connection.SingleQueryReturn(query,0);
+                if (dt.Rows.Count == 0)
+                    return new DashboardComplaintCountModel();
+
+                var row = dt.Rows[0];
+
+                var dt1 = await _connection.SingleQueryReturn(query1, 0);
+                var dt2 = await _connection.SingleQueryReturn(query2, 0);
+
+                List<ComplaintMethodCountModel> methodCounts = new List<ComplaintMethodCountModel>();
+                List<ComplaintDepartmentCountModel> DepCounts = new List<ComplaintDepartmentCountModel>();
+                foreach (DataRow methodRow in dt1.Rows)
+                {
+                    methodCounts.Add(new ComplaintMethodCountModel
+                    {
+                        Method = methodRow["Method"].ToString(),
+                        ComplaintCount = Convert.ToInt32(methodRow["ComplaintCount"])
+                    });
+                }
+
+                foreach (DataRow methodRow in dt2.Rows)
+                {
+                    DepCounts.Add(new ComplaintDepartmentCountModel
+                    {
+                        Department = methodRow["DepName"].ToString(),
+                        ComplaintCount = Convert.ToInt32(methodRow["ComplaintCount"])
+                    });
+                }
+
+                return new DashboardComplaintCountModel
+                {
+                    TotalCount = Convert.ToInt32(row["TotalCount"]),
+                    PendingCount = Convert.ToInt32(row["PendingCount"]),
+                    ResolveCount = Convert.ToInt32(row["ResolveCount"]),
+                    FromCreatedDate = Convert.ToDateTime(row["FromCreatedDate"]),
+                    ToCreatedDate = Convert.ToDateTime(row["ToCreatedDate"]),
+                    ComplaintMethodCounts = methodCounts,
+                    ComplaintDepartmentCounts = DepCounts
+                };
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }
