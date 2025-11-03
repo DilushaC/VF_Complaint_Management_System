@@ -10,6 +10,7 @@ namespace ComplaignManagementSystem.Presentation.Filters
             var controllerName = context.ActionDescriptor.RouteValues["controller"];
             var actionName = context.ActionDescriptor.RouteValues["action"];
 
+            // ✅ Skip session check for login and reset actions
             if (controllerName != null &&
                 controllerName.Equals("User", StringComparison.OrdinalIgnoreCase) &&
                 (actionName.Equals("Login", StringComparison.OrdinalIgnoreCase) ||
