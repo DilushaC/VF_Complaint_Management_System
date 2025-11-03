@@ -4,6 +4,7 @@
     // Get the value from ViewData, default to an empty string if not set
     var activeMenuTab = ViewData["MenuTab"] as string ?? "";
     var activeSubMenuTab = ViewData["SubMenuTab"] as string ?? "";
+    var activeSecMenuTab = ViewData["SecMenuTab"] as string ?? "";
 }
 <html lang="en">
 
@@ -25,49 +26,26 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
-    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />    
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/menu/menu-types/vertical-menu.min.css" rel="stylesheet" />
-    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-gradient.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/assets/css/style.css" rel="stylesheet" />
-
-
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/feather/style.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/line-awesome/css/line-awesome.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/animation/css/animate.min.css" rel="stylesheet" />
-
-
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/pages/dashboard-ecommerce.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/simple-line-icons/style.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
-    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/pages/dashboard-analytics.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-tooltip.min.css" rel="stylesheet" />
     <style>
-        // .navigation .nav-item.has-sub > a i {
-        //     display: inline-block !important;
-        //     opacity: 1 !important;
-        //     visibility: visible !important;
-        //     margin-right: 10px;
-        //     position: relative;
-        // }
-
-        // .navigation .nav-item.has-sub > a i {
-        //     display: inline-block !important;
-        //     opacity: 1 !important;
-        //     visibility: visible !important;
-        //     margin-right: 10px;
-        // }
-
         .navigation .nav-item.has-sub > a:after {
             display: none !important;
         }
-        /* Optional: remove the default arrow if you don’t need it */
 
-
-        // .navigation .has-sub > a:after {
-        //     content: "\e844"; /* arrow icon */
-        //     font-family: Feather;
-        // }
+        .navigation .has-sub.is-shown > a:after {
+            display: none !important;
+        }
 
         footer {
             position: fixed;
@@ -80,9 +58,7 @@
             border-top: 1px solid #dee2e6;
             z-index: 1000;
         }
-        // .sidebarImage{
-        //     background-image: url('/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg');
-        // }
+
     </style>
 </head>
 
@@ -199,6 +175,54 @@
                                 <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
                                     <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
                                 </li>
+                                <li class="@(activeSubMenuTab == "CentralMenu" ? "active" : "")">
+                                    <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <hr style="margin-right:20px;margin-left:20px">
+                        <div class="row">
+                            <div class="col-md-6" style="text-align:center;margin-left:65px">
+                                <span style="color:gray;" class="text-uppercase text-center">Admin Part</span>
+                            </div>
+                        </div>
+                        <hr style="margin-right:20px;margin-left:20px">
+
+                        <li class="nav-item has-sub @(activeMenuTab == "MasterMainMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-package"></i>Masters</a>
+                            <ul class="menu-content">
+                                <li class="@(activeSubMenuTab == "MethodSubMenu" ? "active" : "")">
+                                    <a class="menu-item" href="/Method/Index">Method</a>
+                                </li>
+                                <li class="has-sub is-shown @(activeSecMenuTab == "DepartmentMenu" ? "open" : "")">
+                                    <a class="menu-item" href="#">Department / Nature</a>
+                                    <ul class="menu-content" style="">
+                                        <li class="@(activeSubMenuTab == "DepartmentSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/Department/Index">Department</a>
+                                        </li>
+                                        <li class="@(activeSubMenuTab == "NatureSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/Nature/Index">Nature</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item has-sub @(activeMenuTab == "UserMainMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-anchor"></i>User Management</a>
+                            <ul class="menu-content">
+
+                                <li class="has-sub is-shown @(activeSecMenuTab == "UserMasterMenu" ? "open" : "")">
+                                    <a class="menu-item" href="#">User Masters</a>
+                                    <ul class="menu-content" style="">
+                                        <li class="@(activeSubMenuTab == "UserRoleMasterSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/UserRole/Index">User Role</a>
+                                        </li>
+                                        <li class="@(activeSubMenuTab == "PageMasterSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/Page/Index">Pages</a>
+                                        </li>
+                                    </ul>
+                                </li>
 
                             </ul>
                         </li>
@@ -257,7 +281,7 @@
                                 <ul class="menu-content">
                                     @if (Context.Session.GetString("DepartmentPermission") != "Department User")
                                     {
-                                        <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
+                                        <li class="@(activeSecMenuTab == "DepartmentMenu" ? "open" : "")">
                                             <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
                                         </li>
                                     }
@@ -337,6 +361,12 @@
                                     }
                                 </ul>
                             </li>
+                            <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
+                                <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                    <i class="ft-arrow-down-left"></i>
+                                    <span class="menu-title" data-i18n="">Complaint History</span>
+                                </a>
+                            </li>
                         }
                     }
                 </ul>
@@ -375,7 +405,6 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
 
-    <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/pages/dashboard-analytics.min.js"></script>
 
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>

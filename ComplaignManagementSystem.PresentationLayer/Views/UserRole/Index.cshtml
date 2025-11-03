@@ -1,0 +1,314 @@
+﻿@using ComplaignManagementSystem.Data.Models
+@* @model IEnumerable<ComplaignManagementSystem.Data.Context.DapperContext> *@
+
+@{
+    ViewData["Title"] = "User Role Master";
+    ViewData["MenuTab"] = "UserMainMenu";
+    ViewData["SecMenuTab"] = "UserMasterMenu";
+    ViewData["SubMenuTab"] = "UserRoleMasterSubMenu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/plugins/demo/chameleon-admin-template/datatables/css/datatables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+@* <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/tables/datatable/datatables.min.css" rel="stylesheet" /> *@
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
+<style>
+    .modal {
+        z-index: 1060 !important; /* higher than sidebar */
+    }
+
+    .modal-backdrop {
+        z-index: 1055 !important;
+    }
+</style>
+
+
+
+<div class="card" style="margin-top:20px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-header">
+                <h1>User Role Create Form</h1>
+                <hr />
+            </div>
+            @Html.Partial("_CreatePartial")
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="card" style="margin-top:20px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-header">
+                <h1>User Role Master</h1>
+                <hr />
+            </div>
+            <div class="card-content collapse show">
+                <div class="card-body card-dashboard">
+                    <div class="table-responsive">
+                        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4" style="margin-top:-10px">
+                            <div class="row" style="margin-top:10px">
+                                <div class="col-sm-12">
+                                    <table class="table table-striped table-bordered base-style dataTable" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+                                        <thead>
+                                            <tr role="row">
+                                                <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="0" colspan="0" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 126.391px;">#</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 196.859px;">Role</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">CreatedDate</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 220.6094px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.UserRoleList != null && ViewBag.UserRoleList.Count > 0)
+                                            {
+                                                int i = 1;
+                                                @foreach (var item in ViewBag.UserRoleList)
+                                                {
+
+                                                    <tr role="row" class="odd">
+                                                        <td class="sorting_1">@i</td>
+                                                        <td>@item.Role</td>
+                                                        <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                        <td style="width:50px">
+                                                            <div class="row">
+@*                                                                 <div class="col-md-2">
+                                                                    <button type="button" class="btn btn-outline-purple btn-sm" data-toggle="tooltip" data-placement="top" title="View" onclick="Detils(@item.Id)"><i class="ft-eye"></i></button>
+                                                                </div> *@
+
+                                                                <div class="col-md-2" style="margin-left:5px;margin-right:5px">
+                                                                    <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Edit" onclick="Edit(@item.Id)"><i class="ft-edit"></i></button>
+                                                                </div>
+                                                                <div class="col-md-2" style="margin-left:0px;margin-right:5px">
+                                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete" onclick="Delete(@item.Id)"><i class="ft-delete"></i></button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    i++;
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr role="row" class="odd">
+                                                    <td colspan="6" class="text-center">No complaints found.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th rowspan="1" colspan="1">#</th>
+                                                <th rowspan="1" colspan="1">Role</th>
+                                                <th rowspan="1" colspan="1">Created Branch</th>
+                                                <th rowspan="1" colspan="1">Action</th>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="DetailModal" tabindex="-1" role="dialog" aria-labelledby="UserRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="DetailModalLabel">User Role Details</h2>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editUserRoleModal" tabindex="-1" role="dialog" aria-labelledby="editUserRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="editUserRoleModalLabel">User Role Edit Details</h1>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body" id="editUserRoleContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/datatables/js/datatables.bootstrap4.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    $('#DataTables_Table_0').DataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50, 100],
+
+    });
+    function Detils(Id) {
+        $.ajax({
+            url: '@Url.Action("Details", "UserRole")',
+            type: "GET",
+            data: { id: Id },
+            dataType: 'html',
+            success: function (result) {
+                $("#DetailModal .modal-body").html(result);
+                $("#DetailModal").modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to load modal content:", error);
+                alert("Error");
+                // Optionally show an error message in the modal
+                $("#DetailModal .modal-body").html("<p class='text-danger'>Error loading details.</p>");
+                $("#DetailModal").modal('show');
+            }
+        });
+    }
+    function Edit(id) {
+        $.ajax({
+            url: '/UserRole/Edit',
+            type: 'GET',
+            data: { id: id },
+            dataType: 'html',
+            success: function (html) {
+                $('#editUserRoleContent').html(html);
+                $('#editUserRoleModal').modal('show');
+                //bindEditFormSubmit(); // Bind form submit after loading content
+            },
+            error: function () {
+                alert('Could not load complaint data.');
+            }
+        });
+    }
+    function Delete(depId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to delete this UserRole?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("Delete", "UserRole")',
+                    type: 'POST',
+                    data: { id: depId },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'UserRole has been deleted successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                location.reload(); // Refresh table after delete
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Unable to delete UserRole.'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while deleting attachment.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+        });
+    }
+    $(document).ready(function() {
+        var ToastMessage = '@(TempData.ContainsKey("ToastMessage") ? TempData["ToastMessage"] as string : "")';
+        if (ToastMessage) {
+            var toastEl = document.getElementById('toastId');
+            if (toastEl) {
+                var toastTitle = toastEl.querySelector('.toast-title');
+                var toastMsg = toastEl.querySelector('.toast-message');
+                if(ToastMessage == 'SubmittedSuccessfully!'){
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Saved UserRole";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
+                        toastEl.classList.add("toast-success");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
+                    }
+                }
+                else if(ToastMessage == 'UpdatedSuccessfully!'){
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Updated UserRole";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
+                        toastEl.classList.add("toast-success");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
+                    }
+                }
+                else if(ToastMessage == 'DeletedSuccessfully!'){
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Deleted UserRole";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
+                        toastEl.classList.add("toast-error");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
+                    }
+                }
+
+            } else {
+                console.error("Toast container element not found.");
+            }
+        }
+    });
+</script>

@@ -4,6 +4,11 @@ using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.Helpers;
 using ComplaintManagementSystem.Business.LoginHandler;
 using ComplaignManagementSystem.Presentation.Filters;
+using ComplaintManagementSystem.Business.DepartmentHandler;
+using ComplaintManagementSystem.Business.NatureHandler;
+using ComplaintManagementSystem.Business.MethodHandler;
+using ComplaintManagementSystem.Business.UserRoleHandler;
+using ComplaintManagementSystem.Business.PageHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 

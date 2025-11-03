@@ -146,15 +146,15 @@
                                                             <td>
                                                                 <div class="row">
                                                                     <div class="col-md-2">
-                                                                        <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
+                                                                        <button type="button" class="btn btn-outline-purple" data-toggle="tooltip" data-placement="top" title="View" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
                                                                     </div>
                                                                     @if (item.Status == "Sent Department")
                                                                     {
                                                                         <div class="col-md-2" style="margin-left:20px">
-                                                                            <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
+                                                                            <button type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title="Forward" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
                                                                         </div>
                                                                         <div class="col-md-2" style="margin-left:20px">
-                                                                            <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
+                                                                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Resolve" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
                                                                         </div>
                                                                     }
 
@@ -177,15 +177,15 @@
                                                             <td>
                                                                 <div class="row">
                                                                     <div class="col-md-2">
-                                                                        <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
+                                                                        <button type="button" class="btn btn-outline-purple" data-toggle="tooltip" data-placement="top" title="View" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
                                                                     </div>
                                                                     @if (item.Status == "Sent Department")
                                                                     {
                                                                         <div class="col-md-2" style="margin-left:20px">
-                                                                            <button type="button" class="btn btn-outline-warning" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
+                                                                            <button type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title="Forward" onclick="ComplaintForward(@item.Id)" style="width:30px;height:30px"><i class="ft-fast-forward"></i></button>
                                                                         </div>
                                                                         <div class="col-md-2" style="margin-left:20px">
-                                                                            <button type="button" class="btn btn-outline-success" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
+                                                                            <button type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title="Resolve" onclick="ComplaintDepResolve(@item.Id)" style="width:30px;height:30px"><i class="ft-check-square"></i></button>
                                                                         </div>
                                                                     }
 
@@ -308,6 +308,7 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
     $("#ComplaintMethod_Id").select2({
       allowClear:true,

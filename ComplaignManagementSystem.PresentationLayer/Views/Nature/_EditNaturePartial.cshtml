@@ -1,0 +1,142 @@
+﻿
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+
+<div class="card" style="margin-top:-10px">
+    <div class="card-content collapse show">
+        <div class="card-body">
+            @using (Html.BeginForm("Edit", "Nature", FormMethod.Post, new { id = "EditForm" }))
+            {
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="Complaint Method">Complaint Method</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <br />
+                                <select id="Dep_Ids" name="Dep_Ids" class="form-control" asp-items="ViewBag.Dep_Id">
+                                    <option value="">-- Select --</option>
+                                </select>
+                                <span id="error-message-deps"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="Natures">Nature</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <input type="text" id="Natures" class="form-control" placeholder="Nature Name" name="Natures" autocomplete="off" value="@Model.Nature">
+                                <span id="error-message-Natures"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Codes">Nature code</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <input type="text" id="Codes" class="form-control" placeholder="Nature Code" name="Codes" autocomplete="off" value="@Model.Code">
+                                <span id="error-message-Codes"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <input tyepe="text" id="Id" name="Id" value="@Model.Id" hidden></input>
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-danger mr-1">
+                        Clear
+                    </button>
+                    <button type="button" class="btn btn-success" id="saveE">
+                        Save
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+
+<script type="text/javascript">
+
+    $("#Dep_Ids").select2({
+      allowClear:true,
+      placeholder: 'Select Department',
+      dropdownParent: $('#editNatureModal')
+    });
+    $('#saveE').on('click', function () {
+        var form = $('#EditForm');
+        alert();
+        const errorMessageDepContainerE = document.getElementById('error-message-deps');
+        const errorMessageNatureContainerE = document.getElementById('error-message-Natures');
+        const errorMessageCodeContainerE = document.getElementById('error-message-Codes');
+        var Dep_Ids = document.getElementById("Dep_Ids").value;
+        var Natures = document.getElementById("Natures").value;
+        var Codes = document.getElementById("Codes").value;
+        alert()
+        if(Dep_Ids == "" && Natures == "" && Codes == ""){
+            errorMessageDepContainerE.textContent = 'Please Select Department Name.';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
+            errorMessageCodeContainerE.style.color = 'red';
+            return;
+        } else if(Dep_Ids != "" && Natures == "" && Codes == ""){
+            errorMessageDepContainerE.textContent = '';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
+            errorMessageCodeContainerE.style.color = 'red';
+            return;
+        } else if(Dep_Ids == "" && Natures != "" && Code == ""){
+            errorMessageDepContainerE.textContent = 'Please Select Department Name';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = '';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
+            errorMessageCodeContainerE.style.color = 'red';
+            return;
+        } else if(Dep_Ids == "" && Natures == "" && Codes != ""){
+            errorMessageDepContainerE.textContent = 'Please Select Department Name.';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = '';
+            errorMessageCodeContainerE.style.color = 'red';
+            return;
+        } else if(Dep_Ids != "" && Natures != "" && Codes == ""){
+            errorMessageDepContainerE.textContent = '';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = '';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
+            errorMessageCodeContainerE.style.color = 'red';
+            return;
+        } else if(Dep_Ids == "" && Natures != "" && Codes != ""){
+            errorMessageDepContainerE.textContent = 'Please Select Department Name.';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = '';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = '';
+            errorMessageCodeContainerE.style.color = 'red';
+            return;
+        } else if(Dep_Ids != "" && Natures == "" && Codes != ""){
+            errorMessageDepContainerE.textContent = '';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = '';
+            errorMessageCodeContainerE.style.color = 'red';
+            return;
+        }else{
+            errorMessageDepContainerE.textContent = '';
+            errorMessageDepContainerE.style.color = 'red';
+            errorMessageNatureContainerE.textContent = '';
+            errorMessageNatureContainerE.style.color = 'red';
+            errorMessageCodeContainerE.textContent = '';
+            errorMessageCodeContainerE.style.color = 'red';
+        }
+        // Change action dynamically
+        form.attr('action', '/Nature/Edit');
+        form.submit();
+    });
+
+</script>

@@ -121,8 +121,6 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 
                 throw ex;
             }
-
-
         }
 
         public List<UserPageCapabilityModel> getAccessPages(UserModel user, UserPermissionModel uPermission)

@@ -19,6 +19,8 @@
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/tables/datatable/datatables.min.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-gradient.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/colors/palette-tooltip.min.css" rel="stylesheet" />
 <style>
     .modal {
         z-index: 1060 !important; /* higher than sidebar */
@@ -135,30 +137,58 @@
                                                 int i = 1;
                                                 @foreach (var item in ViewBag.ComplainLists)
                                                 {
-                                                    <tr role="row" class="odd">
-                                                        <td class="sorting_1">@i</td>
-                                                        <td>@item.Refference</td>
-                                                        <td>@item.Method</td>
-                                                        @* <td>@item.Complaint</td> *@
-                                                        <td>@item.Branch</td>
-                                                        <td>@item.Priority</td>
-                                                        <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                                        <td style="width:50px">
-                                                            <div class="row">
-                                                                <div class="col-md-2">
-                                                                    <button type="button" class="btn btn-outline-purple" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
-                                                                </div>
-                                                                @if (item.Status == "Created")
-                                                                {
-                                                                    <div class="col-md-2" style="margin-left:30px;margin-right:20px">
-                                                                        <button type="button" class="btn btn-outline-warning" onclick="ComplaintEdit(@item.Id)" style="width:30px;height:30px"><i class="ft-edit"></i></button>
+                                                    if (item.Priority == "High")
+                                                    {
+                                                        <tr role="row" class="odd" style="background-color:red">
+                                                            <td class="sorting_1 text-white">@i</td>
+                                                            <td class="text-white">@item.Refference</td>
+                                                            <td class="text-white">@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td class="text-white">@item.Branch</td>
+                                                            <td class="text-white">@item.Priority</td>
+                                                            <td class="text-white">@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td style="width:50px">
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" data-toggle="tooltip" data-placement="top" title="View" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
                                                                     </div>
-                                                                }
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                    i++;
+                                                                    @if (item.Status == "Created")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:30px;margin-right:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title="Edit" onclick="ComplaintEdit(@item.Id)" style="width:30px;height:30px"><i class="ft-edit"></i></button>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr role="row" class="odd">
+                                                            <td class="sorting_1">@i</td>
+                                                            <td>@item.Refference</td>
+                                                            <td>@item.Method</td>
+                                                            @* <td>@item.Complaint</td> *@
+                                                            <td>@item.Branch</td>
+                                                            <td>@item.Priority</td>
+                                                            <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                            <td style="width:50px">
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <button type="button" class="btn btn-outline-purple" data-toggle="tooltip" data-placement="top" title="View" onclick="ComplaintDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
+                                                                    </div>
+                                                                    @if (item.Status == "Created")
+                                                                    {
+                                                                        <div class="col-md-2" style="margin-left:30px;margin-right:20px">
+                                                                            <button type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title="Edit" onclick="ComplaintEdit(@item.Id)" style="width:30px;height:30px"><i class="ft-edit"></i></button>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        i++;
+                                                    }
                                                 }
                                             }
                                             else
@@ -253,24 +283,18 @@
 </div>
 
 
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+@* <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+ *@<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
-
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
-<script src="~/js/feather.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/forms/toggle/switchery.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/switch.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app-menu.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/forms/checkbox-radio.min.js"></script>
-<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
-
+<script src="~/plugins/demo/chameleon-admin-template/datatables/js/datatables.bootstrap4.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
+        
+
     function goToCreate() {
         window.location.href = '/ComplaintManageProcess/Create';
     }
