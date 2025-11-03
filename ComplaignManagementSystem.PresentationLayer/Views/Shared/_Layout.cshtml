@@ -26,7 +26,7 @@
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/bootstrap-extended.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/colors.min.css" rel="stylesheet" />
-    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />    
+    <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/components.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/core/menu/menu-types/vertical-menu.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/assets/css/style.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/feather/style.min.css" rel="stylesheet" />
@@ -46,6 +46,7 @@
         .navigation .has-sub.is-shown > a:after {
             display: none !important;
         }
+
         footer {
             position: fixed;
             bottom: 0;
@@ -180,6 +181,13 @@
                             </ul>
                         </li>
                         <hr style="margin-right:20px;margin-left:20px">
+                        <div class="row">
+                            <div class="col-md-6" style="text-align:center;margin-left:65px">
+                                <span style="color:gray;" class="text-uppercase text-center">Admin Part</span>
+                            </div>
+                        </div>
+                        <hr style="margin-right:20px;margin-left:20px">
+
                         <li class="nav-item has-sub @(activeMenuTab == "MasterMainMenu" ? "open" : "")">
                             <a href="#"><i class="ft-package"></i>Masters</a>
                             <ul class="menu-content">
@@ -194,7 +202,25 @@
                                         </li>
                                         <li class="@(activeSubMenuTab == "NatureSubMenu" ? "active" : "")">
                                             <a class="menu-item" href="/Nature/Index">Nature</a>
-                                        </li>                                        
+                                        </li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item has-sub @(activeMenuTab == "UserMainMenu" ? "open" : "")">
+                            <a href="#"><i class="ft-anchor"></i>User Management</a>
+                            <ul class="menu-content">
+
+                                <li class="has-sub is-shown @(activeSecMenuTab == "UserMasterMenu" ? "open" : "")">
+                                    <a class="menu-item" href="#">User Masters</a>
+                                    <ul class="menu-content" style="">
+                                        <li class="@(activeSubMenuTab == "UserRoleMasterSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/UserRole/Index">User Role</a>
+                                        </li>
+                                        <li class="@(activeSubMenuTab == "PageMasterSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/Page/Index">Pages</a>
+                                        </li>
                                     </ul>
                                 </li>
 
@@ -333,7 +359,7 @@
                                             <a class="menu-item" href="/ComplaintManageProcess/CentralProcess">Central</a>
                                         </li>
                                     }
-                                </ul>                                
+                                </ul>
                             </li>
                             <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
                                 <a href="/ComplaintManageProcess/ComplaintHistoryProcess">

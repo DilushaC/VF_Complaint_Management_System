@@ -8,6 +8,8 @@ using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.DepartmentHandler;
 using ComplaintManagementSystem.Business.NatureHandler;
 using ComplaintManagementSystem.Business.MethodHandler;
+using ComplaintManagementSystem.Business.UserRoleHandler;
+using ComplaintManagementSystem.Business.PageHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,10 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<INatureService, NatureService>();
 
 builder.Services.AddScoped<IMethodService, MethodService>();
+
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+
+builder.Services.AddScoped<IPageService, PageService>();
 
 builder.Services.AddSession(options =>
 {
