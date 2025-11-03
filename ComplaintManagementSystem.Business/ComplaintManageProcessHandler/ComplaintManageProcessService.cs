@@ -523,7 +523,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 // Use Dapper to query the single record
                 var complaintDataTable = await _connection.SingleQueryReturn(query, Id);
 
-                string FilePath = $"/wwwroot/Attachments/_{Id}.pdf";
+               
 
 
                 var row = complaintDataTable.Rows[0];
@@ -539,9 +539,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 complainModel.Branch = row["Branch"].ToString();
                 complainModel.Department = row["Department"].ToString();
                 complainModel.Nature = row["Nature"].ToString();
-                if (!File.Exists(FilePath))
+
+                string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Attachments");
+                string physicalPath = Path.Combine(rootPath, $"_{Id}.pdf");
+                if (System.IO.File.Exists(physicalPath))
                 {
-                    complainModel.AttachmentPath = $"/wwwroot/Attachments/{FilePath}";
+                    // 3. Set the *virtual* path for your model (for browser access)
+                    complainModel.AttachmentPath = $"/Attachments/_{Id}.pdf";
                 }
                 return (complainModel);
 
@@ -633,7 +637,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             try
             {
                 var ComProcessId = collection["Id"].ToString();
-                var ComplaintMethod_Id = collection["ComplaintMethod_Id"].ToString();
+                var ComplaintMethod_Id = collection["ComplaintMethod_Ids"].ToString();
                 var Cu_Name = collection["Cus_Name"].ToString();
                 var Cus_Nic = collection["Cus_Nic"].ToString();
                 var Cus_Refference = collection["Cus_Refference"].ToString(); ;
@@ -706,7 +710,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             try
             {
                 var ComProcessId = collection["Id"].ToString();
-                var ComplaintMethod_Id = collection["ComplaintMethod_Id"].ToString();
+                var ComplaintMethod_Id = collection["ComplaintMethod_Ids"].ToString();
                 var Cu_Name = collection["Cus_Name"].ToString();
                 var Cus_Nic = collection["Cus_Nic"].ToString();
                 var Cus_Refference = collection["Cus_Refference"].ToString(); ;

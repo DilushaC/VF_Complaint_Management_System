@@ -1,0 +1,183 @@
+﻿
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
+<div class="card" style="margin-top:-10px">
+    <div class="card-content collapse show">
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "PageCapability", FormMethod.Post, new { id = "CreateForm" }))
+            {
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Complaint Method">User Role</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <br />
+                                <select id="UserRoleId" name="UserRoleId" class="form-control" asp-items="ViewBag.UserRoleId">
+                                    <option value="">-- Select --</option>
+                                </select>
+                                <span id="error-message-Role"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Complaint Method">Page</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <br />
+                                <select id="PageId" name="PageId" class="form-control" asp-items="ViewBag.PageId">
+                                    <option value="">-- Select --</option>
+                                </select>
+                                <span id="error-message-Page"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:10px">
+                        <label for="IsEdit">Access (Edit or View)</label>
+                        <br />
+                        <div class="row" style="margin-left:10px">
+                            <div class="col-md-2">
+                                <label for="IsEdit-Yes">Edit</label>
+                                <input class="form-control" type="radio" id="IsEdit-Yes" name="IsEdit" value="1" style="block-size:15px;margin:-28px;margin-left:-10px">
+                            </div>
+
+                        </div>
+                        <div class="row" style="margin-left:10px">
+                            <div class="col-md-2" style="margin-left:120px">
+                                <label for="IsEdit-No">View Only</label>
+                                <input class="form-control" type="radio" id="IsEdit-No" name="IsEdit" value="0" style="block-size:15px;margin:-28px;margin-left:20px" checked>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-danger mr-1">
+                        Clear
+                    </button>
+                    <button type="button" class="btn btn-success" id="save">
+                        Save
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script type="text/javascript">
+
+    $("#UserRoleId").select2({
+      allowClear:true,
+      placeholder: 'Select Role'
+    });
+    $("#PageId").select2({
+      allowClear:true,
+      placeholder: 'Select Page'
+    });
+    $('#save').on('click', function () {        
+        var form = $('#CreateForm');          
+        
+        const errorMessageRoleContainer = document.getElementById('error-message-Role');           
+        const errorMessagePageContainer = document.getElementById('error-message-Page');                
+        var Role = document.getElementById("UserRoleId").value;                
+        var PageId = document.getElementById("PageId").value;            
+        if(Role == "" && PageId == ""){                
+            errorMessageRoleContainer.textContent = 'Please Select Role.';                
+            errorMessageRoleContainer.style.color = 'red';                
+            errorMessagePageContainer.textContent = 'Please Select Page.';                
+            errorMessagePageContainer.style.color = 'red';
+            return;
+        } else if(Role != "" && PageId == ""){
+            errorMessageRoleContainer.textContent = '';
+            errorMessageRoleContainer.style.color = 'red';
+            errorMessagePageContainer.textContent = 'Please Select Page.';
+            errorMessagePageContainer.style.color = 'red';
+            return;
+        } else if(Role == "" && PageId != ""){
+            errorMessageRoleContainer.textContent = 'Please Select Role.';
+            errorMessageRoleContainer.style.color = 'red';
+            errorMessagePageContainer.textContent = '';
+            errorMessagePageContainer.style.color = 'red';
+            return;
+        
+        }else {
+            errorMessageRoleContainer.textContent = '';
+            errorMessageRoleContainer.style.color = 'red';
+            errorMessagePageContainer.textContent = '';
+            errorMessagePageContainer.style.color = 'red';
+        }
+        // Change action dynamically
+        form.attr('action', '/PageCapability/Create');
+        form.submit();
+    });
+    $('#PageId').on('change', function () {
+        var RoleId = document.getElementById("UserRoleId").value;
+        var PageId = document.getElementById("PageId").value;
+        const errorMessagePageContainer = document.getElementById('error-message-Page');
+        
+        if(RoleId != "" && PageId != ""){
+            // Perform further actions based on the new selection        
+            $.ajax({        
+                url: '/PageCapability/CheckAvailability',  // your controller action        
+                type: 'GET', // or 'POST' if you prefer        
+                data: { roleId: RoleId, pageId: PageId },        
+                success: function (response) {        
+                    if (response.status == true) {        
+                        errorMessagePageContainer.textContent = 'Please Already Exist Role Against Page.';        
+                        errorMessagePageContainer.style.color = 'red';        
+                        $('#save').prop('disabled', true);        
+                    } else {        
+                        errorMessagePageContainer.textContent = '';        
+                        errorMessagePageContainer.style.color = 'red';        
+                        $('#save').prop('disabled', false);        
+                    }        
+                },        
+                error: function (xhr, status, error) {        
+                    console.error('AJAX Error:', error);        
+                    $('#error-message-page').text('Error checking availability.')        
+                    .css('color', 'red');        
+                }        
+            });
+        }        
+    });
+    $('#UserRoleId').on('change', function () {
+        var RoleId = document.getElementById("UserRoleId").value;
+        var PageId = document.getElementById("PageId").value;
+        const errorMessagePageContainer = document.getElementById('error-message-Page');
+        
+        if(RoleId != "" && PageId != ""){
+            alert(RoleId + " " + PageId);
+            // Perform further actions based on the new selection        
+            $.ajax({        
+                url: '/PageCapability/CheckAvailability',  // your controller action        
+                type: 'GET', // or 'POST' if you prefer        
+                data: { roleId: RoleId, pageId: PageId },        
+                success: function (response) {        
+                    if (response.status == true) {        
+                        errorMessagePageContainer.textContent = 'Please Already Exisit Role Against Page.';        
+                        errorMessagePageContainer.style.color = 'red';        
+                        $('#save').prop('disabled', true);        
+                    } else {        
+                        errorMessagePageContainer.textContent = '';        
+                        errorMessagePageContainer.style.color = 'red';        
+                        $('#save').prop('disabled', false);        
+                    }        
+                },        
+                error: function (xhr, status, error) {        
+                    console.error('AJAX Error:', error);        
+                    $('#error-message-page').text('Error checking availability.')        
+                    .css('color', 'red');        
+                }        
+            });
+        }        
+    });
+</script>

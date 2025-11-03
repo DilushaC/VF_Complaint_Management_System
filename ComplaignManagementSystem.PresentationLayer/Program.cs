@@ -10,6 +10,7 @@ using ComplaintManagementSystem.Business.NatureHandler;
 using ComplaintManagementSystem.Business.MethodHandler;
 using ComplaintManagementSystem.Business.UserRoleHandler;
 using ComplaintManagementSystem.Business.PageHandler;
+using ComplaintManagementSystem.Business.PageCapabilityHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,8 @@ builder.Services.AddScoped<IMethodService, MethodService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 
 builder.Services.AddScoped<IPageService, PageService>();
+
+builder.Services.AddScoped<IPageCapabilityService, PageCapabilityService>();
 
 builder.Services.AddSession(options =>
 {
