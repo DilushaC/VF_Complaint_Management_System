@@ -8,7 +8,13 @@ namespace ComplaignManagementSystem.Presentation.Filters
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var controllerName = context.ActionDescriptor.RouteValues["controller"];
-            if (controllerName != null && controllerName.Equals("User", StringComparison.OrdinalIgnoreCase))
+            var actionName = context.ActionDescriptor.RouteValues["action"];
+
+            if (controllerName != null &&
+                controllerName.Equals("User", StringComparison.OrdinalIgnoreCase) &&
+                (actionName.Equals("Login", StringComparison.OrdinalIgnoreCase) ||
+                 actionName.Equals("Reset", StringComparison.OrdinalIgnoreCase) ||
+                 actionName.Equals("Register", StringComparison.OrdinalIgnoreCase)))
             {
                 base.OnActionExecuting(context);
                 return;

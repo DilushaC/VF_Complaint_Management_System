@@ -2,8 +2,7 @@
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.Helpers;
-using ComplaintManagementSystem.Business.LoginHandler; 
-using Microsoft.AspNetCore.Http;
+using ComplaintManagementSystem.Business.LoginHandler;
 using ComplaignManagementSystem.Presentation.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,26 +12,21 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add<SessionCheckAttribute>();
 });
 
-builder.Services.AddControllersWithViews();
-
 builder.Services.AddScoped<DapperContext>();
-
 builder.Services.AddScoped<_ConnectionService>();
-
 builder.Services.AddScoped<IComplaintManageProcessService, ComplaintManageProcessService>();
-
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(5); 
+    options.IdleTimeout = TimeSpan.FromMinutes(1);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddSession();
 
 var app = builder.Build();
+
 
 if (!app.Environment.IsDevelopment())
 {
