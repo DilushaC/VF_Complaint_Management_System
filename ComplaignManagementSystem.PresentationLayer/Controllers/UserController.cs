@@ -37,7 +37,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 HttpContext.Session.SetString("UserName", user.UserName);
                 HttpContext.Session.SetString("UserDepName", DepDetails.Name);
                 HttpContext.Session.SetString("UserDep_Id", Convert.ToString(user.Dep_Id));
-                HttpContext.Session.SetString("SaltKey", Convert.ToString(user.SaltKey));
                 HttpContext.Session.SetString("UserId", Convert.ToString(user.Id));
 
                 if (user.IsReset == false)
