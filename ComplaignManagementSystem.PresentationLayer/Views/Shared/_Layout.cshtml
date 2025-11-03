@@ -412,21 +412,29 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
 
     <script>
-        const sessionTimeout = 1 * 60 * 1000; 
-        let timeout;
+            const sessionTimeout = 1 * 60 * 1000;
+            let timeout;
 
-        function resetTimer() {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                window.location.href = '/User/Login';
-            }, sessionTimeout);
-        }
+            function resetTimer() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    window.location.href = '/User/Login';
+                }, sessionTimeout);
+            }
 
-        window.onload = resetTimer;
-        document.onmousemove = resetTimer;
-        document.onkeypress = resetTimer;
-        document.onscroll = resetTimer;
-        document.onclick = resetTimer;
+            window.onload = resetTimer;
+            document.onmousemove = resetTimer;
+            document.onkeypress = resetTimer;
+            document.onscroll = resetTimer;
+            document.onclick = resetTimer;
+
+            (function () {
+                window.history.pushState(null, "", window.location.href);
+                window.onpopstate = function () {
+                    window.history.pushState(null, "", window.location.href);
+                };
+            })();
+
     </script>
 
 
