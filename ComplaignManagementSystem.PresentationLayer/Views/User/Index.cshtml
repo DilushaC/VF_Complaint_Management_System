@@ -1,0 +1,166 @@
+﻿@using ComplaignManagementSystem.Data.Models
+
+@{
+    ViewData["Title"] = "User Management Master";
+    ViewData["MenuTab"] = "UserMainMenu";
+    ViewData["SecMenuTab"] = "UserMenu";
+    ViewData["SubMenuTab"] = "UserPermission";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/plugins/demo/chameleon-admin-template/datatables/css/datatables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+@* <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/tables/datatable/datatables.min.css" rel="stylesheet" /> *@
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
+
+<div class="card" style="margin-top:20px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-header">
+                <h1>User Management Master</h1>
+                <hr />
+            </div>
+            <div class="card-content collapse show">
+                <div class="card-body card-dashboard">
+                    <div class="table-responsive">
+                        <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4" style="margin-top:-10px">
+                            <div class="row" style="margin-top:10px">
+                                <div class="col-sm-12">
+                                    <table class="table table-striped table-bordered base-style dataTable" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+                                        <thead>
+                                            <tr role="row">
+                                                <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="0" colspan="0" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 126.391px;">#</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 196.859px;">User Name</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 91.6406px;">Name</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Email</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Branch</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Depertment</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">Activeness</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">CreatedDate</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="min-width: 120px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.UserList != null && ViewBag.UserList.Count > 0)
+                                            {
+                                                int i = 1;
+                                                @foreach (var item in ViewBag.UserList)
+                                                {
+                                                    <tr role="row" class="odd">
+                                                        <td class="sorting_1">@i</td>
+                                                        <td>@item.UserName</td>
+                                                        <td>@item.Name</td>
+                                                        <td>@item.Email</td>
+                                                        <td>@item.Branch</td>
+                                                        <td>@item.Department</td>
+                                                        @if (item.Active == true)
+                                                        {
+                                                            <td style="color:green">Active</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td style="color:orangered">Inactive</td>
+                                                        }
+                                                        <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+                                                        <td style="width:180px">
+                                                            <div class="row">
+                                                                @*<div class="col-md-2">
+                                                                    <button type="button" class="btn btn-outline-purple btn-sm" data-toggle="tooltip" data-placement="top" title="View" onclick=" Detils(@item.Id)"><i class="ft-eye"></i></button>
+                                                                </div> *@
+
+                                                                <div class="col-md-2" style="margin-left:20px;margin-right:20px">
+                                                                    <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Edit" onclick=" Edit(@item.Id)"><i class="ft-edit"></i></button>
+                                                                </div>
+                                                                <div class="col-md-2" style="margin-left:0px;margin-right:20px">
+                                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete" onclick=" Delete(@item.Id)"><i class="ft-delete"></i></button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    i++;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr role="row" class="odd">
+                                                    <td colspan="6" class="text-center">No complaints found.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th rowspan="1" colspan="1">#</th>
+                                                <th rowspan="1" colspan="1">User Name</th>
+                                                <th rowspan="1" colspan="1">Name</th>
+                                                <th rowspan="1" colspan="1">Email</th>
+                                                <th rowspan="1" colspan="1">Branch</th>
+                                                <th rowspan="1" colspan="1">Department</th>
+                                                <th rowspan="1" colspan="1">Activeness</th>
+                                                <th rowspan="1" colspan="1">Created Branch</th>
+                                                <th rowspan="1" colspan="1">Action</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/datatables/js/datatables.bootstrap4.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    $('#DataTables_Table_0').DataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50, 100],
+        "columnDefs": [
+            { "orderable": false, "targets": [8] }
+        ]
+    });
+    $(document).ready(function() {
+        var ToastMessage = '@(TempData.ContainsKey("ToastMessage") ? TempData["ToastMessage"] as string : "")';
+        if (ToastMessage) {
+            var toastEl = document.getElementById('toastId');
+            if (toastEl) {
+                var toastTitle = toastEl.querySelector('.toast-title');
+                var toastMsg = toastEl.querySelector('.toast-message');
+                if(ToastMessage == 'SubmittedUserSuccessfully!'){
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Saved User";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
+                        toastEl.classList.add("toast-success");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
+                    }
+                }
+
+            } else {
+                console.error("Toast container element not found.");
+            }
+        }
+    });
+</script>

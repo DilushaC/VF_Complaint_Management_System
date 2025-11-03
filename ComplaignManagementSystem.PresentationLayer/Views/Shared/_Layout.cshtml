@@ -205,7 +205,6 @@
                                         </li>
                                     </ul>
                                 </li>
-
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "UserMainMenu" ? "open" : "")">
@@ -224,6 +223,18 @@
                                         <li class="@(activeSubMenuTab == "PageManageMasterSubMenu" ? "active" : "")">
                                             <a class="menu-item" href="/PageCapability/Index">Pages Management</a>
                                         </li>
+                                    </ul>
+                                </li>
+                                <li class="has-sub is-shown @(activeSecMenuTab == "UserMenu" ? "open" : "")">
+                                    <a class="menu-item" href="#">User Management</a>
+                                    <ul class="menu-content" style="">
+                                        <li class="@(activeSubMenuTab == "UserCreation" ? "active" : "")">
+                                            <a class="menu-item" href="/User/Create">New User Create</a>
+                                        </li>
+                                        <li class="@(activeSubMenuTab == "UserPermission" ? "active" : "")">
+                                            <a class="menu-item" href="/User/Index">User Permission</a>
+                                        </li>
+
                                     </ul>
                                 </li>
 
@@ -410,14 +421,10 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-
-
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
-
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/tooltip/tooltip.min.js"></script>
-
 </body>
 </html>
 

@@ -200,6 +200,206 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                 throw ex;
             }
         }
+
+        public List<UserModel> getAllList()
+        {
+            try
+            {
+                var query = @"
+                            SELECT CU.Id AS Id, 
+                            CU.UserName AS UserName, 
+                            CU.Name AS Name, 
+                            CU.Email AS Email, 
+                            CBM.Id AS BranchId, 
+                            CBM.Branch AS Branch, 
+                            CDM.Id as Dep_Id, 
+                            CDM.Name AS Department , 
+                            CU.CreatedDate AS CreatedDate, 
+                            CU.IsReset AS IsReset,
+                            CU.Active AS Active
+                        FROM Complaint_User AS CU 
+                        INNER JOIN Complaint_Branch_Master as CBM ON CBM.Id = CU.BranchId
+                        INNER JOIN Complaint_Department_Master AS CDM ON CDM.Id = CU.Dep_Id";
+                var Data = _connectionService.Return(query);
+                var Row = Data.Rows[0];
+
+                List<UserModel> uList = new List<UserModel>();
+
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    UserModel bModel = new UserModel()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        UserName = BRow["UserName"].ToString(),
+                        Name = BRow["Name"].ToString(),
+                        Email = BRow["Email"].ToString(),
+                        Branch = BRow["Branch"].ToString(),
+                        Department = BRow["Department"].ToString(),
+                        Active = Convert.ToBoolean(BRow["Active"]),
+                        CreatedDate = Convert.ToDateTime(BRow["CreatedDate"]),
+                    };
+                    uList.Add(bModel);
+                }
+                return uList;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public async Task<List<Complaint_Department_MasterModel>> getDepList()
+        {
+            try
+            {
+                string Query = $"SELECT * FROM Complaint_Department_Master WHERE Active=1";
+                var Data = _connectionService.Return(Query);
+                var Row = Data.Rows[0];
+
+                List<Complaint_Department_MasterModel> depList = new List<Complaint_Department_MasterModel>();
+
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    Complaint_Department_MasterModel bModel = new Complaint_Department_MasterModel()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        Name = BRow["Name"].ToString(),
+                        Code = BRow["Code"].ToString(),
+                        Active = Convert.ToBoolean(BRow["Active"]),
+                        CreatedDate = Convert.ToDateTime(BRow["CreatedDate"]),
+                    };
+                    depList.Add(bModel);
+                }
+                return depList.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<BranchModel>> getBranchList()
+        {
+            try
+            {
+                string Query = $"SELECT * FROM Complaint_Branch_Master WHERE Active=1";
+                var Data = _connectionService.Return(Query);
+                var Row = Data.Rows[0];
+
+                List<BranchModel> List = new List<BranchModel>();
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    BranchModel bModel = new BranchModel()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        Branch = BRow["Branch"].ToString(),
+                        Code = BRow["Code"].ToString(),
+                        Active = Convert.ToBoolean(BRow["Active"]),
+                        CreatedDate = Convert.ToDateTime(BRow["CreatedDate"]),
+                    };
+                    List.Add(bModel);
+                }
+                return List.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void CreateUser(IFormCollection collection)
+        {
+            try
+            {
+
+                var UserName = collection["UserName"].ToString();
+                var Name = collection["Name"].ToString();
+                var Email = collection["Email"].ToString();
+                var BranchId = collection["BranchId"].ToString(); ;
+                var Dep_Id = collection["Dep_Id"].ToString();
+                var Password = collection["Password"].ToString();
+                string EncryptNewPassword = _passwordHelper.ComputeHmac(Password);
+                var query = "INSERT INTO Complaint_User (UserName, Password, Name, Email, BranchId, Dep_Id, CreatedDate, Active, IsReset) " +
+                    "VALUES (@userName, @password, @name, @email, @branchId, @depId, @createdDate, @active, @isReset)";
+
+                var parameters = new DynamicParameters();
+
+                parameters.Add("userName", UserName, DbType.String);
+                parameters.Add("password", EncryptNewPassword, DbType.String);
+                parameters.Add("name", Name, DbType.String);
+                parameters.Add("email", Email, DbType.String);
+                parameters.Add("branchId", Convert.ToInt64(BranchId), DbType.Int64);
+                parameters.Add("depId", Convert.ToInt64(Dep_Id), DbType.Int64);
+                parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
+                parameters.Add("active", 1, DbType.Int32);
+                parameters.Add("isReset", 0, DbType.Int32);           
+
+                _connectionService.ReturnWithPara(query, parameters);
+                //Handle file upload
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<UserModel> getUserDetailId(int Id)
+        {
+            try
+            {
+                string query = @"
+                                SELECT CU.Id AS Id, 
+                                    CU.UserName AS UserName, 
+                                    CU.Name AS Name, 
+                                    CU.Email AS Email, 
+                                    CBM.Id AS BranchId, 
+                                    CBM.Branch AS Branch, 
+                                    CDM.Id as Dep_Id, 
+                                    CDM.Name AS Department , 
+                                    CU.CreatedDate AS CreatedDate, 
+                                    CU.IsReset AS IsReset,
+                                    CU.Active AS Active
+                                FROM Complaint_User AS CU 
+                                INNER JOIN Complaint_Branch_Master as CBM ON CBM.Id = CU.BranchId
+                                INNER JOIN Complaint_Department_Master AS CDM ON CDM.Id = CU.Dep_Id
+                                WHERE CU.Id = @Id";
+
+                // Use Dapper to query the single record
+                var complaintDataTable = await _connectionService.SingleQueryReturn(query, Id);
+
+
+
+
+                var row = complaintDataTable.Rows[0];
+                UserModel model = new UserModel();
+
+                model.Id = Convert.ToUInt16(row["Id"]);
+                model.UserName = row["UserName"].ToString();
+                model.Name = row["Name"].ToString();
+                model.Email = row["Email"].ToString();
+                model.BranchId = Convert.ToUInt16(row["BranchId"]);
+                model.Branch = row["Branch"].ToString();
+                model.Dep_Id = Convert.ToUInt16(row["Dep_Id"]);
+                model.Department = row["Department"].ToString();
+                model.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
+                model.Active = Convert.ToBoolean(row["Active"]);
+
+                return (model);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
 

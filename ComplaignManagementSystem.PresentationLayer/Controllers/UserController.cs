@@ -3,6 +3,7 @@ using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.LoginHandler;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
@@ -17,6 +18,12 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             _loginService = loginService;
         }
+
+        private bool IsUserLoggedIn()
+        {
+            return !string.IsNullOrEmpty(HttpContext.Session.GetString("UserName"));
+        }
+
         // GET: UserController
         public ActionResult Login()        
         {
@@ -111,8 +118,10 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(IFormCollection form)
         {
+
+
             return View();
         }
 
@@ -131,27 +140,40 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         }
 
 
-
-
-        // GET: UserController/Details/5
-        public ActionResult Details(int id)
+        public IActionResult Create()
         {
+            if (!IsUserLoggedIn())
+                return RedirectToAction("Login", "User");
+
+            var getAllDeps = _loginService.getDepList();
+            var getAllBranches = _loginService.getBranchList();
+
+            ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name");
+            ViewBag.BranchId = new SelectList(getAllBranches.Result.ToList(), "Id", "Branch");
+
             return View();
         }
 
-        // GET: UserController/Create
-        public ActionResult Create()
+        public IActionResult Index()
         {
+            if (!IsUserLoggedIn())
+                return RedirectToAction("Login", "User");
+
+            var List = _loginService.getAllList();
+
+            ViewBag.UserList = List.ToList();
+
             return View();
         }
 
         // POST: UserController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult CreateUser(IFormCollection collection)
         {
             try
             {
+                _loginService.CreateUser(collection);
+                TempData["ToastMessage"] = "SubmittedUserSuccessfully!";
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -168,7 +190,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
         // POST: UserController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
             try
@@ -189,7 +210,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
         // POST: UserController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try

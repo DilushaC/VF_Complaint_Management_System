@@ -15,5 +15,10 @@ namespace ComplaintManagementSystem.Business.LoginHandler
         DepartmentModel GetDepartmentDetails(int DepId);
         UserPermissionModel getAccessPerimissions(UserModel user);
         List<UserPageCapabilityModel> getAccessPages(UserModel user, UserPermissionModel uPermission);
+        public List<UserModel> getAllList();
+        public Task<List<Complaint_Department_MasterModel>> getDepList();
+        public Task<List<BranchModel>> getBranchList();
+        public void CreateUser(IFormCollection collection);
+        public Task<UserModel> getUserDetailId(int Id);
     }
 }
