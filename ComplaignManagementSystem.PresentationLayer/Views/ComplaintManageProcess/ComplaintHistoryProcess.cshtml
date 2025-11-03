@@ -1,8 +1,77 @@
 ﻿
+@using ComplaignManagementSystem.Data.Models
+@* @model IEnumerable<ComplaignManagementSystem.Data.Context.DapperContext> *@
+
 @{
-    ViewData["Title"] = "ComplaintHistoryProcess";
+    ViewData["Title"] = "Complaint History";
+    ViewData["MenuTab"] = "ComplaintHistoryProcessMenu";
+    ViewData["SubMenuTab"] = "ComplaintHistoryProcessMenu";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+
 }
 
-<h1>ComplaintHistoryProcess</h1>
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/tables/datatable/datatables.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/extensions/toastr.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/css/fontawesome-all.min.css" rel="stylesheet" />
 
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card" style="margin-top:15px">
+            <div class="card-content collapse show">
+                <div class="card-body">
+                 
+                        <div class="form-body">
+                            <h4 class="form-section">
+                                <i class="ft-flag"></i> Complain History Form
+                            </h4>
+                            <hr>
+                            <br>
+
+                        <div class="col-md-6">
+                            <label for="Dep_Id">Complaint Number :</label>
+                            <select id="Dep_Id" name="Dep_Id" class="form-control select2-hidden-accessible" data-select2-id="Dep_Id" tabindex="-1" aria-hidden="true">
+                                <option value="" data-select2-id="4">-- Select --</option>                                
+                            </select>
+                            <span class="select2 select2-container select2-container--default select2-container--focus" dir="ltr" data-select2-id="3" style="width: 494.5px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-Dep_Id-container"><span class="select2-selection__rendered" id="select2-Dep_Id-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">Select Department</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                            <span id="error-message-dep"></span>
+
+                            <br>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-danger mr-1">Show Details</button>
+                            </div>
+
+                        </div>
+
+
+
+                        <hr>
+
+
+
+                         
+                                                                                                
+                        </div>
+                                        
+                       
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
