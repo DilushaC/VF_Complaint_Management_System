@@ -1,5 +1,4 @@
-﻿
-@using ComplaignManagementSystem.Data.Models
+﻿@using ComplaignManagementSystem.Data.Models
 @* @model IEnumerable<ComplaignManagementSystem.Data.Context.DapperContext> *@
 
 @{
@@ -133,7 +132,6 @@
         box-shadow: 0 0 15px #a18cd1;
     }
 
-   
 </style>
 
 
@@ -142,22 +140,22 @@
         <div class="card" style="margin-top:15px">
             <div class="card-content collapse show">
                 <div class="card-body">
-                 
-                        <div class="form-body">
-                            <h4 class="form-section">
-                                <i class="ft-flag"></i> Complain History
-                            </h4>
-                            <hr>
-                            <br>
+
+                    <div class="form-body">
+                        <h4 class="form-section">
+                            <i class="ft-flag"></i> Complain History
+                        </h4>
+                        <hr>
+                        <br>
 
                         <div class="col-md-6">
-                            
-                                <label for="Compl">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                                <select id="Compl" name="Compl" class="form-control" asp-items="ViewBag.Compl">
-                                    <option value="">-- Select --</option>
-                                </select>
-                                <span id="error-message-dep"></span>
-                            
+
+                            <label for="Compl">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                            <select id="Compl" name="Compl" class="form-control" asp-items="ViewBag.Compl">
+                                <option value="">-- Select --</option>
+                            </select>
+                            <span id="error-message-dep"></span>
+
 
                             <br>
                             <div class="form-actions">
@@ -169,64 +167,13 @@
 
                         @* ===================================================================== *@
 
-                      
-                        <div class="container py-5">                            
 
+                        <div class="container py-5">
                             <div class="timeline" id="timelineList">
-
-                                @* <div class="timeline-item">
-                                    <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                        <h6 class="mb-1">Complaint Registered</h6>
-                                        <p class="mb-0 small">User submitted complaint through system.</p>
-                                        <div class="small opacity-75 mt-1">01 Oct 2025 - 10:12 AM</div>
-                                    </div>
-                                </div>
-
-                                 <div class="timeline-item">
-                                    <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                        <h6 class="mb-1">Complaint Assigned</h6>
-                                        <p class="mb-0 small">Assigned to IT department.</p>
-                                        <div class="small opacity-75 mt-1">01 Oct 2025 - 11:45 AM</div>
-                                    </div>
-                                </div>
-
-                                <div class="timeline-item">
-                                    <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                        <h6 class="mb-1">Investigation Started</h6>
-                                        <p class="mb-0 small">Technician began analyzing reported issue.</p>
-                                        <div class="small opacity-75 mt-1">02 Oct 2025 - 09:15 AM</div>
-                                    </div>
-                                </div>                               
-
-                                <div class="timeline-item">
-                                    <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                        <h6 class="mb-1">Feedback Completed</h6>
-                                        <p class="mb-0 small">User confirmed satisfaction with resolution.</p>
-                                        <div class="small opacity-75 mt-1">04 Oct 2025 - 08:00 AM</div>
-                                    </div>
-                                </div>
-
-                                <div class="timeline-item">
-                                    <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                        <h6 class="mb-1">Resolved</h6>
-                                        <p class="mb-0 small">Issue successfully fixed and validated.</p>
-                                        <div class="small opacity-75 mt-1">03 Oct 2025 - 04:20 PM</div>
-                                    </div>
-                                </div>  *@
-
                             </div>
                         </div>
-                         
-                                                                                                
-                        </div>
-                                        
-                       
-                    
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -248,37 +195,38 @@
 
 <script>
 
-        function ViewHistory() {
+    $('#timelineList').hide();
+    function ViewHistory() {
         var ComplainNo = document.getElementById("Compl").value;
-
+        $('#timelineList').show();
         $.ajax({
             url: '@Url.Action("GetComplaintHistoryDetails", "ComplaintManageProcess")',
             type: "GET",
             data: { id: ComplainNo },
             dataType: 'json',
             success: function (data) {
-                
+
                 var Compleathtml = ``;
                 var Bodyhtml = ``;
                 var html = ``;
                 var forloopNo = 0;
-                $.each(data, function (index, item) {  
+                $.each(data, function (index, item) {
                     forloopNo++;
                     var titleText = (item.matrixOrder == 1) ? "Complaint Registered": "Complaint Assigned";
-                    
+                    var lastItem = data[data.length - 1];
                     Bodyhtml += `
                             <div class="timeline-item">
                                  <div class="timeline-node"></div>
                                     <div class="timeline-card">
                                             <h6 class="mb-1">Complaint Assigned</h6>
-                                            <p class="mb-0 small"><strong>Department : </strong> ${item.departmentName}</p>
-                                            <p class="mb-0 small"><strong>User : </strong> ${item.forwordUser}</p>
+                                            <p class="mb-0 small"><strong>Complaint Department : </strong> ${item.departmentName}</p>
+                                            <p class="mb-0 small col-md-2"><strong>Forward User : </strong> ${item.forwordUser}</p>
+
                                 </div>
                               </div>
                         `;
 
-
-                    if(forloopNo == 1){                        
+                    if(forloopNo == 1){
                         var formattedDate = item.createdDate.replace("T", "  ");
 
                         html += `
@@ -286,8 +234,8 @@
                                  <div class="timeline-node"></div>
                                     <div class="timeline-card">
                                             <h6 class="mb-1">${titleText}</h6>
-                                            <p class="mb-0 small"><strong>User Name : </strong> ${item.forwordUser}</p>
-                                            <p class="mb-0 small"><strong>Department : </strong> ${item.dep}</p>
+                                            <p class="mb-0 small"><strong>Created User Name : </strong> ${item.forwordUser}</p>
+                                            <p class="mb-0 small"><strong>User Department   : </strong> ${item.dep}</p>
                                     <div class="small opacity-75 mt-1">${formattedDate}</div>
                                 </div>
                               </div>
@@ -295,9 +243,9 @@
 
                          // ----------------------------------------------------------------------------------
 
-                        var lastItem = data[data.length - 1];                    
+                        var lastItem = data[data.length - 1];
                          if (lastItem.isResolved) {
-                            var resolvedDate = lastItem.resolvedDateTime ? lastItem.resolvedDateTime.replace("T", "  ") : "";                        
+                            var resolvedDate = lastItem.resolvedDateTime ? lastItem.resolvedDateTime.replace("T", "  ") : "";
 
                             Compleathtml += `
                                 <div class="timeline-item">
@@ -317,7 +265,7 @@
                 });
 
 
-                                                           
+
                 $("#timelineList").html(html + Bodyhtml + Compleathtml);
             },
             error: function (xhr, status, error) {

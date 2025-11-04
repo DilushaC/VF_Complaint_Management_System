@@ -147,7 +147,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var Dep_Id = collection["Dep_Id"].ToString();
                 var Nature_Id = collection["Nature_Id"].ToString();
                 var Priority = collection["Priority"].ToString();
-                var Compaint = collection["Compaint"].ToString();
+                var Compaint = collection["Complaint"].ToString();
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
                 var ResolvedRemark = collection["ResolvedRemark"].ToString();
 
@@ -232,7 +232,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var Dep_Id = collection["Dep_Id"].ToString();
                 var Nature_Id = collection["Nature_Id"].ToString();
                 var Priority = collection["Priority"].ToString();
-                var Compaint = collection["Compaint"].ToString();
+                var Compaint = collection["Complaint"].ToString();
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
                 var ResolvedRemark = collection["ResolvedRemark"].ToString();
 
@@ -644,7 +644,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var Dep_Id = collection["Dep_Id"].ToString();
                 var Nature_Id = collection["Nature_Id"].ToString();
                 var Priority = collection["Priority"].ToString();
-                var Compaint = collection["Compaint"].ToString();
+                var Compaint = collection["Complaint"].ToString();
 
                 //string query = $@"UPDATE Complaint_ManageProcess SET ComplaintMethod_Id={Convert.ToInt32(ComplaintMethod_Id)}, Complaint={Compaint}, Cus_Name={Cu_Name}, Cus_Nic={Cus_Nic},
                 //    Cus_Refference={Cus_Refference}, Cus_MobileNumber={Cus_MobileNumber}, Dep_Id={Dep_Id}, Nature_Id={Nature_Id}, Priority={Priority} WHERE Id={ComProcessId}";
@@ -717,7 +717,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var Dep_Id = collection["Dep_Id"].ToString();
                 var Nature_Id = collection["Nature_Id"].ToString();
                 var Priority = collection["Priority"].ToString();
-                var Compaint = collection["Compaint"].ToString();
+                var Compaint = collection["Complaint"].ToString();
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
                 var ResolvedRemark = collection["ResolvedRemark"].ToString();
 
@@ -971,7 +971,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {
                 var httpContext = _httpContextAccessor.HttpContext;
                 var UserName = httpContext?.Session.GetString("UserName");
-                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 0, Dep_Id={Department} , Status=2 WHERE Id={Id} ";
+                string query = $@" UPDATE Complaint_ManageProcess SET IsSentCentral = 0, Dep_Id={Department}, Status = 2 WHERE Id={Id} ";
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", Convert.ToInt64(Id), DbType.Int64);
