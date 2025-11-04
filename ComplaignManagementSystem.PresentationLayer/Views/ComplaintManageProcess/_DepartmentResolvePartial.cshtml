@@ -81,7 +81,7 @@
         <div class="row" style="margin-top:7px">
             <div class="col-md-12">
                 <strong>Remark :</strong>
-                <textarea id="Remarktxt" class="form-control" placeholder="Remark." name="w3review" rows="6" cols="100" style="margin-top:10px"></textarea>
+                <textarea id="DepRemarktxt" class="form-control" placeholder="Remark." name="w3review" rows="6" cols="100" style="margin-top:10px"></textarea>
             </div>
         </div>
     </div>
@@ -94,7 +94,7 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
 <script>        
     function DepComplainResolve(complaintId) {
-        var remark = document.getElementById("Remarktxt").value;      
+        var remark = document.getElementById("DepRemarktxt").value;           
         if (remark.trim() === "") {
             Swal.fire({
                 title: 'Warning!',

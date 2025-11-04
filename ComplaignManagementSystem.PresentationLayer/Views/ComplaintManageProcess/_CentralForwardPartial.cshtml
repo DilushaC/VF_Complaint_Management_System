@@ -113,12 +113,14 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
 
-<script>          
+<script>   
+    
     $("#Dep_Id").select2({
       allowClear:true,
       placeholder: 'Select Department',
       dropdownParent: $('#CentralForwardModal')
     });
+
     function ForwardToDepartment(complaintId) {
         var Department = document.getElementById("Dep_Id").value;
         var remark = document.getElementById("Remarktxt").value;

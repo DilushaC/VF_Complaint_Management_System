@@ -523,6 +523,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 // Use Dapper to query the single record
                 var complaintDataTable = await _connection.SingleQueryReturn(query, Id);             
 
+
+
                 var row = complaintDataTable.Rows[0];
                 ComplaintMaster complainModel = new ComplaintMaster();
 
@@ -1081,6 +1083,95 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 throw ex;
             }
         }
+
+
+        //------------------------ Complain History ------------------------------------>  
+        public async Task<List<ComplaintMaster>> getComplainNumberList()
+        {
+            try
+            {
+                string Query = $"SELECT Id,Refference FROM Complaint_ManageProcess WHERE Active = 1 ORDER BY Refference DESC";
+                var Data = _connection.Return(Query);
+                var Row = Data.Rows[0];
+
+                List<ComplaintMaster> ComplainList = new List<ComplaintMaster>();
+
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    ComplaintMaster bModel = new ComplaintMaster()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        Refference = BRow["Refference"].ToString()                       
+                    };
+                    ComplainList.Add(bModel);
+                }
+                return ComplainList.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public async Task<List<Complaint_ManageProcessModel>> GetComplaintHistoryDetails(int Id)
+        {
+            try
+            {     
+                string query1 = @"
+                SELECT D.Id, D.CreatedDate , Us.Name AS ForwordUser, Dep.Name AS UserDepName, D.EscalatiomMatrix AS MatrixOrder , 
+                M.IsResolved, M.ResolvedDateTime, M.ResolvedRemark, ResUs.Name AS ResolvedUserName, ResDep.Name AS DepName, M.IsSentDep, M.IsSentCentral
+                FROM Complaint_Send_Departments AS D
+                INNER JOIN  Complaint_ManageProcess As M ON D.ComplaintMngProcess_Id = M.Id
+                INNER JOIN  Complaint_User As Us ON D.ForwardUser = us.UserName
+                INNER JOIN  Complaint_Department_Master As Dep ON Us.Dep_Id = Dep.Id
+                LEFT JOIN Complaint_User AS ResUs ON M.ResolvedUser = ResUs.UserName
+                LEFT JOIN Complaint_Department_Master AS ResDep ON d.Dep_Id = ResDep.Id
+                WHERE M.Id = @Id order by D.EscalatiomMatrix ASC";
+
+                var Data = await _connection.SingleQueryReturn(query1, Id);
+
+                var row = Data.Rows[0];
+                Complaint_ManageProcessModel complainModel = new Complaint_ManageProcessModel();
+                complainModel.Id = Convert.ToUInt16(row["Id"]);
+
+
+                List<Complaint_ManageProcessModel> methodCounts = new List<Complaint_ManageProcessModel>();                
+          
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    Complaint_ManageProcessModel bModel = new Complaint_ManageProcessModel()
+                    {
+                        ForwordUser = BRow["ForwordUser"].ToString(),
+                        Dep = BRow["UserDepName"].ToString(),
+                        CreatedDate = Convert.ToDateTime(BRow["CreatedDate"].ToString()),
+                        MatrixOrder = Convert.ToInt32(BRow["MatrixOrder"]),                       
+
+                        IsResolved = BRow["IsResolved"] != DBNull.Value && Convert.ToBoolean(BRow["IsResolved"]),
+                        ResolvedDateTime = BRow["ResolvedDateTime"] != DBNull.Value ? Convert.ToDateTime(BRow["ResolvedDateTime"]) : (DateTime?)null,
+                        ResolvedRemark = BRow["ResolvedRemark"] != DBNull.Value ? BRow["ResolvedRemark"].ToString() : "",
+                        ResolvedUser = BRow["ResolvedUserName"] != DBNull.Value ? BRow["ResolvedUserName"].ToString() : "",
+
+                        DepartmentName = BRow["DepName"].ToString(),
+                        IsSentDep = BRow["IsSentDep"] != DBNull.Value && Convert.ToBoolean(BRow["IsSentDep"]),
+                        IsSentCentral = BRow["IsSentCentral"] != DBNull.Value && Convert.ToBoolean(BRow["IsSentCentral"])
+                        
+                    };
+                    methodCounts.Add(bModel);
+                }
+                return methodCounts.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
 
     }
 }
