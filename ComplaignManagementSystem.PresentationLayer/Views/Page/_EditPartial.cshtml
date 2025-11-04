@@ -1,0 +1,65 @@
+﻿@model ComplaignManagementSystem.Data.Models.PageModel
+
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Edit", "Page", FormMethod.Post, new { id = "EditForm" }))
+        {
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Pages">Page Name</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                            <input type="text" id="Pages" class="form-control" placeholder="Page Name" name="Pages" autocomplete="off" value="@Model.Page">
+                            <span id="error-message-Pages"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <input tyepe="text" id="Id" class="form-control" name="Id" value="@Model.Id" hidden></input>
+            <div class="form-actions">
+                <button type="reset" class="btn btn-danger mr-1">
+                    Clear
+                </button>
+                <button type="button" class="btn btn-success" id="saven">
+                    Save
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+
+<script type="text/javascript">
+    $('#saven').on('click', function () {
+         var form = $('#EditForm');
+         const errorMessageContainer = document.getElementById('error-message-Pages');
+         var Role = document.getElementById("Pages").value;
+
+         if(Role == ""){
+             errorMessageContainer.textContent = 'Please Enter Page Name.';
+             errorMessageContainer.style.color = 'red';
+             return;
+         } else{
+             errorMessageContainer.textContent = '';
+             errorMessageContainer.style.color = 'red';
+         }
+         // Change action dynamically
+         form.attr('action', '/Page/Edit');
+         form.submit();
+     });
+
+</script>

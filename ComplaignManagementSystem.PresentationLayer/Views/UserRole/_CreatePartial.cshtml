@@ -1,0 +1,65 @@
+﻿
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/checkboxes-radios.min.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
+
+<div class="card" style="margin-top:-10px">
+    <div class="card-content collapse show">
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "UserRole", FormMethod.Post, new { id = "CreateForm" }))
+            {
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Role">Role Name</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <input type="text" id="Role" class="form-control" placeholder="Role Name" name="Role" autocomplete="off">
+                                <span id="error-message-Role"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-danger mr-1">
+                        Clear
+                    </button>
+                    <button type="button" class="btn btn-success" id="save">
+                        Save
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/modal/components-modal.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script type="text/javascript">
+
+    $('#save').on('click', function () {
+        var form = $('#CreateForm');
+        const errorMessageRoleContainer = document.getElementById('error-message-Role');
+        var Role = document.getElementById("Role").value;
+
+        if(Role == ""){
+            errorMessageRoleContainer.textContent = 'Please Enter Role Name.';
+            errorMessageRoleContainer.style.color = 'red';
+            return;
+        } else{                
+            errorMessageRoleContainer.textContent = '';                
+            errorMessageRoleContainer.style.color = 'red';
+        }
+        // Change action dynamically
+        form.attr('action', '/UserRole/Create');
+        form.submit();
+    });
+
+</script>
