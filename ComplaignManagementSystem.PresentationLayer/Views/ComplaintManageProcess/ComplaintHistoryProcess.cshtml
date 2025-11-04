@@ -150,13 +150,11 @@
 
                         <div class="col-md-6">
 
-                            <label for="Compl">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                            <select id="Compl" name="Compl" class="form-control" asp-items="ViewBag.Compl">
+                            <label for="Complaint">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                            <select id="Complaint" name="Complaint" class="form-control" asp-items="ViewBag.Complaint">
                                 <option value="">-- Select --</option>
                             </select>
-                            <span id="error-message-dep"></span>
-
-
+                            <br>
                             <br>
                             <div class="form-actions">
                                 <button type="button" class="btn btn-danger mr-1" onclick="ViewHistory()">Show Details</button>
@@ -193,11 +191,14 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 
-<script>
-
+<script>        
+    $("#Complaint").select2({
+      allowClear:true,
+      placeholder: 'Select Complaint'
+    });
     $('#timelineList').hide();
     function ViewHistory() {
-        var ComplainNo = document.getElementById("Compl").value;
+        var ComplainNo = document.getElementById("Complaint").value;
         $('#timelineList').show();
         $.ajax({
             url: '@Url.Action("GetComplaintHistoryDetails", "ComplaintManageProcess")',
@@ -220,7 +221,7 @@
                                     <div class="timeline-card">
                                             <h6 class="mb-1">Complaint Assigned</h6>
                                             <p class="mb-0 small"><strong>Complaint Department : </strong> ${item.departmentName}</p>
-                                            <p class="mb-0 small col-md-2"><strong>Forward User : </strong> ${item.forwordUser}</p>
+                                            <p class="mb-0 small"><strong>Forward User : </strong> ${item.forwordUser}</p>
 
                                 </div>
                               </div>

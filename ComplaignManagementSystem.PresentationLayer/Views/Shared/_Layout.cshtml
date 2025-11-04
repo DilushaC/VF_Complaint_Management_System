@@ -166,7 +166,11 @@
                     @if (Context.Session.GetString("UserPermission") == "Admin ")
                     {
                         <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <a href="#"><i class="ft-file-text"></i>
+                                <span class="menu-title" data-i18n="">
+                                    Create Form
+                                </span>
+                            </a>
                             <ul class="menu-content">
                                 <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
                                     <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
@@ -177,7 +181,11 @@
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                            <a href="#"><i class="ft-command"></i>
+                                <span class="menu-title" data-i18n="">
+                                    Complaint Forms
+                                </span>
+                            </a>
                             <ul class="menu-content">
                                 <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
                                     <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
@@ -201,7 +209,9 @@
                         </div>
                         <hr style="margin-right:20px;margin-left:20px">
                         <li class="nav-item has-sub @(activeMenuTab == "MasterMainMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-package"></i>Masters</a>
+                            <a href="#"><i class="ft-package"></i>
+                                <span class="menu-title" data-i18n="">Masters</span>
+                            </a>
                             <ul class="menu-content">
                                 <li class="@(activeSubMenuTab == "MethodSubMenu" ? "active" : "")">
                                     <a class="menu-item" href="/Method/Index">Method</a>
@@ -220,9 +230,10 @@
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "UserMainMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-anchor"></i>User Management</a>
+                            <a href="#"><i class="ft-anchor"></i>
+                                <span class="menu-title" data-i18n="">User Management</span>
+                            </a>
                             <ul class="menu-content">
-
                                 <li class="has-sub is-shown @(activeSecMenuTab == "UserMasterMenu" ? "open" : "")">
                                     <a class="menu-item" href="#">Masters</a>
                                     <ul class="menu-content" style="">

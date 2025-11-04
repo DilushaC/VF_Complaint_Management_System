@@ -499,7 +499,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 var getAllDeps = _complainProcess.getComplainNumberList();
-                ViewBag.Compl = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
+                ViewBag.Complaint = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
                 return View();
             }
             catch (Exception ex)

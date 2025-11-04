@@ -65,26 +65,26 @@
                                                         <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
                                                         <td style="width:180px">
                                                             <div class="row">
+
                                                                 @if (item.Active == true)
                                                                 {
                                                                     <div class="col-md-2">
                                                                         <button type="button" class="btn btn-outline-purple btn-sm" data-toggle="tooltip" data-placement="top" title="Permission" onclick=" PermissionDetails(@item.Id)"><i class="ft-aperture"></i></button>
                                                                     </div>
+                                                                    <div class="col-md-2" style="margin-left:20px;margin-right:20px">
+                                                                        <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Edit" onclick="Edit(@item.Id)"><i class="ft-edit"></i></button>
+                                                                    </div>
+                                                                    <div class="col-md-2" style="margin-left:0px;margin-right:20px">
+                                                                        <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Inactive" onclick="Inactive(@item.Id)"><i class="ft-chevron-left"></i></button>
+                                                                    </div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="col-md-2" style="margin-left:0px;margin-right:20px">
+                                                                        <button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="Active" onclick="Active(@item.Id)"><i class="ft-check-circle"></i></button>
+                                                                    </div>
                                                                 }
 
-                                                                <div class="col-md-2" style="margin-left:20px;margin-right:20px">
-                                                                    <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Edit" onclick="Edit(@item.Id)"><i class="ft-edit"></i></button>
-                                                                </div>
-                                                                <div class="col-md-2" style="margin-left:0px;margin-right:20px">
-                                                                    @if (item.Active == true)
-                                                                    {
-                                                                        <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Inactive" onclick="Inactive(@item.Id)"><i class="ft-chevron-left"></i></button>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="Active" onclick="Active(@item.Id)"><i class="ft-check-circle"></i></button>
-                                                                    }
-                                                                </div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -223,7 +223,7 @@
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Deleted!',
+                                title: 'Inactved!',
                                 text: 'User has been Inactived successfully.',
                                 confirmButtonColor: '#3085d6'
                             }).then(() => {
@@ -269,8 +269,8 @@
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Success!',
-                                text: 'User has been Active successfully.',
+                                title: 'Actived!',
+                                text: 'User has been Actived successfully.',
                                 confirmButtonColor: '#3085d6'
                             }).then(() => {
                                 location.reload(); // Refresh table after delete
@@ -350,7 +350,7 @@
                 }
                 if(ToastMessage == 'InactiveSuccessfully!'){
                     if (toastMsg) {
-                        toastMsg.textContent = "Successfully Inactive User";
+                        toastMsg.textContent = "Successfully Inactived User";
                         toastTitle.textContent = "Success";
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
                         // Add the type class
@@ -365,7 +365,7 @@
                 }
                 if(ToastMessage == 'ActiveSuccessfully!'){
                     if (toastMsg) {
-                        toastMsg.textContent = "Successfully Active User";
+                        toastMsg.textContent = "Successfully Actived User";
                         toastTitle.textContent = "Success";
                         toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
                         // Add the type class
