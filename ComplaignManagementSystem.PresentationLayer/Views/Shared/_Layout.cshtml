@@ -156,6 +156,13 @@
                             <span class="menu-title" data-i18n="">Dashboard</span>
                         </a>
                     </li>
+                    <hr style="margin-right:20px;margin-left:20px">
+                    <div class="row">
+                        <div class="col-md-8" style="text-align:center">
+                            <span style="color:gray;" class="text-uppercase text-center">Main Process</span>
+                        </div>
+                    </div>
+                    <hr style="margin-right:20px;margin-left:20px">
                     @if (Context.Session.GetString("UserPermission") == "Admin ")
                     {
                         <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
@@ -180,14 +187,19 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                         <hr style="margin-right:20px;margin-left:20px">
                         <div class="row">
-                            <div class="col-md-6" style="text-align:center;margin-left:65px">
-                                <span style="color:gray;" class="text-uppercase text-center">Admin Part</span>
+                            <div class="col-md-8" style="text-align:center;">
+                                <span style="color:gray;" class="text-uppercase text-center">Admin Process</span>
                             </div>
                         </div>
                         <hr style="margin-right:20px;margin-left:20px">
-
                         <li class="nav-item has-sub @(activeMenuTab == "MasterMainMenu" ? "open" : "")">
                             <a href="#"><i class="ft-package"></i>Masters</a>
                             <ul class="menu-content">
@@ -274,6 +286,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "User")
                     {
@@ -308,6 +326,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "Central User")
                     {
@@ -342,6 +366,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "Dep User")
                     {
@@ -375,7 +405,7 @@
                                     }
                                 </ul>
                             </li>
-                            <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
+                            <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
                                 <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
                                     <i class="ft-arrow-down-left"></i>
                                     <span class="menu-title" data-i18n="">Complaint History</span>
