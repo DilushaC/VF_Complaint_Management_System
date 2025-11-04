@@ -27,6 +27,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public void ComplainResolve(int Id, string Remark);
         public void UpdateForwardToDepartment(int CompId, int Department, string remark);        
         public Task<DashboardComplaintCountModel> GetDashboardComplaintCounts();
-        
+
+        public Task<List<ComplaintMaster>> getComplainNumberList();
+        public Task<List<Complaint_ManageProcessModel>> GetComplaintHistoryDetails(int Id);
     }
 }
