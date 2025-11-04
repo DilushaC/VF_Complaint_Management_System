@@ -521,10 +521,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                 WHERE cmp.Id = @Id";
 
                 // Use Dapper to query the single record
-                var complaintDataTable = await _connection.SingleQueryReturn(query, Id);
-
-               
-
+                var complaintDataTable = await _connection.SingleQueryReturn(query, Id);             
 
                 var row = complaintDataTable.Rows[0];
                 ComplaintMaster complainModel = new ComplaintMaster();

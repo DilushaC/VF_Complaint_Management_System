@@ -95,6 +95,7 @@ namespace ComplaintManagementSystem.Business.PageCapabilityHandler
                 throw ex;
             }
         }
+
         public async Task<List<PageModel>> getPageList()
         {
             try
@@ -163,7 +164,6 @@ namespace ComplaintManagementSystem.Business.PageCapabilityHandler
             if (data.Rows.Count > 0) { return true; }
             else { return false; }
         }
-
 
         public PageCapabilityModel getPageCapListId(int Id)
         {

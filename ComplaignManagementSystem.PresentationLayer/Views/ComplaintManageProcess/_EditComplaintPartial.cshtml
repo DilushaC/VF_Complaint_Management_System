@@ -33,7 +33,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Cus_Nic">Customer NIC</label>
-                                <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off" onkeyup="nicChange()">
+                                <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" value="@Model.Cus_Nic" autocomplete="off" onkeyup="nicChange()">
                                 <small id="nicError" style="color:red; display:none;">Invalid NIC</small>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Cus_MobileNumber">Customer Mobile Number</label>
-                                <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off" onkeyup="mobileChange()" maxlength="10">
+                                <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off" value="@Model.Cus_MobileNumber" onkeyup="mobileChange()" maxlength="10">
                                 <small id="mobileError" style="color:red; display:none;">Invalid Mobile Number</small>
                             </div>
                         </div>

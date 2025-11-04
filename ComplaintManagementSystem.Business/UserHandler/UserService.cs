@@ -321,7 +321,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                 var UserName = collection["UserName"].ToString();
                 var Name = collection["Name"].ToString();
                 var Email = collection["Email"].ToString();
-                var BranchId = collection["BranchId"].ToString(); ;
+                var BranchId = collection["BranchId"].ToString(); 
                 var Dep_Id = collection["Dep_Id"].ToString();
                 var Password = collection["Password"].ToString();
                 string EncryptNewPassword = _passwordHelper.ComputeHmac(Password);
@@ -365,7 +365,8 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                                     CDM.Name AS Department , 
                                     CU.CreatedDate AS CreatedDate, 
                                     CU.IsReset AS IsReset,
-                                    CU.Active AS Active
+                                    CU.Active AS Active,   
+                                    CU.Password as Password
                                 FROM Complaint_User AS CU 
                                 INNER JOIN Complaint_Branch_Master as CBM ON CBM.Id = CU.BranchId
                                 INNER JOIN Complaint_Department_Master AS CDM ON CDM.Id = CU.Dep_Id
@@ -373,10 +374,6 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 
                 // Use Dapper to query the single record
                 var complaintDataTable = await _connectionService.SingleQueryReturn(query, Id);
-
-
-
-
                 var row = complaintDataTable.Rows[0];
                 UserModel model = new UserModel();
 
@@ -390,13 +387,238 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                 model.Department = row["Department"].ToString();
                 model.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
                 model.Active = Convert.ToBoolean(row["Active"]);
-
+                model.Password = row["Password"].ToString();
                 return (model);
 
             }
             catch (Exception ex)
             {
 
+                throw ex;
+            }
+        }
+
+        public void UpdateUser(IFormCollection collection)
+        {
+            try
+            {
+                var UserName = collection["UserNames"].ToString();
+                var Name = collection["Names"].ToString();
+                var Email = collection["Emails"].ToString();
+                var BranchId = collection["BranchIds"].ToString();
+                var Dep_Id = collection["Dep_Ids"].ToString();
+                var id = collection["Id"].ToString();
+                //var Password = collection["Password"].ToString();
+                //string EncryptNewPassword = _passwordHelper.ComputeHmac(Password);
+                string query = @"
+                                UPDATE Complaint_User
+                                SET 
+                                    UserName = @uname,
+                                    Name = @name,
+                                    Email = @email,
+                                    BranchId = @branchId,
+                                    Dep_Id = @depId
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Convert.ToInt64(id), DbType.Int64);
+                parameters.Add("@uname", UserName, DbType.String);
+                parameters.Add("@name", Name, DbType.String);
+                parameters.Add("@email", Email, DbType.String);
+                parameters.Add("@branchId", Convert.ToInt64(BranchId), DbType.Int64);
+                parameters.Add("@depId", Convert.ToInt64(Dep_Id), DbType.Int64);
+
+                _connectionService.ExecuteWithPara(query, parameters);
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void ResetPassword(IFormCollection collection)
+        {
+            try
+            {
+                var id = collection["Id"].ToString();
+                var Password = collection["Password"].ToString();
+                string EncryptNewPassword = _passwordHelper.ComputeHmac(Password);
+                string query = @"
+                                UPDATE Complaint_User
+                                SET 
+                                    Password = @password,
+                                    IsReset = @isReset
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Convert.ToInt64(id), DbType.Int64);
+                parameters.Add("@password", EncryptNewPassword, DbType.String);
+                parameters.Add("@isReset", 0, DbType.Int32);
+                _connectionService.ExecuteWithPara(query, parameters);
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void InactiveActive(int id, int status)
+        {
+            try
+            {
+                string query = @"
+                                UPDATE Complaint_User
+                                SET Active = @active
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Convert.ToInt64(id), DbType.Int64);
+                parameters.Add("@active", Convert.ToInt32(status), DbType.Int32);
+
+                _connectionService.ExecuteWithPara(query, parameters);
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<UserRoleModel>> getUserRoleList()
+        {
+            try
+            {
+                string Query = $"SELECT * FROM Complaint_User_Role WHERE Active=1";
+                var Data = _connectionService.Return(Query);
+                var Row = Data.Rows[0];
+
+                List<UserRoleModel> uRoleList = new List<UserRoleModel>();
+
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    UserRoleModel bModel = new UserRoleModel()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        Role = BRow["Role"].ToString(),
+                        Active = Convert.ToBoolean(BRow["Active"]),
+                        CreatedDate = Convert.ToDateTime(BRow["CreatedDate"]),
+                    };
+                    uRoleList.Add(bModel);
+                }
+                return uRoleList.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void grantPermssion(IFormCollection collection)
+        {
+            try
+            {
+                var UserId = collection["Id"].ToString();
+                var UserRoleId = collection["UserRoleId"].ToString();
+                var userP = getPermissionList(Convert.ToInt32(UserId));
+                var query = "INSERT INTO Complaint_User_Permission (UserId, UserRoleId, Active, CreatedDate) " +
+                    "VALUES (@uId, @uRoleId, @active, @createdDate)";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("uId", Convert.ToInt64(UserId), DbType.Int64);
+                parameters.Add("uRoleId", Convert.ToInt64(UserRoleId), DbType.Int64);
+                parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
+                parameters.Add("active", 1, DbType.Int32);
+
+                _connectionService.ReturnWithPara(query, parameters);
+                //Handle file upload
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<UserPermissionModel> getPermissionList(int Id)
+        {
+            try
+            {
+                string query = $@"
+                                SELECT *
+                                FROM Complaint_User_Permission 
+                                WHERE UserId = {Id} AND Active=1";
+
+                // Use Dapper to query the single record
+                var complaintDataTable = _connectionService.Return(query);
+                if(complaintDataTable.Rows.Count != 0)
+                {
+                    var row = complaintDataTable.Rows[0];
+                    UserPermissionModel model = new UserPermissionModel();
+
+                    model.Id = Convert.ToUInt16(row["Id"]);
+                    model.UserId = Convert.ToUInt16(row["UserId"]);
+                    model.UserRoleId = Convert.ToUInt16(row["UserRoleId"]); ;
+                    model.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
+                    model.Active = Convert.ToBoolean(row["Active"]);
+                    return (model);
+                }
+                return null;               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void deletePermission(IFormCollection collection)
+        {
+            try
+            {
+                var UserRoleId = collection["UserRoleId"].ToString();
+                var UserId = Convert.ToInt32(collection["Id"].ToString());
+                string query = @"
+                                UPDATE Complaint_User_Permission
+                                SET 
+                                    Active = @active
+                                WHERE UserId = @uId";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@uId", Convert.ToInt64(UserId), DbType.Int64);
+                parameters.Add("@active", 0, DbType.Int32);
+                _connectionService.ExecuteWithPara(query, parameters);
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void updatePermssion(IFormCollection collection)
+        {
+            try
+            {
+                var UserRoleId = collection["UserRoleId"].ToString();
+                var UserId = Convert.ToInt32(collection["Id"].ToString());
+                string query = @"
+                                UPDATE Complaint_User_Permission
+                                SET 
+                                    UserRoleId = @uRoleId
+                                WHERE UserId = @uId";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@uId", Convert.ToInt64(UserId), DbType.Int64);
+                parameters.Add("@uRoleId", Convert.ToInt64(UserRoleId), DbType.Int64);
+
+                _connectionService.ExecuteWithPara(query, parameters);
+                return;
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }
