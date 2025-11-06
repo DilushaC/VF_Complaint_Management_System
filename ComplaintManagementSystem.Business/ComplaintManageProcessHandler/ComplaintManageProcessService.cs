@@ -1035,6 +1035,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 d.Id, d.Name AS DepName, COUNT(c.Id) AS ComplaintCount
                 FROM Complaint_Department_Master d
                 LEFT JOIN Complaint_ManageProcess c ON d.Id = c.Dep_Id
+                WHERE d.Active=1 AND d.Status=1
                 GROUP BY d.Id, d.Name
                 ORDER BY ComplaintCount DESC";
 
