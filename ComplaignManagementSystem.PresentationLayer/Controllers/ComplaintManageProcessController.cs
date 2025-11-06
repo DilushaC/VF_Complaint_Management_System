@@ -229,10 +229,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
 
-                if (file != null)
-                    _complainProcess.UpdateSendComplaint(collection, file);
-
-
+                _complainProcess.UpdateSendComplaint(collection, file);
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
 
                 if (ResolvedStatus == "No")
@@ -477,7 +474,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 var complaintCounts = await _complainProcess.GetDashboardComplaintCounts();
 
                 return Json(new
-                {                    
+                {
                     total = complaintCounts.TotalCount,
                     pending = complaintCounts.PendingCount,
                     resolved = complaintCounts.ResolveCount,
@@ -500,14 +497,14 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
-                var getAllDeps = _complainProcess.getComplainNumberList();                                
+                var getAllDeps = _complainProcess.getComplainNumberList();
                 ViewBag.Compl = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
-                return View();                
+                return View();
             }
             catch (Exception ex)
             {
                 throw ex;
-            }            
+            }
         }
 
         //public async Task<IActionResult> GetComplaintHistoryDetails(int ComplainNo)
@@ -527,8 +524,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         public async Task<IActionResult> GetComplaintHistoryDetails(int id)
         {
             var getAllDeps = await _complainProcess.GetComplaintHistoryDetails(id);
-            
-            var result = getAllDeps.Select(x => new {
+
+            var result = getAllDeps.Select(x => new
+            {
                 ForwordUser = x.ForwordUser,
                 Dep = x.Dep,
                 CreatedDate = x.CreatedDate,
@@ -539,7 +537,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 ResolvedUser = x.ResolvedUser,
                 DepartmentName = x.DepartmentName,
                 IsSentDep = x.IsSentDep,
-                IsSentCentral = x.IsSentCentral
+                IsSentCentral = x.IsSentCentral,
+                Remark = x.Remark
             }).ToList();
 
             return Json(result);

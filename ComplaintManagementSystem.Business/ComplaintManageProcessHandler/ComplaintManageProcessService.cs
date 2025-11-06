@@ -1123,7 +1123,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {     
                 string query1 = @"
                 SELECT D.Id, D.CreatedDate , Us.Name AS ForwordUser, Dep.Name AS UserDepName, D.EscalatiomMatrix AS MatrixOrder , 
-                M.IsResolved, M.ResolvedDateTime, M.ResolvedRemark, ResUs.Name AS ResolvedUserName, ResDep.Name AS DepName, M.IsSentDep, M.IsSentCentral
+                M.IsResolved, M.ResolvedDateTime, M.ResolvedRemark, ResUs.Name AS ResolvedUserName, ResDep.Name AS DepName, M.IsSentDep, 
+                M.IsSentCentral, D.Remark
                 FROM Complaint_Send_Departments AS D
                 INNER JOIN  Complaint_ManageProcess As M ON D.ComplaintMngProcess_Id = M.Id
                 INNER JOIN  Complaint_User As Us ON D.ForwardUser = us.UserName
@@ -1158,8 +1159,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 
                         DepartmentName = BRow["DepName"].ToString(),
                         IsSentDep = BRow["IsSentDep"] != DBNull.Value && Convert.ToBoolean(BRow["IsSentDep"]),
-                        IsSentCentral = BRow["IsSentCentral"] != DBNull.Value && Convert.ToBoolean(BRow["IsSentCentral"])
-                        
+                        IsSentCentral = BRow["IsSentCentral"] != DBNull.Value && Convert.ToBoolean(BRow["IsSentCentral"]),
+                        Remark = BRow["Remark"].ToString(),
+
                     };
                     methodCounts.Add(bModel);
                 }

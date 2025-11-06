@@ -48,6 +48,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string ForwordUser { get; set; }
         public int MatrixOrder { get; set; }
         public string DepartmentName { get; set; }
+        public string Remark { get; set; }
 
 
     }

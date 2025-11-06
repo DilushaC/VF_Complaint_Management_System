@@ -77,61 +77,7 @@
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     }
 
-    /* Colorful gradient steps */
-    .timeline-item:nth-child(1) .timeline-card {
-        border-left-color: #36d1dc;
-        background: linear-gradient(135deg, #36d1dc, #5b86e5);
-        color: #fff;
-    }
-
-    .timeline-item:nth-child(1) .timeline-node {
-        background: #36d1dc;
-        box-shadow: 0 0 15px #36d1dc;
-    }
-
-    .timeline-item:nth-child(2) .timeline-card {
-        border-left-color: #ff9a9e;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        color: #fff;
-    }
-
-    .timeline-item:nth-child(2) .timeline-node {
-        background: #ff9a9e;
-        box-shadow: 0 0 15px #ff9a9e;
-    }
-
-    .timeline-item:nth-child(3) .timeline-card {
-        border-left-color: #f6d365;
-        background: linear-gradient(135deg, #f6d365, #fda085);
-        color: #fff;
-    }
-
-    .timeline-item:nth-child(3) .timeline-node {
-        background: #f6d365;
-        box-shadow: 0 0 15px #f6d365;
-    }
-
-    .timeline-item:nth-child(4) .timeline-card {
-        border-left-color: #84fab0;
-        background: linear-gradient(135deg, #84fab0, #8fd3f4);
-        color: #fff;
-    }
-
-    .timeline-item:nth-child(4) .timeline-node {
-        background: #84fab0;
-        box-shadow: 0 0 15px #84fab0;
-    }
-
-    .timeline-item:nth-child(5) .timeline-card {
-        border-left-color: #a18cd1;
-        background: linear-gradient(135deg, #a18cd1, #fbc2eb);
-        color: #fff;
-    }
-
-    .timeline-item:nth-child(5) .timeline-node {
-        background: #a18cd1;
-        box-shadow: 0 0 15px #a18cd1;
-    }
+    
 
    
 </style>
@@ -265,27 +211,35 @@
                 $.each(data, function (index, item) {  
                     forloopNo++;
                     var titleText = (item.matrixOrder == 1) ? "Complaint Registered": "Complaint Assigned";
+                    var formattedDate = item.createdDate.replace("T", "  ");
+                    var DepName = item.departmentName;
                     
+                    if(item.isSentDep == 1){
+                        console.log(DepName);
+                        if(DepName != "Central"){                            
+                            DepName = DepName + ' Department';
+                        }
+
                     Bodyhtml += `
                             <div class="timeline-item">
                                  <div class="timeline-node"></div>
                                     <div class="timeline-card">
-                                            <h6 class="mb-1">Complaint Assigned</h6>
-                                            <p class="mb-0 small"><strong>Department : </strong> ${item.departmentName}</p>
-                                            <p class="mb-0 small"><strong>User : </strong> ${item.forwordUser}</p>
+                                            <h5 class="mb-1">Complaint assigned to ${DepName} </h5>
+                                            <p class="mb-0 small"><strong>Forwarder Name : </strong> ${item.forwordUser}</p>
+                                            <p class="mb-0 small"><strong>Forwarder Remark : </strong> ${item.remark}</p>
+                                     <div class="small opacity-75 mt-1">${formattedDate}</div>
                                 </div>
                               </div>
                         `;
+                        }
 
-
-                    if(forloopNo == 1){                        
-                        var formattedDate = item.createdDate.replace("T", "  ");
+                    if(forloopNo == 1){                                                
 
                         html += `
                             <div class="timeline-item">
                                  <div class="timeline-node"></div>
                                     <div class="timeline-card">
-                                            <h6 class="mb-1">${titleText}</h6>
+                                            <h5 class="mb-1">${titleText}</h5>
                                             <p class="mb-0 small"><strong>User Name : </strong> ${item.forwordUser}</p>
                                             <p class="mb-0 small"><strong>Department : </strong> ${item.dep}</p>
                                     <div class="small opacity-75 mt-1">${formattedDate}</div>
@@ -303,7 +257,7 @@
                                 <div class="timeline-item">
                                  <div class="timeline-node"></div>
                                     <div class="timeline-card">
-                                            <h6 class="mb-1">Complaint Resolved</h6>
+                                            <h5 class="mb-1">Complaint Resolved</h5>
                                             <p class="mb-0 small"><strong>Resolved By : </strong> ${item.resolvedUser}</p>
                                             <p class="mb-0 small"><strong>Remark : </strong> ${item.resolvedRemark}</p>
                                     <div class="small opacity-75 mt-1">${resolvedDate}</div>
@@ -319,10 +273,43 @@
 
                                                            
                 $("#timelineList").html(html + Bodyhtml + Compleathtml);
+                ApplyTimelineColors();
             },
             error: function (xhr, status, error) {
                 console.error("Error:", xhr.responseText);
                 alert("Error while loading history!");
+            }
+        });
+    }
+
+
+
+
+        function ApplyTimelineColors() {
+
+        const palette = [
+            { from: "#36d1dc", to: "#5b86e5", node: "#36d1dc" },
+            { from: "#ff9a9e", to: "#fad0c4", node: "#ff9a9e" },
+            { from: "#f6d365", to: "#fda085", node: "#f6d365" },
+            { from: "#84fab0", to: "#8fd3f4", node: "#84fab0" },
+            { from: "#a18cd1", to: "#fbc2eb", node: "#a18cd1" }
+        ];
+
+        const items = document.querySelectorAll(".timeline-item");
+
+        items.forEach((item, idx) => {
+            const set = palette[idx % palette.length];
+            const card = item.querySelector(".timeline-card");
+            const node = item.querySelector(".timeline-node");
+
+            if (card) {
+                card.style.background = `linear-gradient(135deg, ${set.from}, ${set.to})`;
+                card.style.borderLeftColor = set.from;
+                card.style.color = "#fff";
+            }
+            if (node) {
+                node.style.background = set.node;
+                node.style.boxShadow = `0 0 15px ${set.node}`;
             }
         });
     }
