@@ -150,7 +150,7 @@
                                                                     @if (item.Status == "Sent Central")
                                                                     {
                                                                         <div class="col-md-2" style="margin-left:20px">
-                                                                            <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Forward" onclick="ComplaintForward(@item.Id)" ><i class="ft-fast-forward"></i></button>
+                                                                            <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Forward" onclick="ComplaintForward(@item.Id)"><i class="ft-fast-forward"></i></button>
                                                                         </div>
                                                                         <div class="col-md-2" style="margin-left:20px">
                                                                             <button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="Resolved" onclick="ComplaintDepResolve(@item.Id)"><i class="ft-check-square"></i></button>
@@ -184,12 +184,10 @@
                                                                             <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Forward" onclick="ComplaintForward(@item.Id)"><i class="ft-fast-forward"></i></button>
                                                                         </div>
                                                                         <div class="col-md-2" style="margin-left:20px">
-                                                                            <button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="Resolve" onclick="ComplaintDepResolve(@item.Id)" ><i class="ft-check-square"></i></button>
+                                                                            <button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="Resolve" onclick="ComplaintDepResolve(@item.Id)"><i class="ft-check-square"></i></button>
                                                                         </div>
                                                                     }
-
                                                                 </div>
-
                                                             </td>
                                                         </tr>
                                                         i++;

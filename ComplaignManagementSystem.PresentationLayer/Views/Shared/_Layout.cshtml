@@ -156,6 +156,13 @@
                             <span class="menu-title" data-i18n="">Dashboard</span>
                         </a>
                     </li>
+                    <hr style="margin-right:20px;margin-left:20px">
+                    <div class="row">
+                        <div class="col-md-8" style="text-align:center">
+                            <span style="color:gray;" class="text-uppercase text-center">Main Process</span>
+                        </div>
+                    </div>
+                    <hr style="margin-right:20px;margin-left:20px">
                     @if (Context.Session.GetString("UserPermission") == "Admin ")
                     {
                         <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
@@ -180,7 +187,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
                             <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
                                 <i class="ft-arrow-down-left"></i>
                                 <span class="menu-title" data-i18n="">Complaint History</span>
@@ -188,12 +195,11 @@
                         </li>
                         <hr style="margin-right:20px;margin-left:20px">
                         <div class="row">
-                            <div class="col-md-6" style="text-align:center;margin-left:65px">
-                                <span style="color:gray;" class="text-uppercase text-center">Admin Part</span>
+                            <div class="col-md-8" style="text-align:center;">
+                                <span style="color:gray;" class="text-uppercase text-center">Admin Process</span>
                             </div>
                         </div>
                         <hr style="margin-right:20px;margin-left:20px">
-
                         <li class="nav-item has-sub @(activeMenuTab == "MasterMainMenu" ? "open" : "")">
                             <a href="#"><i class="ft-package"></i>Masters</a>
                             <ul class="menu-content">
@@ -211,7 +217,6 @@
                                         </li>
                                     </ul>
                                 </li>
-
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "UserMainMenu" ? "open" : "")">
@@ -219,7 +224,7 @@
                             <ul class="menu-content">
 
                                 <li class="has-sub is-shown @(activeSecMenuTab == "UserMasterMenu" ? "open" : "")">
-                                    <a class="menu-item" href="#">User Masters</a>
+                                    <a class="menu-item" href="#">Masters</a>
                                     <ul class="menu-content" style="">
                                         <li class="@(activeSubMenuTab == "UserRoleMasterSubMenu" ? "active" : "")">
                                             <a class="menu-item" href="/UserRole/Index">User Role</a>
@@ -227,6 +232,21 @@
                                         <li class="@(activeSubMenuTab == "PageMasterSubMenu" ? "active" : "")">
                                             <a class="menu-item" href="/Page/Index">Pages</a>
                                         </li>
+                                        <li class="@(activeSubMenuTab == "PageManageMasterSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/PageCapability/Index">Pages Management</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="has-sub is-shown @(activeSecMenuTab == "UserMenu" ? "open" : "")">
+                                    <a class="menu-item" href="#">User Management</a>
+                                    <ul class="menu-content" style="">
+                                        <li class="@(activeSubMenuTab == "UserCreation" ? "active" : "")">
+                                            <a class="menu-item" href="/User/Create">New User Create</a>
+                                        </li>
+                                        <li class="@(activeSubMenuTab == "UserPermission" ? "active" : "")">
+                                            <a class="menu-item" href="/User/Index">User Master</a>
+                                        </li>
+
                                     </ul>
                                 </li>
 
@@ -266,6 +286,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "User")
                     {
@@ -300,6 +326,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "Central User")
                     {
@@ -334,6 +366,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "Dep User")
                     {
@@ -367,7 +405,7 @@
                                     }
                                 </ul>
                             </li>
-                            <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
+                            <li class="nav-item @(activeMenuTab == "ComplaintHistory" ? "open" : "")">
                                 <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
                                     <i class="ft-arrow-down-left"></i>
                                     <span class="menu-title" data-i18n="">Complaint History</span>
@@ -376,7 +414,10 @@
                         }
                     }
                 </ul>
-
+                <div class="ps__rail-y" style="top: 300px; height: 572px; right: 0px;">
+                    <div class="ps__thumb-y" tabindex="0" style="top: 127px; height: 241px;">
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -410,14 +451,10 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-
-
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
-
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/tooltip/tooltip.min.js"></script>
-
 </body>
 </html>
 
