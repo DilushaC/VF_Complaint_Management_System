@@ -230,6 +230,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                     return RedirectToAction("Login", "User");
 
                 _complainProcess.UpdateSendComplaint(collection, file);
+
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
 
                 if (ResolvedStatus == "No")
@@ -474,7 +475,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 var complaintCounts = await _complainProcess.GetDashboardComplaintCounts();
 
                 return Json(new
-                {                    
+                {
                     total = complaintCounts.TotalCount,
                     pending = complaintCounts.PendingCount,
                     resolved = complaintCounts.ResolveCount,
@@ -496,7 +497,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         public async Task<IActionResult> ComplaintHistoryProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
         {
             try
-            {             
+            {
+                var getAllDeps = _complainProcess.getComplainNumberList();
+                ViewBag.Complaint = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
                 return View();
             }
             catch (Exception ex)
@@ -504,6 +507,43 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 throw ex;
             }
         }
+
+        //public async Task<IActionResult> GetComplaintHistoryDetails(int ComplainNo)
+        //{
+        //    //List<Complaint_ManageProcessModel> complaintData = await _complainProcess.GetComplaintHistoryDetails(id);
+        //    //if (complaintData == null)
+        //    //{
+        //    //    return NotFound(); 
+        //    //}                      
+        //    //return PartialView("_DepartmentResolvePartial", complaintData);
+
+        //    var getAllDeps = _complainProcess.GetComplaintHistoryDetails(ComplainNo);
+        //    ViewBag.ABC = new SelectList(getAllDeps.Result.ToList(), "ForwordUser", "Dep");
+        //    return View();
+        //}
+
+        public async Task<IActionResult> GetComplaintHistoryDetails(int id)
+        {
+            var getAllDeps = await _complainProcess.GetComplaintHistoryDetails(id);
+
+            var result = getAllDeps.Select(x => new
+            {
+                ForwordUser = x.ForwordUser,
+                Dep = x.Dep,
+                CreatedDate = x.CreatedDate,
+                MatrixOrder = x.MatrixOrder,
+                IsResolved = x.IsResolved,
+                ResolvedDateTime = x.ResolvedDateTime,
+                ResolvedRemark = x.ResolvedRemark,
+                ResolvedUser = x.ResolvedUser,
+                DepartmentName = x.DepartmentName,
+                IsSentDep = x.IsSentDep,
+                IsSentCentral = x.IsSentCentral
+            }).ToList();
+
+            return Json(result);
+        }
+
 
 
 

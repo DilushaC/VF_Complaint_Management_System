@@ -94,8 +94,8 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/sweet alert/sweetalert2.all.min.js"></script>
 <script>        
     function CentralComplainResolve(complaintId) {
-        var remark = document.getElementById("Remarktxt").value;         
-        
+        var remark = document.getElementById("Remarktxt").value;
+           
         if (remark.trim() === "") {
             Swal.fire({
                 title: 'Warning!',
@@ -106,7 +106,7 @@
 
         }else{
          $.ajax({                
-             url: '@Url.Action("ComplainResolve", "ComplaintManageProcess")',                
+             url: '@Url.Action("CentralComplainResolve", "ComplaintManageProcess")',                
              type: 'POST',                
              data: { id: complaintId, remark:remark },                
              success: function (response) {                      

@@ -1,0 +1,103 @@
+﻿@model ComplaignManagementSystem.Data.Models.UserModel // Change this to your actual model namespace
+
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
+                <strong>User Name</strong>
+            </div>
+            <div class="col-md-4">
+                :  @Html.DisplayFor(m => m.UserName)
+            </div>
+            <div class="col-md-2">
+                <strong>Name</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Name)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Email</strong>
+            </div>
+            <div class="col-md-4">
+                :  @Html.DisplayFor(m => m.Email)
+            </div>
+            <div class="col-md-2">
+                <strong>Branch</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.Branch)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>Department</strong>
+            </div>
+            <div class="col-md-4">
+                :  @Html.DisplayFor(m => m.Department)
+            </div>
+            <div class="col-md-2">
+                <strong>Created Date</strong>
+            </div>
+            <div class="col-md-3">
+                :  @Html.DisplayFor(m => m.CreatedDate)
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<hr />
+<h3>User Permission</h3>
+<hr />
+@using (Html.BeginForm("PermissionEdit", "User", FormMethod.Post, new { id = "UserPermissionForm" }))
+{
+    <div class="form-body">
+        <div class="row">
+
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label for="UserRoleId">Role </label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                    <select id="UserRoleId" name="UserRoleId" class="form-control" asp-items="ViewBag.UserRoleId" style="width:100%">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input tyepe="text" id="Id" name="Id" value="@Model.Id" hidden></input>
+    <hr />
+    <div class="modal-footer">
+        <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" id="saveP">
+            Save
+        </button>
+    </div>
+
+}
+
+
+
+
+
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script type="text/javascript">
+
+    $("#UserRoleId").select2({
+        allowClear:true,
+        placeholder: 'Select Role',
+        dropdownParent: $('#PermissionEditModal')
+    });
+
+
+    document.getElementById("saveP").addEventListener("click", function (event) {
+        event.preventDefault(); // prevent default submission first
+        const form = $('#UserPermissionForm');
+        form.attr('action', '/User/PermissionEdit');
+        form.submit();
+        return true;
+    });
+
+</script>

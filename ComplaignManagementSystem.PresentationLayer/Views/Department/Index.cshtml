@@ -62,7 +62,7 @@
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 91.6406px;">Code</th>
                                                 @* <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 28.7969px;">Complaint</th> *@
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 76.1094px;">CreatedDate</th>
-                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Status</th>
+                                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 120.6094px;">Complaint Department</th>
                                                 <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 220.6094px;">Action</th>
                                             </tr>
                                         </thead>
@@ -79,18 +79,25 @@
                                                         <td>@item.Code</td>
 
                                                         <td>@item.CreatedDate.ToString("yyyy-MM-dd")</td>
-                                                        <td>@item.Status</td>
+                                                        @if (item.Status == true)
+                                                        {
+                                                            <td>Yes</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>No</td>
+                                                        }
                                                         <td style="width:50px">
                                                             <div class="row">
                                                                 <div class="col-md-2">
-                                                                    <button type="button" class="btn btn-outline-purple" data-toggle="tooltip" data-placement="top" title="View" onclick="DepartmentDetils(@item.Id)" style="width:30px;height:30px"><i class="ft-eye"></i></button>
+                                                                    <button type="button" class="btn btn-outline-purple btn-sm" data-toggle="tooltip" data-placement="top" title="View" onclick="DepartmentDetils(@item.Id)"><i class="ft-eye"></i></button>
                                                                 </div>
 
                                                                 <div class="col-md-2" style="margin-left:20px;margin-right:20px">
-                                                                    <button type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title="Edit" onclick="DepartmentEdit(@item.Id)" style="width:30px;height:30px"><i class="ft-edit"></i></button>
+                                                                    <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Edit" onclick="DepartmentEdit(@item.Id)"><i class="ft-edit"></i></button>
                                                                 </div>
                                                                 <div class="col-md-2" style="margin-left:0px;margin-right:20px">
-                                                                    <button type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Delete" onclick="DepartmentDelete(@item.Id)" style="width:30px;height:30px"><i class="ft-delete"></i></button>
+                                                                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete" onclick="DepartmentDelete(@item.Id)"><i class="ft-delete"></i></button>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -113,24 +120,20 @@
                                                 <th rowspan="1" colspan="1">Code</th>
                                                 @* <th rowspan="1" colspan="1">Complaint</th> *@
                                                 <th rowspan="1" colspan="1">Created Branch</th>
-                                                <th rowspan="1" colspan="1">Status</th>
+                                                <th rowspan="1" colspan="1">Complaint Department</th>
                                                 <th rowspan="1" colspan="1">Action</th>
-
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-
 
 <div class="modal fade" id="DepDetailModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">

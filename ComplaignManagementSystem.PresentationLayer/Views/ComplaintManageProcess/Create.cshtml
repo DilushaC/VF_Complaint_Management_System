@@ -40,7 +40,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Cus_Nic">Customer NIC</label>
-                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off" onkeyup="nicChange()">
+                                        <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off" onkeyup="nicChange()" maxlength="12">
                                         <small id="nicError" style="color:red; display:none;">Invalid NIC</small>
                                     </div>
                                 </div>
@@ -313,12 +313,255 @@
       }
     }
 
+
     $('#save').on('click', function () {
         var form = $('#complainForm');
+
+
+    const button = document.getElementById("savensend");
+    const errorMessageMthodContainer = document.getElementById('error-message-method');
+    const errorMessageDepContainer = document.getElementById('error-message-dep');
+    const errorMessageNatureContainer = document.getElementById('error-message-nature');
+    const errorMessageComplaintContainer = document.getElementById('error-message-complaint');
+
+    var Method = document.getElementById("ComplaintMethod_Id").value;
+    var Dep = document.getElementById("Dep_Id").value;
+    var Nature = document.getElementById("Nature_Id").value;
+    var Compaint = document.getElementById("Complaint").value;
+
+    if(Method == "" && Dep == "" && Nature == "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method != "" && Dep == "" && Nature == "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = '';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method == "" && Dep != "" && Nature == "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method == "" && Dep == "" && Nature != "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method == "" && Dep == "" && Nature == "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    }
+    else if(Method != "" && Dep != "" && Nature == "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = '';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method != "" && Dep == "" && Nature != "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method != "" && Dep == "" && Nature == "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method == "" && Dep != "" && Nature != "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method == "" && Dep != "" && Nature == "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method == "" && Dep == "" && Nature != "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method != "" && Dep != "" && Nature != "" && Compaint == ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = 'Please enter the Complaint.';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method == "" && Dep != "" && Nature != "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = 'Please Select the Method.';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method != "" && Dep == "" && Nature != "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = 'Please Select the Department.';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    } else if(Method != "" && Dep != "" && Nature == "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = 'Please Select the Nature.';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        return;
+    }  else if(Method != "" && Dep != "" && Nature != "" && Compaint != ""){
+        errorMessageMthodContainer.textContent = '';
+        errorMessageMthodContainer.style.color = 'red';
+
+        errorMessageDepContainer.textContent = '';
+        errorMessageDepContainer.style.color = 'red';
+
+        errorMessageNatureContainer.textContent = '';
+        errorMessageNatureContainer.style.color = 'red';
+
+        errorMessageComplaintContainer.textContent = '';
+        errorMessageComplaintContainer.style.color = 'red';
+        button.disabled = false;
+        //return;
+    }
+
         // Change action dynamically
         form.attr('action', '/ComplaintManageProcess/SaveComplaint');
         form.submit();
     });
+
+
     $('#savensend').on('click', function () {
         var form = $('#complainForm');
         const button = document.getElementById("savensend");

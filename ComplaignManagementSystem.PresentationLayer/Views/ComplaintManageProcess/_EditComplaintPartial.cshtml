@@ -16,7 +16,7 @@
                             <div class="form-group">
                                 <label for="Complaint Method">Complaint Method</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                 <br />
-                                <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id" style="width:80%">
+                                <select id="ComplaintMethod_Ids" name="ComplaintMethod_Ids" class="form-control" asp-items="ViewBag.ComplaintMethod_Id" style="width:80%">
                                     <option value="">-- Select --</option>
                                 </select>
                                 <span id="error-message-method"></span>
@@ -33,7 +33,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Cus_Nic">Customer NIC</label>
-                                <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" autocomplete="off" onkeyup="nicChange()">
+                                <input type="text" id="Cus_Nic" class="form-control" placeholder="Customer NIC" name="Cus_Nic" value="@Model.Cus_Nic" autocomplete="off" onkeyup="nicChange()">
                                 <small id="nicError" style="color:red; display:none;">Invalid NIC</small>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Cus_MobileNumber">Customer Mobile Number</label>
-                                <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" autocomplete="off" onkeyup="mobileChange()" maxlength="10">
+                                <input type="text" id="Cus_MobileNumber" class="form-control" placeholder="Customer Mobile Number" name="Cus_MobileNumber" value="@Model.Cus_MobileNumber" autocomplete="off" onkeyup="mobileChange()" maxlength="10">
                                 <small id="mobileError" style="color:red; display:none;">Invalid Mobile Number</small>
                             </div>
                         </div>
@@ -113,8 +113,8 @@
 
                     </div>
                     <div class="form-group" style="margin-top:10px">
-                        <label for="Compaint">Compaint</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                        <textarea id="Compaint" rows="5" class="form-control" name="Compaint" placeholder="About Compaint">@Model.Complaint</textarea>
+                        <label for="Complaint">Compaint</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                        <textarea id="Complaint" rows="5" class="form-control" name="Complaint" placeholder="About Compaint">@Model.Complaint</textarea>
                         <span id="error-message-complaint"></span>
                     </div>
                 </div>
@@ -166,7 +166,7 @@
 <script>        
     $('#savenresolved').hide();
     $('#revolveT').hide();
-    $("#ComplaintMethod_Id").select2({
+    $("#ComplaintMethod_Ids").select2({
       allowClear:true,
       placeholder: 'Select Method',
       dropdownParent: $('#editComplaintModal')
@@ -419,7 +419,7 @@
         const errorMessageNatureContainer = document.getElementById('error-message-nature');
         const errorMessageComplaintContainer = document.getElementById('error-message-complaint');
 
-        var Method = document.getElementById("ComplaintMethod_Id").value;
+        var Method = document.getElementById("ComplaintMethod_Ids").value;
         var Dep = document.getElementById("Dep_Id").value;
         var Nature = document.getElementById("Nature_Id").value;
         var Compaint = document.getElementById("Compaint").value;
@@ -689,7 +689,7 @@
         const errorMessageComplaintContainer = document.getElementById('error-message-complaint');
         const errorMessageRemarkContainer = document.getElementById('error-message-remark');
 
-        var Method = document.getElementById("ComplaintMethod_Id").value;
+        var Method = document.getElementById("ComplaintMethod_Ids").value;
         var Dep = document.getElementById("Dep_Id").value;
         var Nature = document.getElementById("Nature_Id").value;
         var Compaint = document.getElementById("Compaint").value;

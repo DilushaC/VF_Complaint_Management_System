@@ -43,11 +43,5 @@ namespace ComplaintManagementSystem.Business.Helpers
             var computedHash = ComputeHmac(enteredPassword);
             return storedHash == computedHash;
         }
-
-        public string EncryptPassword(string enteredPassword)
-        {
-            var computedHash = ComputeHmac(enteredPassword);
-            return computedHash;
-        }
     }
 }

@@ -17,8 +17,7 @@
     <meta name="author" content="ThemeSelect">
     <title>@ViewData["Title"] - Complaint Management System</title>
     <link rel="apple-touch-icon" href="~/plugins/demo/chameleon-admin-template/app-assets/images/ico/apple-icon-120.png">
-    <link rel="shortcut icon" type="image/x-icon" href="https://themeselection.com/demo/chameleon-admin-template/app-assets/images/ico/favicon.ico">
-
+    <link rel="shortcut icon" type="image/x-icon" href="~/vallibel-logo.ico" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/vendors.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/toggle/switchery.min.css" rel="stylesheet" />
     <link href="~/plugins/demo/chameleon-admin-template/app-assets/css/plugins/forms/switch.min.css" rel="stylesheet" />
@@ -131,13 +130,13 @@
             </div>
         </div>
     </nav>
-    <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/04.jpg">
-        <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/04.jpg">
+    <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg">
+        <div class="main-menu menu-fixed menu-light menu-accordion    menu-shadow " data-scroll-to-active="true" data-img="/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg">
             <div class="navbar-header">
                 <ul class="nav navbar-nav flex-row">
                     <li class="nav-item mr-auto">
                         <a class="navbar-brand" href="#">
-                            <img class="brand-logo" src="~/plugins/demo/chameleon-admin-template/app-assets/images/logo/logo.png" />
+                            <img src="~/vallibel-small-logo.png" style="width:15%" />
                             <h3 class="brand-text" style="font-size:17px">Complaint Management</h3>
                         </a>
                     </li>
@@ -145,10 +144,10 @@
                 </ul>
             </div>
             <div class="navigation-background"
-                 style="background-image: url('@Url.Content("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/04.jpg")');">
+                 style="background-image: url('@Url.Content("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg")');">
             </div>
-            <div class="main-menu-content ps ps--active-y" style="height: 704px;">
-
+            <div class="main-menu-content ps ps--active-y" style="height: 704px">
+                <hr style="margin-right:20px;margin-left:20px;margin-top:0px">
                 <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                     <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
                         <a href="/ComplaintManageProcess/Dashboard">
@@ -156,10 +155,21 @@
                             <span class="menu-title" data-i18n="">Dashboard</span>
                         </a>
                     </li>
+                    <hr style="margin-right:20px;margin-left:20px">
+                    <div class="row">
+                        <div class="col-md-8" style="text-align:center">
+                            <span style="color:gray;" class="text-uppercase text-center">Main Process</span>
+                        </div>
+                    </div>
+                    <hr style="margin-right:20px;margin-left:20px">
                     @if (Context.Session.GetString("UserPermission") == "Admin ")
                     {
                         <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-file-text"></i>Create Form</a>
+                            <a href="#"><i class="ft-file-text"></i>
+                                <span class="menu-title" data-i18n="">
+                                    Create Form
+                                </span>
+                            </a>
                             <ul class="menu-content">
                                 <li class="@(activeSubMenuTab == "CreateFormScreen" ? "active" : "")">
                                     <a class="menu-item" href="/ComplaintManageProcess/Create">Create Complaint</a>
@@ -170,7 +180,11 @@
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                            <a href="#"><i class="ft-command"></i>
+                                <span class="menu-title" data-i18n="">
+                                    Complaint Forms
+                                </span>
+                            </a>
                             <ul class="menu-content">
                                 <li class="@(activeSubMenuTab == "DepartmentMenu" ? "active" : "")">
                                     <a class="menu-item" href="/ComplaintManageProcess/DepartmentProcess">Department</a>
@@ -180,16 +194,23 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistoryProcessMenu" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                         <hr style="margin-right:20px;margin-left:20px">
                         <div class="row">
-                            <div class="col-md-6" style="text-align:center;margin-left:65px">
-                                <span style="color:gray;" class="text-uppercase text-center">Admin Part</span>
+                            <div class="col-md-8" style="text-align:center;">
+                                <span style="color:gray;" class="text-uppercase text-center">Admin Process</span>
                             </div>
                         </div>
                         <hr style="margin-right:20px;margin-left:20px">
-
                         <li class="nav-item has-sub @(activeMenuTab == "MasterMainMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-package"></i>Masters</a>
+                            <a href="#"><i class="ft-package"></i>
+                                <span class="menu-title" data-i18n="">Masters</span>
+                            </a>
                             <ul class="menu-content">
                                 <li class="@(activeSubMenuTab == "MethodSubMenu" ? "active" : "")">
                                     <a class="menu-item" href="/Method/Index">Method</a>
@@ -205,15 +226,15 @@
                                         </li>
                                     </ul>
                                 </li>
-
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "UserMainMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-anchor"></i>User Management</a>
+                            <a href="#"><i class="ft-anchor"></i>
+                                <span class="menu-title" data-i18n="">User Management</span>
+                            </a>
                             <ul class="menu-content">
-
                                 <li class="has-sub is-shown @(activeSecMenuTab == "UserMasterMenu" ? "open" : "")">
-                                    <a class="menu-item" href="#">User Masters</a>
+                                    <a class="menu-item" href="#">Masters</a>
                                     <ul class="menu-content" style="">
                                         <li class="@(activeSubMenuTab == "UserRoleMasterSubMenu" ? "active" : "")">
                                             <a class="menu-item" href="/UserRole/Index">User Role</a>
@@ -221,6 +242,21 @@
                                         <li class="@(activeSubMenuTab == "PageMasterSubMenu" ? "active" : "")">
                                             <a class="menu-item" href="/Page/Index">Pages</a>
                                         </li>
+                                        <li class="@(activeSubMenuTab == "PageManageMasterSubMenu" ? "active" : "")">
+                                            <a class="menu-item" href="/PageCapability/Index">Pages Management</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="has-sub is-shown @(activeSecMenuTab == "UserMenu" ? "open" : "")">
+                                    <a class="menu-item" href="#">User Management</a>
+                                    <ul class="menu-content" style="">
+                                        <li class="@(activeSubMenuTab == "UserCreation" ? "active" : "")">
+                                            <a class="menu-item" href="/User/Create">New User Create</a>
+                                        </li>
+                                        <li class="@(activeSubMenuTab == "UserPermission" ? "active" : "")">
+                                            <a class="menu-item" href="/User/Index">User Master</a>
+                                        </li>
+
                                     </ul>
                                 </li>
 
@@ -260,6 +296,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistoryProcessMenu" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "User")
                     {
@@ -294,6 +336,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistoryProcessMenu" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "Central User")
                     {
@@ -328,6 +376,12 @@
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item @(activeMenuTab == "ComplaintHistoryProcessMenu" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
+                                <i class="ft-arrow-down-left"></i>
+                                <span class="menu-title" data-i18n="">Complaint History</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "Dep User")
                     {
@@ -361,7 +415,7 @@
                                     }
                                 </ul>
                             </li>
-                            <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
+                            <li class="nav-item @(activeMenuTab == "ComplaintHistoryProcessMenu" ? "open" : "")">
                                 <a href="/ComplaintManageProcess/ComplaintHistoryProcess">
                                     <i class="ft-arrow-down-left"></i>
                                     <span class="menu-title" data-i18n="">Complaint History</span>
@@ -370,7 +424,10 @@
                         }
                     }
                 </ul>
-
+                <div class="ps__rail-y" style="top: 300px; height: 572px; right: 0px;">
+                    <div class="ps__thumb-y" tabindex="0" style="top: 127px; height: 241px;">
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -383,8 +440,6 @@
             </main>
         </div>
     </div>
-
-
 
     <footer class="border-top footer text-muted bottom">
         <div class="container">
@@ -404,41 +459,10 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/core/app.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/customizer.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/jquery.sharrre.js"></script>
-
-
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
-
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
-
-    <script>
-            const sessionTimeout = 1 * 60 * 1000;
-            let timeout;
-
-            function resetTimer() {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    window.location.href = '/User/Login';
-                }, sessionTimeout);
-            }
-
-            window.onload = resetTimer;
-            document.onmousemove = resetTimer;
-            document.onkeypress = resetTimer;
-            document.onscroll = resetTimer;
-            document.onclick = resetTimer;
-
-            (function () {
-                window.history.pushState(null, "", window.location.href);
-                window.onpopstate = function () {
-                    window.history.pushState(null, "", window.location.href);
-                };
-            })();
-
-    </script>
-
-
-
+    <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/tooltip/tooltip.min.js"></script>
 </body>
 </html>
 

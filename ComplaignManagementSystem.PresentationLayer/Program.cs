@@ -2,8 +2,15 @@
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.Helpers;
-using ComplaintManagementSystem.Business.LoginHandler;
+using ComplaintManagementSystem.Business.LoginHandler; 
+using Microsoft.AspNetCore.Http;
 using ComplaignManagementSystem.Presentation.Filters;
+using ComplaintManagementSystem.Business.DepartmentHandler;
+using ComplaintManagementSystem.Business.NatureHandler;
+using ComplaintManagementSystem.Business.MethodHandler;
+using ComplaintManagementSystem.Business.UserRoleHandler;
+using ComplaintManagementSystem.Business.PageHandler;
+using ComplaintManagementSystem.Business.PageCapabilityHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,20 +19,38 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add<SessionCheckAttribute>();
 });
 
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<DapperContext>();
+
 builder.Services.AddScoped<_ConnectionService>();
+
+builder.Services.AddScoped<PasswordHelper>();
+
 builder.Services.AddScoped<IComplaintManageProcessService, ComplaintManageProcessService>();
+
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+
+builder.Services.AddScoped<INatureService, NatureService>();
+
+builder.Services.AddScoped<IMethodService, MethodService>();
+
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+
+builder.Services.AddScoped<IPageService, PageService>();
+
+builder.Services.AddScoped<IPageCapabilityService, PageCapabilityService>();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(1);
+    options.IdleTimeout = TimeSpan.FromMinutes(5); 
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.Strict;
 });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
 
 var app = builder.Build();
 

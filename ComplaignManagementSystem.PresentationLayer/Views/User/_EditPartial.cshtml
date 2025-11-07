@@ -1,0 +1,237 @@
+﻿
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+
+<hr />
+<div class="card-body">
+    @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "UserEditForm" }))
+    {
+        <div class="form-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group" style="margin-top:0px">
+                        <h3> Password Reset</h3>
+                        <br />
+                        <div class="row" style="margin-left:10px">
+
+                            <div class="col-md-2">
+                                <label for="Reset-Yes">Yes</label>
+                                <input class="form-control" type="radio" id="Reset-Yes" name="Reset" value="Yes" style="block-size:20px;margin:-28px;margin-left:0px">
+                            </div>
+                            <div class="col-md-2" style="margin-left:-40px">
+                                <label for="Reset-No">No</label>
+                                <input class="form-control" type="radio" id="Reset-No" name="Reset" value="No" style="block-size:20px;margin:-28px;margin-left:10px" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" id="passwrdDiv">
+                    <div class="form-group">
+                        <label for="Password">Password</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                        <input type="Password" id="Password" class="form-control" placeholder="Password..." name="Password" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row" style="margin-top:20px">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="UserNames">User Name</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                        <input type="text" id="UserNames" class="form-control" placeholder="User Name" name="UserNames" autocomplete="off" value="@Model.UserName">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Names">Name</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                        <input type="text" id="Names" class="form-control" placeholder="First Name with Last Name" name="Names" autocomplete="off" value="@Model.Name">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Emails">User Email</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                        <input type="text" id="Emails" class="form-control" placeholder="User Email" name="Emails" autocomplete="off" onkeyup="emailChanges()" value="@Model.Email">
+                        <small id="emailError" style="color:red; display:none;">Invalid Email</small>
+                        <small id="error-message-Emails" style="color:red"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="BranchIds">Branch</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                        <select id="BranchIds" name="BranchIds" class="form-control" asp-items="ViewBag.BranchId" style="width:100%">
+                            <option value="">-- Select --</option>
+                        </select>
+                        <small id="error-message-Branchs" style="color:red"></small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Dep_Ids">Department</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                        <select id="Dep_Ids" name="Dep_Ids" class="form-control" asp-items="ViewBag.Dep_Id" style="width:100%">
+                            <option value="">-- Select --</option>
+                        </select>
+                        <small id="error-message-Deps" style="color:red"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <input tyepe="text" id="Id" name="Id" value="@Model.Id" hidden></input>
+        <div class="form-actions">
+            <button type="reset" class="btn btn-danger mr-1">
+                Clear
+            </button>
+            <button type="button" class="btn btn-success" id="saveE">
+                Save
+            </button>
+        </div>
+    }
+</div>
+
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+<script type="text/javascript">
+    $("#BranchIds").select2({
+      allowClear:true,
+      placeholder: 'Select Branch',
+      dropdownParent: $('#editModal')
+    });
+    $("#Dep_Ids").select2({
+      allowClear:true,
+      placeholder: 'Select Department',
+      dropdownParent: $('#editModal')
+    });       
+    $('input[name="Reset"]').on('change', function () {
+      var selectedValue = $(this).val();          
+      onStatusChange(selectedValue);
+    });
+    $('#passwrdDiv').hide();
+    function onStatusChange(value) {
+        //alert("Selected status: " + value);   
+        if(value == "Yes"){   
+            document.getElementById("UserNames").readOnly = true;      
+            document.getElementById("Names").readOnly = true;       
+            document.getElementById("Emails").readOnly = true;            
+            // Dropdowns - disable (readOnly doesn’t work for <select>)                  
+            document.getElementById("BranchIds").disabled = true;             
+            document.getElementById("Dep_Ids").disabled = true;  
+            $('#passwrdDiv').show();    
+        }else{
+            $('#passwrdDiv').hide();                        
+            document.getElementById("UserNames").readOnly = false;      
+            document.getElementById("Names").readOnly = false;      
+            document.getElementById("Emails").readOnly = false;
+            // Dropdowns - disable (readOnly doesn’t work for <select>)      
+            document.getElementById("BranchIds").disabled = false;      
+            document.getElementById("Dep_Ids").disabled = false;      
+        }
+    }
+
+       
+    function emailChanges() {            
+        const email = document.getElementById("Emails").value.trim();
+        const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        const save = document.getElementById("saveE");
+        const emailError = document.getElementById("emailError");
+       
+        if (email === "") {
+            // Empty field → reset border and hide error                
+            document.getElementById("Emails").style.borderColor = "";
+            emailError.style.display = "none";
+            save.disabled = true;
+            return;
+        }
+        if (emailPattern.test(email)) {
+            // ✅ Valid email                
+            document.getElementById("Emails").style.borderColor = "green";
+            emailError.style.display = "none";
+            save.disabled = false;
+        } else {
+            // ❌ Invalid email                
+            document.getElementById("Emails").style.borderColor = "red";
+            emailError.style.display = "inline";
+            save.disabled = true;
+        }
+    }
+    document.getElementById("saveE").addEventListener("click", function (event) {    
+        event.preventDefault(); // prevent default submission first    
+        let isValid = true;    
+        const form = $('#UserEditForm');
+        // Clear previous styles and messages    
+        document.querySelectorAll("input, select").forEach(el => el.style.borderColor = "");    
+        document.querySelectorAll("small[id^='error-message']").forEach(span => span.innerText = "");
+        // --- Input Elements ---    
+        const userName = document.getElementById("UserNames");    
+        const name = document.getElementById("Names");    
+        const email = document.getElementById("Emails");    
+        const branch = document.getElementById("BranchIds");
+        const dep = document.getElementById("Dep_Ids");
+        const password = document.getElementById("Password"); // ✅ corrected
+        const resetValue = document.querySelector('input[name="Reset"]:checked')?.value;
+
+        // --- If Reset = Yes (Password Validation only) ---
+        if (resetValue === "Yes") {
+            if (password.value.trim() === "") {
+                password.style.borderColor = "red";    
+                let existingError = document.getElementById("error-message-Password");    
+                if (!existingError) {    
+                    password.insertAdjacentHTML('afterend', '<small id="error-message-Password" style="color:red;">Password is required</small>');    
+                }    
+                isValid = false;    
+            } else {    
+                password.style.borderColor = "";    
+                document.getElementById("error-message-Password")?.remove();    
+            }
+
+            if (!isValid) return false;    
+            // Submit form
+            form.attr('action', '/User/Edit');
+            form.submit();
+            return true;
+        }
+
+        // --- If Reset = No (Validate all fields except password) ---    
+        if (userName.value.trim() === "") {
+            userName.style.borderColor = "red";
+            document.getElementById("error-message-UserNames")?.remove();
+            userName.insertAdjacentHTML('afterend', '<small id="error-message-UserNames" style="color:red;">User Name is required</small>');
+            isValid = false;   
+        }
+
+        if (name.value.trim() === "") {
+
+            name.style.borderColor = "red";
+            document.getElementById("error-message-Names")?.remove();
+            name.insertAdjacentHTML('afterend', '<small id="error-message-Names" style="color:red;">Name is required</small>');
+            isValid = false;
+        }
+
+        if (email.value.trim() === "") {
+            email.style.borderColor = "red";
+            document.getElementById("error-message-Emails").textContent = "Email is required";
+            isValid = false;
+        } 
+        if (branch.value.trim() === "") {
+            branch.style.borderColor = "red";
+            document.getElementById("error-message-Branchs").innerText = "Please select a Branch";
+            isValid = false;
+        } else {
+            document.getElementById("error-message-Branchs").innerText = "";
+        }
+
+        if (dep.value.trim() === "") {
+            dep.style.borderColor = "red";
+            document.getElementById("error-message-Deps").innerText = "Please select a Department";
+            isValid = false;
+        } else {
+            document.getElementById("error-message-Deps").innerText = "";
+        }
+        // Final submission
+        if (!isValid) return false;
+        form.attr('action', '/User/Edit');
+        form.submit();
+        return true;
+});
+
+</script>

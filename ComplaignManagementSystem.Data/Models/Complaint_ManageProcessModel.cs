@@ -29,10 +29,10 @@ namespace ComplaignManagementSystem.Data.Models
         public DateTime IsSentDepDateTime { get; set; }
         public int Status { get; set; }
         public string StatusName { get; set; }
-        public string ResolvedRemark { get; set; }
-        public bool IsResolved { get; set; }
-        public DateTime ResolvedDateTime { get; set; }
-        public string ResolvedUser { get; set; }
+        public string? ResolvedRemark { get; set; }
+        public bool? IsResolved { get; set; }
+        public DateTime? ResolvedDateTime { get; set; }
+        public string? ResolvedUser { get; set; }
         public DateTime EditedDateTime { get; set; }
         public bool Active { get; set; }
         public DateTime DeletedDate { get; set; }
@@ -42,5 +42,13 @@ namespace ComplaignManagementSystem.Data.Models
         public DateTime CreatedDate { get; set; }
         public IFormFile File { get; set; }
         public string AttachmentPath { get; set; }
+
+
+        //------------
+        public string ForwordUser { get; set; }
+        public int MatrixOrder { get; set; }
+        public string DepartmentName { get; set; }
+
+
     }
 }

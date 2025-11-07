@@ -8,13 +8,7 @@ namespace ComplaignManagementSystem.Presentation.Filters
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var controllerName = context.ActionDescriptor.RouteValues["controller"];
-            var actionName = context.ActionDescriptor.RouteValues["action"];
-
-            if (controllerName != null &&
-                controllerName.Equals("User", StringComparison.OrdinalIgnoreCase) &&
-                (actionName.Equals("Login", StringComparison.OrdinalIgnoreCase) ||
-                 actionName.Equals("Reset", StringComparison.OrdinalIgnoreCase) ||
-                 actionName.Equals("Register", StringComparison.OrdinalIgnoreCase)))
+            if (controllerName != null && controllerName.Equals("User", StringComparison.OrdinalIgnoreCase))
             {
                 base.OnActionExecuting(context);
                 return;
@@ -24,14 +18,8 @@ namespace ComplaignManagementSystem.Presentation.Filters
 
             if (string.IsNullOrEmpty(session))
             {
-                context.HttpContext.Session.Clear();
                 context.Result = new RedirectToActionResult("Login", "User", null);
-                return;
             }
-
-            context.HttpContext.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-            context.HttpContext.Response.Headers["Pragma"] = "no-cache";
-            context.HttpContext.Response.Headers["Expires"] = "0";
 
             base.OnActionExecuting(context);
         }
