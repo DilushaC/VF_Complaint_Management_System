@@ -10,8 +10,7 @@ namespace ComplaignManagementSystem.Data.Models
     {
         public int Id { get; set; }
         public string UserName { get; set; }
-        public string Password { get; set; }  // stored hashed password
-        public string SaltKey { get; set; }   // added field in DB
+        public string Password { get; set; } 
         public string Name { get; set; }
         public string Email { get; set; }
         public int? BranchId { get; set; }

@@ -45,9 +45,11 @@ builder.Services.AddScoped<IPageCapabilityService, PageCapabilityService>();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(5); 
+    options.IdleTimeout = TimeSpan.FromMinutes(1); 
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();

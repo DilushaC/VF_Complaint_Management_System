@@ -165,7 +165,8 @@
                     @if (Context.Session.GetString("UserPermission") == "Admin ")
                     {
                         <li class="nav-item has-sub @(activeMenuTab == "ComplaintMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-file-text"></i>
+                            <a href="#">
+                                <i class="ft-file-text"></i>
                                 <span class="menu-title" data-i18n="">
                                     Create Form
                                 </span>
@@ -180,7 +181,8 @@
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-command"></i>
+                            <a href="#">
+                                <i class="ft-command"></i>
                                 <span class="menu-title" data-i18n="">
                                     Complaint Forms
                                 </span>
@@ -208,7 +210,8 @@
                         </div>
                         <hr style="margin-right:20px;margin-left:20px">
                         <li class="nav-item has-sub @(activeMenuTab == "MasterMainMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-package"></i>
+                            <a href="#">
+                                <i class="ft-package"></i>
                                 <span class="menu-title" data-i18n="">Masters</span>
                             </a>
                             <ul class="menu-content">
@@ -229,7 +232,8 @@
                             </ul>
                         </li>
                         <li class="nav-item has-sub @(activeMenuTab == "UserMainMenu" ? "open" : "")">
-                            <a href="#"><i class="ft-anchor"></i>
+                            <a href="#">
+                                <i class="ft-anchor"></i>
                                 <span class="menu-title" data-i18n="">User Management</span>
                             </a>
                             <ul class="menu-content">
@@ -463,6 +467,31 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/fonts/fontawesome/js/font-awesome-all.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/tooltip/tooltip.min.js"></script>
+
+    <script>
+        const sessionTimeout = 1 * 60 * 1000;
+                let timeout;
+
+                function resetTimer() {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        window.location.href = '/User/Login';
+                    }, sessionTimeout);
+                }
+
+                window.onload = resetTimer;
+                document.onmousemove = resetTimer;
+                document.onkeypress = resetTimer;
+                document.onscroll = resetTimer;
+                document.onclick = resetTimer;
+
+                (function () {
+                    window.history.pushState(null, "", window.location.href);
+                    window.onpopstate = function () {
+                        window.history.pushState(null, "", window.location.href);
+                    };
+                })();
+    </script>
 </body>
 </html>
 

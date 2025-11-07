@@ -38,8 +38,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         [HttpPost]
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear(); 
-            return RedirectToAction("Index", "Login"); 
+            HttpContext.Session.Clear();
+            Response.Cookies.Delete(".AspNetCore.Session");
+            return RedirectToAction("Login", "User");
         }
     }
 }

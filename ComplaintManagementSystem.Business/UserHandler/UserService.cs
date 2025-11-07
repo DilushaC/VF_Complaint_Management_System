@@ -42,7 +42,6 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                                               Id = row.Field<int>("Id"),
                                               UserName = row.Field<string>("UserName"),
                                               Password = row.Field<string>("Password"),
-                                              SaltKey = row.Field<string>("SaltKey"),
                                               Name = row.Field<string>("Name"),
                                               Email = row.Field<string>("Email"),
                                               BranchId = row.Field<int?>("BranchId"),
