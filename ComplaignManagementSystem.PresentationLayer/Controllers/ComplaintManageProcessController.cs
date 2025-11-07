@@ -538,7 +538,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 ResolvedUser = x.ResolvedUser,
                 DepartmentName = x.DepartmentName,
                 IsSentDep = x.IsSentDep,
-                IsSentCentral = x.IsSentCentral
+                IsSentCentral = x.IsSentCentral,
+                Remark = x.Remark
             }).ToList();
 
             return Json(result);
