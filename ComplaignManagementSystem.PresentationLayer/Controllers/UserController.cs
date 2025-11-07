@@ -28,6 +28,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         // GET: UserController
         public ActionResult Login()
         {
+            Response.Cookies.Delete(".AspNetCore.Session");
             HttpContext.Session.Clear();
             return View();
         }
