@@ -479,7 +479,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         //    ViewBag.TotalComplaintCount = complaintCounts.TotalCount;
         //    ViewBag.PendingComplaintCount = complaintCounts.PendingCount;
         //    ViewBag.ResolveComplaintCount = complaintCounts.ResolveCount;
-
         //    return View();
         //}
 
@@ -529,7 +528,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         //    //    return NotFound(); 
         //    //}                      
         //    //return PartialView("_DepartmentResolvePartial", complaintData);
-
         //    var getAllDeps = _complainProcess.GetComplaintHistoryDetails(ComplainNo);
         //    ViewBag.ABC = new SelectList(getAllDeps.Result.ToList(), "ForwordUser", "Dep");
         //    return View();

@@ -1006,9 +1006,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-
         //------------------------ Dashboard ------------------------------------>   
-
         public async Task<DashboardComplaintCountModel> GetDashboardComplaintCounts()
         {
             try
@@ -1085,7 +1083,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
-
         //------------------------ Complain History ------------------------------------>  
         public async Task<List<ComplaintMaster>> getComplainNumberList()
         {
@@ -1115,7 +1112,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 throw ex;
             }
         }
-
 
         public async Task<List<Complaint_ManageProcessModel>> GetComplaintHistoryDetails(int Id)
         {
@@ -1173,8 +1169,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 throw ex;
             }
         }
-
-
 
     }
 }
