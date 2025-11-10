@@ -1,16 +1,17 @@
 ﻿using ComplaignManagementSystem.Data.Context;
+using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using ComplaintManagementSystem.Business.ConncetionHandler;
+using ComplaintManagementSystem.Business.DepartmentHandler;
 using ComplaintManagementSystem.Business.Helpers;
 using ComplaintManagementSystem.Business.LoginHandler; 
-using Microsoft.AspNetCore.Http;
-using ComplaignManagementSystem.Presentation.Filters;
-using ComplaintManagementSystem.Business.DepartmentHandler;
-using ComplaintManagementSystem.Business.NatureHandler;
 using ComplaintManagementSystem.Business.MethodHandler;
-using ComplaintManagementSystem.Business.UserRoleHandler;
-using ComplaintManagementSystem.Business.PageHandler;
+using ComplaintManagementSystem.Business.NatureHandler;
 using ComplaintManagementSystem.Business.PageCapabilityHandler;
+using ComplaintManagementSystem.Business.PageHandler;
+using ComplaintManagementSystem.Business.UserRoleHandler;
+using log4net;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,13 @@ builder.Services.AddScoped<IPageService, PageService>();
 
 builder.Services.AddScoped<IPageCapabilityService, PageCapabilityService>();
 
+builder.Logging.ClearProviders(); // Optional: clear default providers
+builder.Logging.AddLog4Net("log4net.config");
+
+builder.Host.ConfigureLogging(logging =>
+{
+    logging.AddFilter("Microsoft.Hosting.Lifetime", LogLevel.None);
+});
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(1); 

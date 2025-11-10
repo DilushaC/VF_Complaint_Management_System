@@ -1,6 +1,7 @@
 ﻿using ComplaignManagementSystem.Data.Models;
 using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
+using log4net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
     {
         private readonly IComplaintManageProcessService _complainProcess;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private static readonly ILog log = LogManager.GetLogger(typeof(ComplaintManageProcessController));
 
         public ComplaintManageProcessController(IComplaintManageProcessService complainProcess, IWebHostEnvironment webHostEnvironment)
         {
@@ -53,13 +55,17 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
 
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.CreateComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
+                log.Info($"Success Complaint Save by : {UserName}.");
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex) 
             {
-                return View();
+                log.Error($"Error Complain Saving : {ex.Message}.");
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -71,13 +77,17 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
 
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.CreateAndSendComplaint(collection, file);
                 TempData["ToastMessage"] = "SubmittedSuccessfully!";
+
+                log.Info($"Success Complaint SaveAndSend by : {UserName}.");
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                log.Error($"Error Complain Saving : {ex.Message}.");
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -189,16 +199,20 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+
                 //string filePath = Path.Combine($"wwwroot/Attachments/_{id}");
+                var UserName = HttpContext.Session.GetString("UserName");
                 string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "Attachments", $"_{id}.pdf");
                 if (System.IO.File.Exists(filePath))
                 {
                     //System.IO.File.Delete(filePath);
                 }
+                log.Info($"Success Deleted Attachment by : {UserName}. ComplaintId : {id}");
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
+                log.Error($"Error Complain Saving : {ex.Message}. Record : {id}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
@@ -210,14 +224,17 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             {
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
-
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.UpdateComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
+
+                log.Info($"Success Update Complaint by : {UserName}. ComplaintId : {collection["Id"].ToString()}");
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                log.Error($"Error Complain Updating : {ex.Message}.");
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -228,9 +245,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             {
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
-
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.UpdateSendComplaint(collection, file);
-
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
 
                 if (ResolvedStatus == "No")
@@ -241,11 +257,14 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 {
                     TempData["ToastMessage"] = "resolvedSuccessfully!";
                 }
+
+                log.Info($"Success UpdateAndSend Complaint by : {UserName}. ComplaintId : {collection["Id"].ToString()}");
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                log.Error($"Error Complain UpdateAndSend : {ex.Message}.");
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -278,7 +297,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-
         public async Task<IActionResult> ComplaintForwardDetails(int id)
         {
             // SQL query to retrieve the master data for the given complaint ID
@@ -296,25 +314,24 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return PartialView("_DepartmentForwardPartial", complaintData);
         }
 
-
-
-
         [HttpPost]
         public JsonResult ForwardToCentral(int Id, string remark)
         {
             try
             {
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.UpdateForwardToCentral(Id, remark);
                 TempData["ToastMessage"] = "SentToCentralSuccess!";
+                log.Info($"Success ForwardToCentral Complaint by : {UserName}. ComplaintId : {Id}.");
                 return Json(new { success = true, message = "Sent to central successfully." });
 
             }
             catch (Exception ex)
             {
+                log.Error($"Error Complain ForwardToCentral : {ex.Message}. ComplaintId : {Id}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
 
         public async Task<IActionResult> ComplaintResolveDetails(int id)
         {
@@ -333,28 +350,26 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return PartialView("_DepartmentResolvePartial", complaintData);
         }
 
-
-
         [HttpPost]
         public JsonResult DepComplainResolve(int Id, string Remark)
         {
             try
             {
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.ComplainResolve(Id, Remark);
                 TempData["ToastMessage"] = "resolvedSuccessfully!";
+                log.Info($"Success DepartmentResolved Complaint by : {UserName}. ComplaintId : {Id}.");
                 return Json(new { success = true, message = "Complain Resolve successfully." });
 
             }
             catch (Exception ex)
             {
+                log.Error($"Error Complain DepartmentResolved : {ex.Message}. ComplaintId : {Id}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
 
-
-
         //------------------------ Central Process ------------------------------------>    
-
         public async Task<IActionResult> CentralProcess(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
         {
             try
@@ -400,37 +415,40 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return PartialView("_CentralForwardPartial", complaintData);
         }
 
-
-
         [HttpPost]
         public JsonResult ForwardToDepartment(int Id, int Department, string Remark)
         {
             try
             {
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.UpdateForwardToDepartment(Id, Department, Remark);
                 TempData["ToastMessage"] = "sentDepSuccessfully!";
+                log.Info($"Success ForwardToDepartment Complaint by : {UserName}. ComplaintId : {Id}.");
                 return Json(new { success = true, message = "Sent to Department successfully." });
 
             }
             catch (Exception ex)
             {
+                log.Error($"Error Complain ForwardToDepartment : {ex.Message}. ComplaintId : {Id}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
 
         [HttpPost]
         public JsonResult CentralComplainResolve(int Id, string Remark)
         {
             try
             {
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.ComplainResolve(Id, Remark);
                 TempData["ToastMessage"] = "resolvedSuccessfully!";
+                log.Info($"Success CentralComplainResolved Complaint by : {UserName}. ComplaintId : {Id}.");
                 return Json(new { success = true, message = "Complain Resolve successfully." });
 
             }
             catch (Exception ex)
             {
+                log.Error($"Error Complain CentralComplainResolved : {ex.Message}. ComplaintId : {Id}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
@@ -451,9 +469,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             // Return the data to the partial view
             return PartialView("_CentralResolvePartial", complaintData);
         }
-
-
-
 
         // -------Dashboard----------------------------------------------------------->
 
@@ -491,9 +506,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-
         //------------------------ Complaint History ------------------------------------>    
-
         public async Task<IActionResult> ComplaintHistoryProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
         {
             try
@@ -544,9 +557,5 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
             return Json(result);
         }
-
-
-
-
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ComplaignManagementSystem.Data.Models;
 using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.LoginHandler;
+using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +15,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _loginService;
+        private static readonly ILog log = LogManager.GetLogger(typeof(UserController));
 
         public UserController(IUserService loginService)
         {
@@ -36,59 +38,65 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            UserModel user = await _loginService.ValidateUserAsync(username, password);
-
-            if (user != null)
+            try
             {
+                UserModel user = await _loginService.ValidateUserAsync(username, password);
 
-                var DepDetails = _loginService.GetDepartmentDetails(Convert.ToInt32(user.Dep_Id));
-
-                HttpContext.Session.SetString("UserName", user.UserName);
-                HttpContext.Session.SetString("UserDepName", DepDetails.Name);
-                HttpContext.Session.SetString("UserDep_Id", Convert.ToString(user.Dep_Id));
-                //HttpContext.Session.SetString("SaltKey", Convert.ToString(user.SaltKey));
-                HttpContext.Session.SetString("UserId", Convert.ToString(user.Id));
-
-                if (user.IsReset == false)
+                if (user != null)
                 {
-                    //return RedirectToAction("Reset");
-                    return Json(new { success = false, redirectUrl = Url.Action("Reset", "User") });
-                }
+                    var DepDetails = _loginService.GetDepartmentDetails(Convert.ToInt32(user.Dep_Id));
 
-                UserPermissionModel getPermissions = _loginService.getAccessPerimissions(user);
-                var getAccessPages = _loginService.getAccessPages(user, getPermissions);
+                    HttpContext.Session.SetString("UserName", user.UserName);
+                    HttpContext.Session.SetString("UserDepName", DepDetails.Name);
+                    HttpContext.Session.SetString("UserDep_Id", Convert.ToString(user.Dep_Id));
+                    //HttpContext.Session.SetString("SaltKey", Convert.ToString(user.SaltKey));
+                    HttpContext.Session.SetString("UserId", Convert.ToString(user.Id));
 
-                var DepUCount = getAccessPages.Where(a => a.Page == "Department Master" && a.Active == true).Count();
-                var CentUCount = getAccessPages.Where(a => a.Page == "Central Master" && a.Active == true).Count();
+                    if (user.IsReset == false)
+                    {
+                        //return RedirectToAction("Reset");
+                        return Json(new { success = false, redirectUrl = Url.Action("Reset", "User") });
+                    }
 
-                HttpContext.Session.SetString("UserPermission", getPermissions.Role);
-                if (getPermissions.Role != "User" && DepUCount != 0)
-                {
-                    HttpContext.Session.SetString("DepartmentPermission", "Department User");
+                    UserPermissionModel getPermissions = _loginService.getAccessPerimissions(user);
+                    var getAccessPages = _loginService.getAccessPages(user, getPermissions);
+
+                    var DepUCount = getAccessPages.Where(a => a.Page == "Department Master" && a.Active == true).Count();
+                    var CentUCount = getAccessPages.Where(a => a.Page == "Central Master" && a.Active == true).Count();
+
+                    HttpContext.Session.SetString("UserPermission", getPermissions.Role);
+                    if (getPermissions.Role != "User" && DepUCount != 0)
+                    {
+                        HttpContext.Session.SetString("DepartmentPermission", "Department User");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("DepartmentPermission", "");
+                    }
+                    if (getPermissions.Role != "User" && CentUCount != 0)
+                    {
+                        HttpContext.Session.SetString("CentralPermission", "Central User");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("CentralPermission", "");
+                    }
+                    var jsonData = JsonConvert.SerializeObject(getAccessPages);
+
+                    HttpContext.Session.SetString("AccessPages", jsonData);
+                    log.Info($"Success Login by : {user.UserName}.");
+                    return Json(new { success = true, redirectUrl = Url.Action("Dashboard", "ComplaintManageProcess") });
                 }
                 else
                 {
-                    HttpContext.Session.SetString("DepartmentPermission", "");
+                    log.Info($"Failed login.");
+                    return Json(new { success = false });
                 }
-                if (getPermissions.Role != "User" && CentUCount != 0)
-                {
-                    HttpContext.Session.SetString("CentralPermission", "Central User");
-                }
-                else
-                {
-                    HttpContext.Session.SetString("CentralPermission", "");
-                }
-
-
-
-                var jsonData = JsonConvert.SerializeObject(getAccessPages);
-
-                HttpContext.Session.SetString("AccessPages", jsonData);
-                return Json(new { success = true, redirectUrl = Url.Action("Dashboard", "ComplaintManageProcess") });
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { success = false });
+                log.Error($"Error Login : {ex.Message}.");
+                throw;
             }
 
         }
@@ -107,14 +115,17 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             {
                 var UserId = HttpContext.Session.GetString("UserId");
                 var SaltKey = HttpContext.Session.GetString("SaltKey");
+                var UserName = HttpContext.Session.GetString("UserName");
 
                 _loginService.ResetPassword(UserId, SaltKey, NewPassword);
+                log.Info($"Success Reset Password in {UserId}. by {UserName}.");
                 return Json(new { success = true, redirectUrl = Url.Action("Login", "User") });
                 //return RedirectToAction(nameof(Login));
             }
-            catch
+            catch (Exception ex)
             {
                 //return View();
+                log.Error($"Error Login : {ex.Message}.");
                 return Json(new { success = false });
             }
         }
@@ -122,25 +133,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         [HttpGet]
         public IActionResult Register(IFormCollection form)
         {
-
-
             return View();
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                // TODO: Save new user to database
-                return RedirectToAction("Index", "Login");
-            }
-
-            ViewBag.Error = "Please fill all required fields correctly.";
-            return View(model);
-        }
-
 
         public IActionResult Create()
         {
@@ -174,13 +168,16 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                var UserName = HttpContext.Session.GetString("UserName");
                 _loginService.CreateUser(collection);
                 TempData["ToastMessage"] = "SubmittedUserSuccessfully!";
+                log.Info($"Success User Creation by : {UserName}.");
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                log.Error($"Error User Creation : {ex.Message}.");
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -197,51 +194,50 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return PartialView("_EditPartial", user);
         }
 
-
         // POST: UserController/Edit/5
         [HttpPost]
         public ActionResult Edit(IFormCollection collection)
         {
+
             try
             {
-                try
-                {
-                    var ResetStatus = collection["Reset"].ToString();
-                    if (ResetStatus == "Yes")
-                        _loginService.ResetPassword(collection);
-                    else
-                        _loginService.UpdateUser(collection);
+                var UserName = HttpContext.Session.GetString("UserName");
+                var ResetStatus = collection["Reset"].ToString();
+                if (ResetStatus == "Yes")
+                    _loginService.ResetPassword(collection);
+                else
+                    _loginService.UpdateUser(collection);
 
-                    if (ResetStatus == "Yes")
-                        TempData["ToastMessage"] = "PasswordUpdatedSuccessfully!";
-                    else
-                        TempData["ToastMessage"] = "UpdatedSuccessfully!";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                if (ResetStatus == "Yes")
+                    TempData["ToastMessage"] = "PasswordUpdatedSuccessfully!";
+                else
+                    TempData["ToastMessage"] = "UpdatedSuccessfully!";
+
+                log.Info($"Success User Editted by : {UserName}. Record : {collection["Id"].ToString()}. ");
+                return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                log.Error($"Error User Editing : {ex.Message}.");
+                return RedirectToAction(nameof(Index));
             }
         }
-
 
         [HttpPost]
         public JsonResult Inactive(int id)
         {
             try
             {
+                var UserName = HttpContext.Session.GetString("UserName");
                 int status = 0;
                 _loginService.InactiveActive(id, status);
                 TempData["ToastMessage"] = "InactiveSuccessfully!";
+                log.Info($"Success User Inactived by : {UserName}. Record : {id}. ");
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
+                log.Error($"Error User Inactivation : {ex.Message}. Record : {id}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
@@ -251,13 +247,17 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
+                var UserName = HttpContext.Session.GetString("UserName");
+
                 int status = 1;
                 _loginService.InactiveActive(id, status);
                 TempData["ToastMessage"] = "ActiveSuccessfully!";
+                log.Info($"Success User Actived by : {UserName}. Record : {id}.");
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
+                log.Error($"Error User Activation : {ex.Message}. Record : {id}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
@@ -284,34 +284,31 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             try
             {
-                try
-                {
-                    var UserRoleId = collection["UserRoleId"].ToString();
-                    var UserId = Convert.ToInt32(collection["Id"].ToString());
-                    var userP = _loginService.getPermissionList(Convert.ToInt32(UserId));
-                    var result = userP.Result;
-                    if (UserRoleId != "")
-                        if (result == null)
-                            _loginService.grantPermssion(collection);
-                        else
-                            _loginService.updatePermssion(collection);
-                    else
-                        _loginService.deletePermission(collection);
-
+                var UserName = HttpContext.Session.GetString("UserName");
+                var UserRoleId = collection["UserRoleId"].ToString();
+                var UserId = Convert.ToInt32(collection["Id"].ToString());
+                var userP = _loginService.getPermissionList(Convert.ToInt32(UserId));
+                var result = userP.Result;
+                if (UserRoleId != "")
                     if (result == null)
-                        TempData["ToastMessage"] = "PermissionGrantedSuccessfully!";
+                        _loginService.grantPermssion(collection);
                     else
-                        TempData["ToastMessage"] = "PermissionUpdatedSuccessfully!";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                        _loginService.updatePermssion(collection);
+                else
+                    _loginService.deletePermission(collection);
+
+                if (result == null)
+                    TempData["ToastMessage"] = "PermissionGrantedSuccessfully!";
+                else
+                    TempData["ToastMessage"] = "PermissionUpdatedSuccessfully!";
+
+                log.Info($"Success User Editted Permssion by : {UserName}. User Id : {UserId}. User Role Id : {UserRoleId}. ");
+                return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex) 
             {
-                return View();
+                log.Error($"Error User Activation : {ex.Message}.");
+                return RedirectToAction(nameof(Index));
             }
         }
     }
