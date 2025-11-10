@@ -1175,6 +1175,110 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         }
 
 
+        //------------------------ customer inform ------------------------------------>  
+        public async Task<List<CustomerNotificationMasterModel>> getNotificationList()
+        {
+            try
+            {
+                string Query = $"SELECT Id, Notification FROM Complaint_CustomerNotification_Master WHERE Active = 1 ORDER BY Notification ASC";
+                var Data = _connection.Return(Query);
+                var Row = Data.Rows[0];
+
+                List<CustomerNotificationMasterModel> ComplainList = new List<CustomerNotificationMasterModel>();
+
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    CustomerNotificationMasterModel bModel = new CustomerNotificationMasterModel()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        Notification = BRow["Notification"].ToString()
+                    };
+                    ComplainList.Add(bModel);
+                }
+                return ComplainList.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file)
+        {
+            try
+            {                        
+                string query = @"
+                                UPDATE Complaint_ManageProcess
+                                SET 
+                                IsCusNotified = @isNotified,
+                                CusNotificationId = @NotifiID,
+                                CusNotificationRemark = @Complaint,
+                                CusNotifiedDate = @NotifiedDate
+                                WHERE Id = @ComplainNo";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@ComplainNo", Convert.ToInt64(ComplainNo), DbType.Int64);
+                parameters.Add("@NotifiID", Convert.ToInt64(NotifiID), DbType.Int64);
+                parameters.Add("@Complaint", Complaint, DbType.String);                
+                parameters.Add("@isNotified", isNotified ? 1 : 0, DbType.Byte);
+                parameters.Add("@NotifiedDate", System.DateTime.Now, DbType.DateTime);
+
+                _connection.ExecuteWithPara(query, parameters);
+
+            
+
+                if (file != null && file.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Attachments/Customer_Inform_Doc");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+                    var fileName = "_" + ComplainNo + ".pdf";
+                    var filePath = Path.Combine(uploadsFolder, Path.GetFileName(fileName));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+                return;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public async Task<List<ComplaintMaster>> getCusInfoCompNoList()
+        {
+            try
+            {
+                string Query = $"SELECT Id,Refference FROM Complaint_ManageProcess WHERE Active = 1 AND IsResolved = 1 AND IsCusNotified IS NULL ORDER BY Refference DESC";
+                var Data = _connection.Return(Query);
+                var Row = Data.Rows[0];
+
+                List<ComplaintMaster> ComplainList = new List<ComplaintMaster>();
+
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    ComplaintMaster bModel = new ComplaintMaster()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        Refference = BRow["Refference"].ToString()
+                    };
+                    ComplainList.Add(bModel);
+                }
+                return ComplainList.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
     }
 }

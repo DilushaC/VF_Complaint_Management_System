@@ -546,6 +546,47 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
 
 
+        //------------------------ Customer inform ------------------------------------>    
+
+        public async Task<IActionResult> CustomerInformProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        {
+            try
+            {
+                var getAllDeps = _complainProcess.getCusInfoCompNoList();
+                var getAllNotifi = _complainProcess.getNotificationList();
+                ViewBag.Compl = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
+                ViewBag.notifi = new SelectList(getAllNotifi.Result.ToList(), "Id", "Notification");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+      
+
+        [HttpPost]
+        public ActionResult UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file)
+        {
+            try
+            {
+                if (!IsUserLoggedIn())
+                    return RedirectToAction("Login", "User");
+
+                _complainProcess.UpdateCustomerInformDetails(ComplainNo, NotifiID, Complaint, isNotified, file);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+
 
     }
 }
