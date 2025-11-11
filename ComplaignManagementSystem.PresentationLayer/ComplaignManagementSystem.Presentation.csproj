@@ -515,6 +515,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Attachments\Customer_Inform_Doc\" />
     <Folder Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Icons\" />
   </ItemGroup>
 
