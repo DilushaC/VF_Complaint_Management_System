@@ -1,5 +1,4 @@
 ﻿@using ComplaignManagementSystem.Data.Models
-@* @model IEnumerable<ComplaignManagementSystem.Data.Context.DapperContext> *@
 
 @{
     ViewData["Title"] = "Customer Inform";
@@ -17,119 +16,91 @@
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/icheck.css" rel="stylesheet" />
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/forms/icheck/custom.css" rel="stylesheet" />
 
-
-
-
 <div class="row">
     <div class="col-md-12">
         <div class="card" style="margin-top:15px">
             <div class="card-content collapse show">
                 <div class="card-body">
-
                     <div class="form-body">
                         <h4 class="form-section">
                             <i class="ft-flag"></i> Customer Inform
                         </h4>
                         <hr>
                         <br>
-
-                        <div class="col-md-12 row">
-
+                        <div class="row">
                             <div class="col-md-6">
-                            <label for="Compl">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                            <select id="Compl" name="Compl" class="form-control" asp-items="ViewBag.Compl">
-                                <option value="">-- Select --</option>
-                            </select>
-                            <span id="error-message-dep"></span>
-                            </div>
-
-
-                            <div class="col-md-6">
-                                <label for="notifi">Customer informed status</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                                <select id="notifi" name="notifi" class="form-control" asp-items="ViewBag.notifi">
+                                <label for="ComplaintId">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <select id="ComplaintId" name="ComplaintId" class="form-control" asp-items="ViewBag.ComplaintId">
                                     <option value="">-- Select --</option>
                                 </select>
                                 <span id="error-message-dep"></span>
                             </div>
-
-
-                            <div class="col-md-6" style="margin-top:10px">
-                            <label for="">Attachment</label>
-                            <fieldset class="form-group">
-                                <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="CustomerFile">
-                                        <label class="custom-file-label" for="CustomerFile">Choose file</label>
-                                </div>
-                            </fieldset>
-                            </div>
-
-
+                        </div>
+                        <div class="row" style="margin-top:1%" id="radioDiv">
                             <div class="col-md-6" style="margin-top:10px">
                                 <div class="form-group" style="margin-top:10px">
                                     <h5>Customer notified about the resolution?</h5>
                                     <br />
                                     <div class="row" style="margin-left:10px">
-
                                         <div class="col-md-3">
-                                            <label for="ResolvedStatus-Yes">Yes</label>
-                                            <input class="form-control" type="radio" id="ResolvedStatus-Yes" name="ResolvedStatus" value="Yes" checked style="block-size:20px;margin:-28px;margin-left:0px">
+                                            <label for="CusNotified-Yes">Yes</label>
+                                            <input class="form-control" type="radio" id="CusNotified-Yes" name="CusNotified" value="Yes" style="block-size:20px;margin:-28px;margin-left:0px">
                                         </div>
                                         <div class="col-md-4" style="margin-left:-40px">
-                                            <label for="ResolvedStatus-No">No</label>
-                                            <input class="form-control" type="radio" id="ResolvedStatus-No" name="ResolvedStatus" value="No" style="block-size:20px;margin:-28px">
+                                            <label for="CusNotified-No">No</label>
+                                            <input class="form-control" type="radio" id="CusNotified-No" name="CusNotified" value="No" style="block-size:20px;margin:-28px" checked>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
-                            <div class="col-md-12">
-                            <div class="form-group" style="margin-top:10px">
-                                <label for="Complaint">Other</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                                <textarea id="Complaint" rows="5" class="form-control" name="Complaint" placeholder="Other"></textarea>
-                                <span id="error-message-complaint"></span>
-                                </div>
-                            </div>
-
-                           
-
-                            <br/>
-
-
+                        </div>
+                        <hr style="margin-top:20px" id="otherHR"/>
+                        <div class="row" style="margin-top:2%" id="otherDiv">                            
                             <div class="col-md-6">
-                            <div class="form-actions">
-                                    <button type="button" class="btn btn-danger mr-1" onclick="CustomerInform()">Save and Close</button>
+                                <label for="notification">Customer informed status</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <select id="notification" name="notification" class="form-control" asp-items="ViewBag.notification">
+                                    <option value="">-- Select --</option>
+                                </select>
+                                <span id="error-message-Status"></span>
+                            </div>
+                            <div class="col-md-6" style="margin-top:-1px">
+                                <div class="col-md-6">
+                                    <label class="col-md-6">Attachment</label>
+                                    <label id="Attachment" class="file center-block">
+                                        <input type="file" id="CustomerFile" name="file" style="margin:15px">
+                                        <span class="file-custom"></span>
+                                        <span id="error-message-attachement"></span>
+                                    </label>
+                                </div>
+@*                                 <label for="">Attachment</label>
+                                <fieldset class="form-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="CustomerFile">
+                                        <label class="custom-file-label" for="CustomerFile">Choose file</label>
+                                    </div>
+                                </fieldset> *@
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-top:10px">
+                                    <label for="Complaint">Other</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                    <textarea id="Complaint" rows="5" class="form-control" name="Complaint" placeholder="Other"></textarea>
+                                    <span id="error-message-complaint"></span>
                                 </div>
                             </div>
-
+                            <br />                           
                         </div>
-
-
-                        @* ===================================================================== *@
-
-
-                        <div class="container py-5">
-
-                            <div class="timeline" id="timelineList">
-                             
-
+                        <hr />
+                        <div class="col-md-6" style="margin-top:2%" id="btnDiv">
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-bg-gradient-x-orange-yellow col-12 col-md-5 mr-1 mb-1" id="svbtn" onclick="CustomerInform()">Save and Close</button>
                             </div>
                         </div>
-
-
                     </div>
-
-
-
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-
-
-
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/extensions/toastr.min.js"></script>
@@ -138,60 +109,166 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweetalert2@11.min.js"></script>
-
-
-
-
 <script>
-        
-    function CustomerInform() {     
-        
-        var formData = new FormData();       
-        formData.append("ComplainNo", $("#Compl").val());
-        formData.append("NotifiID", $("#notifi").val());
-        formData.append("Complaint", $("#Complaint").val());
-
-        var status = $('input[name="ResolvedStatus"]:checked').val();
-        formData.append("isNotified", status === "Yes");
-        
-        var fileInput = document.getElementById("CustomerFile");
-        if (fileInput.files.length > 0) {
-            formData.append("file", fileInput.files[0]);
+    $("#ComplaintId").select2({
+      allowClear:true,
+      placeholder: 'Select Complaint'
+    });
+    $("#notification").select2({
+      allowClear:true,
+      placeholder: 'Select Type'
+    });
+           
+    $('#ComplaintId').on('change', function () {
+        let selectedDepId = $(this).val();
+        // Perform further actions based on the new selection
+        if (selectedDepId) {
+            $('#radioDiv').show();
+            $('#btnDiv').show();
+        }else{                        
+            $('#radioDiv').hide();
+            $('#btnDiv').hide();
+            $('#otherDiv').hide();
+            $('#otherHR').hide();
         }
-                
-        $.ajax({        
-            url: '@Url.Action("UpdateCustomerInformDetails", "ComplaintManageProcess")',       
-            type: "POST",       
-            data: formData,       
-            contentType: false,          
-            processData: false,          
-            success: function (data) {                             
-                Swal.fire({       
-                    title: 'Success!',
-                    text: 'Successfully informed the customer.',
-                    icon: 'success',       
-                    timer: 2000,       
-                    showConfirmButton: false       
-                }).then(() => {                
+    });
+    $('#radioDiv').hide();         
+    $('#otherDiv').hide();
+    $('#otherHR').hide();
+    $('#btnDiv').hide();
+    $('input[name="CusNotified"]').on('change', function () {
+      var selectedValue = $(this).val();
+      onStatusChange(selectedValue);
+    });
+    function onStatusChange(value) {      
+        // alert("Selected status: " + value);    
+        if(value == "Yes"){     
+            $('#radioDiv').show();    
+            $('#otherDiv').show();
+            $('#btnDiv').show();
+            $('#otherHR').show();
+        }else{
+            $('#radioDiv').show();
+            $('#btnDiv').show();
+            $('#otherDiv').hide();
+            $('#otherHR').hide();
+        }
+    }
+       
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.getElementById('file');
+        const errorMessageContainer = document.getElementById('error-message-attachement');
+        const allowedExtension = '.pdf';
+        const button = document.getElementById("svbtn");
+        fileInput.addEventListener('change', function () {
+            errorMessageContainer.textContent = '';
+            if (fileInput.files.length > 0) {
+                const selectedFile = fileInput.files[0];
+                const fileName = selectedFile.name;
+                const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
 
-                   $('#Compl').val('');
-                   $('#notifi').val('');
-                   $('#Complaint').val('');
-                   $('#yourFileInputId').val('');
-                   $('#ResolvedStatus-Yes').prop('checked', true);
+                if (fileExtension !== allowedExtension) {
+                    errorMessageContainer.textContent = 'Only PDF files are allowed.';
+                    errorMessageContainer.style.color = 'red';
+                    fileInput.value = '';
+                    button.disabled = true;
+                }else{
+                     button.disabled = false;
+                }
+            }
+        });
+    });
+    function CustomerInform() {
+        var formData = new FormData();
+        let isValid = true;
 
-                   window.location.href = '@Url.Action("CustomerInformProcess", "ComplaintManageProcess")';
-
-                })       
-            },       
-            error: function (xhr) {       
-                console.log(xhr.responseText);       
+        const CusNotified = $('input[name="CusNotified"]:checked').val();
+        const notification = document.getElementById("notification");
+        const Complaint = document.getElementById("Complaint");
+        const errorStatus = document.getElementById('error-message-Status');
+        const errorcomplaint = document.getElementById('error-message-complaint');
+        //alert(CusNotified.value.trim());
+        if(CusNotified == "Yes"){                    
+            if (notification.value.trim() === "") {
+                errorStatus.textContent = 'Please Select the Status.';
+                errorStatus.style.color = 'red';
+                isValid = false;        
+            }
+            if (notification.value.trim() === "") {
+                errorcomplaint.textContent = 'Please Enter the Complaint.';
+                errorcomplaint.style.color = 'red';
+                isValid = false;        
+            }
+        }
+    
+        if (!isValid) {    
+            event.preventDefault();    
+            return false;    
+        }else{    
+            formData.append("ComplainNo", $("#ComplaintId").val());
+            formData.append("NotifiID", $("#notification").val());
+            formData.append("Complaint", $("#Complaint").val());    
+            var status = $('input[name="CusNotified"]:checked').val();    
+            formData.append("isNotified", status === "Yes");    
+            var fileInput = document.getElementById("CustomerFile");    
+            if (fileInput.files.length > 0) {    
+                formData.append("file", fileInput.files[0]);    
             }    
-        });    
-}
-
-                      
- </script>
+            $.ajax({    
+                url: '@Url.Action("UpdateCustomerInformDetails", "ComplaintManageProcess")',    
+                type: "POST",    
+                data: formData,    
+                contentType: false,    
+                processData: false,    
+                success: function (data) {    
+                    Swal.fire({    
+                        title: 'Success!',    
+                        text: 'Successfully informed the customer.',    
+                        icon: 'success',    
+                        timer: 2000,    
+                        showConfirmButton: false    
+                    }).then(() => {    
+                        $('#Compl').val('');    
+                        $('#notifi').val('');    
+                        $('#Complaint').val('');    
+                        $('#yourFileInputId').val('');    
+                        $('#ResolvedStatus-Yes').prop('checked', true);    
+                        window.location.href = '@Url.Action("CustomerInformProcess", "ComplaintManageProcess")';    
+                    })    
+                },    
+                error: function (xhr) {    
+                    console.log(xhr.responseText);    
+                }    
+            });    
+        }
+    }
+    $(document).ready(function() {
+        var ToastMessage = '@(TempData.ContainsKey("ToastMessage") ? TempData["ToastMessage"] as string : "")';
+        if (ToastMessage) {
+            var toastEl = document.getElementById('toastId');
+            if (toastEl) {
+                var toastTitle = toastEl.querySelector('.toast-title');
+                var toastMsg = toastEl.querySelector('.toast-message');
+                if(ToastMessage == 'SubmittedSuccessfully!'){
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Saved Customer Notification";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
+                        toastEl.classList.add("toast-success");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
+                    }
+                }
+            } else {
+                console.error("Toast container element not found.");
+            }
+        }
+    });
+</script>
 

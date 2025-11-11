@@ -228,6 +228,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 _complainProcess.UpdateComplaint(collection, file);
                 TempData["ToastMessage"] = "EditedSuccessfully!";
 
+
                 log.Info($"Success Update Complaint by : {UserName}. ComplaintId : {collection["Id"].ToString()}");
                 return RedirectToAction(nameof(Index));
             }
@@ -556,27 +557,23 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return Json(result);
         }
 
-
-
         //------------------------ Customer inform ------------------------------------>    
 
-        public async Task<IActionResult> CustomerInformProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        public ActionResult CustomerInformProcess()
         {
             try
             {
                 var getAllDeps = _complainProcess.getCusInfoCompNoList();
                 var getAllNotifi = _complainProcess.getNotificationList();
-                ViewBag.Compl = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
-                ViewBag.notifi = new SelectList(getAllNotifi.Result.ToList(), "Id", "Notification");
+                ViewBag.ComplaintId = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
+                ViewBag.notification = new SelectList(getAllNotifi.Result.ToList(), "Id", "Notification");
                 return View();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-        }
-
-      
+        }      
 
         [HttpPost]
         public ActionResult UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file)
@@ -585,20 +582,17 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             {
                 if (!IsUserLoggedIn())
                     return RedirectToAction("Login", "User");
-
+                var UserName = HttpContext.Session.GetString("UserName");
                 _complainProcess.UpdateCustomerInformDetails(ComplainNo, NotifiID, Complaint, isNotified, file);
-
+                TempData["ToastMessage"] = "SubmittedSuccessfully!";
+                log.Info($"Success UpdateCustomerInformDetails Complaint by : {UserName}. ComplaintId : {ComplainNo}.");
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
+                log.Error($"Error Complain UpdateCustomerInformDetails : {ex.Message}. ComplaintId : {ComplainNo}.");
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
-
-
-
-
     }
 }

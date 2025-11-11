@@ -1274,7 +1274,5 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 throw ex;
             }
         }
-
-
     }
 }

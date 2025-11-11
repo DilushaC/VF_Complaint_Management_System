@@ -423,7 +423,9 @@
                         if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
                         {
                             <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <a href="#"><i class="ft-command"></i>
+                                    <span class="menu-title" data-i18n="">Complaint Forms</span>
+                                </a>
                                 <ul class="menu-content">
                                     @if (Context.Session.GetString("DepartmentPermission") != "Department User")
                                     {
@@ -446,7 +448,7 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item @(activeMenuTab == "CustomerInform" ? "open" : "")">
+                            <li class="nav-item @(activeMenuTab == "CustomerInformProcessMenu" ? "open" : "")">
                                 <a href="/ComplaintManageProcess/CustomerInformProcess">
                                     <i class="ft-user-check"></i>
                                     <span class="menu-title" data-i18n="">Customer Inform</span>
