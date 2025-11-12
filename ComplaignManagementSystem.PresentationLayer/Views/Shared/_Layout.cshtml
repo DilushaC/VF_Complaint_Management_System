@@ -202,6 +202,12 @@
                                 <span class="menu-title" data-i18n="">Complaint History</span>
                             </a>
                         </li>
+                        <li class="nav-item @(activeMenuTab == "CustomerInformProcessMenu" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/CustomerInformProcess">
+                                <i class="ft-user-check"></i>
+                                <span class="menu-title" data-i18n="">Customer Inform</span>
+                            </a>
+                        </li>
                         <hr style="margin-right:20px;margin-left:20px">
                         <div class="row">
                             <div class="col-md-8" style="text-align:center;">
@@ -401,6 +407,12 @@
                                 <span class="menu-title" data-i18n="">Complaint History</span>
                             </a>
                         </li>
+                        <li class="nav-item @(activeMenuTab == "CustomerInformProcessMenu" ? "open" : "")">
+                            <a href="/ComplaintManageProcess/CustomerInformProcess">
+                                <i class="ft-user-check"></i>
+                                <span class="menu-title" data-i18n="">Customer Inform</span>
+                            </a>
+                        </li>
                     }
                     else if (Context.Session.GetString("UserPermission") == "Dep User")
                     {
@@ -447,7 +459,6 @@
                                     <span class="menu-title" data-i18n="">Complaint History</span>
                                 </a>
                             </li>
-
                             <li class="nav-item @(activeMenuTab == "CustomerInformProcessMenu" ? "open" : "")">
                                 <a href="/ComplaintManageProcess/CustomerInformProcess">
                                     <i class="ft-user-check"></i>
@@ -497,29 +508,27 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/tooltip/tooltip.min.js"></script>
 
-    <script>
-        const sessionTimeout = 1 * 60 * 1000;
-                let timeout;
-
-                function resetTimer() {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                        window.location.href = '/User/Login';
-                    }, sessionTimeout);
-                }
-
-                window.onload = resetTimer;
-                document.onmousemove = resetTimer;
-                document.onkeypress = resetTimer;
-                document.onscroll = resetTimer;
-                document.onclick = resetTimer;
-
-                (function () {
-                    window.history.pushState(null, "", window.location.href);
-                    window.onpopstate = function () {
-                        window.history.pushState(null, "", window.location.href);
-                    };
-                })();
+    <script>        
+    const sessionTimeout = 1 * 600 * 1000;                
+        let timeout;                
+        function resetTimer() {                
+            clearTimeout(timeout);                
+            timeout = setTimeout(() => {                
+                window.location.href = '/User/Login';                
+            }, sessionTimeout);                
+        }                
+        window.onload = resetTimer;                
+        document.onmousemove = resetTimer;                
+        document.onkeypress = resetTimer;                
+        document.onscroll = resetTimer;                
+        document.onclick = resetTimer;
+                
+        (function () {                
+            window.history.pushState(null, "", window.location.href);                
+            window.onpopstate = function () {                
+                window.history.pushState(null, "", window.location.href);                
+            };                
+        })();
     </script>
 </body>
 </html>
