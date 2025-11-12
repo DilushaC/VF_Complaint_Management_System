@@ -96,8 +96,9 @@
         </div>
         <div class="row" style="margin-top:15px">
             <div class="col-md-12">
-                <strong>Remark :</strong>
+                <strong>Remark :</strong><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                 <textarea id="Remarktxt" class="form-control" placeholder="Remark." name="w3review" rows="6" cols="100" style="margin-top:10px"></textarea>
+                <span id="error-message-remarks"></span>
             </div>
         </div>
 
@@ -123,7 +124,13 @@
 
     function ForwardToDepartment(complaintId) {
         var Department = document.getElementById("Dep_Id").value;
-        var remark = document.getElementById("Remarktxt").value;
+        var remark = document.getElementById("Remarktxt").value;                
+        const errorMessageRemarksContainer = document.getElementById('error-message-remarks');
+        if(remark == ""){
+            errorMessageRemarksContainer.textContent = 'Please Enter the Remark.';
+            errorMessageRemarksContainer.style.color = 'red';
+            return;
+        }
          $.ajax({               
              url: '@Url.Action("ForwardToDepartment", "ComplaintManageProcess")',               
              type: 'POST',               

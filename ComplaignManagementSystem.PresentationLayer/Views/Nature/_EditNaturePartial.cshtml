@@ -12,7 +12,7 @@
                             <div class="form-group">
                                 <label for="Complaint Method">Complaint Method</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                 <br />
-                                <select id="Dep_Ids" name="Dep_Ids" class="form-control" asp-items="ViewBag.Dep_Id">
+                                <select id="Dep_Ids" name="Dep_Ids" class="form-control" asp-items="ViewBag.Dep_Id" style="width:70%">
                                     <option value="">-- Select --</option>
                                 </select>
                                 <span id="error-message-deps"></span>
@@ -27,6 +27,15 @@
                                 <span id="error-message-Natures"></span>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="NatureSinhalas">Nature Sinhala Name</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                <input type="text" id="NatureSinhalas" class="form-control" placeholder="Nature Sinhala Name" name="NatureSinhalas" autocomplete="off" value="@Model.NatureSinhala">
+                                <span id="error-message-SNatures"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Codes">Nature code</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
@@ -62,81 +71,48 @@
     });
     $('#saveE').on('click', function () {
         var form = $('#EditForm');
-        alert();
         const errorMessageDepContainerE = document.getElementById('error-message-deps');
         const errorMessageNatureContainerE = document.getElementById('error-message-Natures');
+        const errorMessageSNatureContainerE = document.getElementById('error-message-SNatures');
         const errorMessageCodeContainerE = document.getElementById('error-message-Codes');
         var Dep_Ids = document.getElementById("Dep_Ids").value;
         var Natures = document.getElementById("Natures").value;
+        var NatureSinhalas = document.getElementById("NatureSinhalas").value;
         var Codes = document.getElementById("Codes").value;
-        alert()
-        if(Dep_Ids == "" && Natures == "" && Codes == ""){
+
+
+        if (Dep_Ids === "") {
             errorMessageDepContainerE.textContent = 'Please Select Department Name.';
             errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
-            errorMessageCodeContainerE.style.color = 'red';
-            return;
-        } else if(Dep_Ids != "" && Natures == "" && Codes == ""){
-            errorMessageDepContainerE.textContent = '';
-            errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
-            errorMessageCodeContainerE.style.color = 'red';
-            return;
-        } else if(Dep_Ids == "" && Natures != "" && Code == ""){
-            errorMessageDepContainerE.textContent = 'Please Select Department Name';
-            errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = '';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
-            errorMessageCodeContainerE.style.color = 'red';
-            return;
-        } else if(Dep_Ids == "" && Natures == "" && Codes != ""){
-            errorMessageDepContainerE.textContent = 'Please Select Department Name.';
-            errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = '';
-            errorMessageCodeContainerE.style.color = 'red';
-            return;
-        } else if(Dep_Ids != "" && Natures != "" && Codes == ""){
-            errorMessageDepContainerE.textContent = '';
-            errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = '';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
-            errorMessageCodeContainerE.style.color = 'red';
-            return;
-        } else if(Dep_Ids == "" && Natures != "" && Codes != ""){
-            errorMessageDepContainerE.textContent = 'Please Select Department Name.';
-            errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = '';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = '';
-            errorMessageCodeContainerE.style.color = 'red';
-            return;
-        } else if(Dep_Ids != "" && Natures == "" && Codes != ""){
-            errorMessageDepContainerE.textContent = '';
-            errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = 'Please Enter Nature.';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = '';
-            errorMessageCodeContainerE.style.color = 'red';
-            return;
-        }else{
-            errorMessageDepContainerE.textContent = '';
-            errorMessageDepContainerE.style.color = 'red';
-            errorMessageNatureContainerE.textContent = '';
-            errorMessageNatureContainerE.style.color = 'red';
-            errorMessageCodeContainerE.textContent = '';
-            errorMessageCodeContainerE.style.color = 'red';
+            isValid = false;
         }
-        // Change action dynamically
-        form.attr('action', '/Nature/Edit');
-        form.submit();
+        if (Natures === "") {
+            errorMessageNatureContainerE.textContent = 'Please Enter English Nature.';
+            errorMessageNatureContainerE.style.color = 'red';
+            isValid = false;
+        }
+        if (Codes === "") {
+            errorMessageCodeContainerE.textContent = 'Please Enter Nature Code.';
+            errorMessageCodeContainerE.style.color = 'red';
+            isValid = false;
+        }
+        if (NatureSinhalas === "") {
+            errorMessageSNatureContainerE.textContent = 'Please Enter Sinhala Nature Code.';
+            errorMessageSNatureContainerE.style.color = 'red';
+            isValid = false;
+        }
+        
+                
+        if (!isValid) {
+            event.preventDefault();
+            return false;
+        }else{
+            // Change action dynamically
+            form.attr('action', '/Nature/Edit');
+            form.submit();        }
+        // If all valid, allow form submission
+        return true;
+        
     });
 
 </script>

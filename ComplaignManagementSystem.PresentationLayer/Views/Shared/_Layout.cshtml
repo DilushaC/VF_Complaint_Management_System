@@ -294,7 +294,12 @@
                         if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
                         {
                             <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <a href="#">
+                                    <i class="ft-command"></i>
+                                    <span class="menu-title" data-i18n="">
+                                        Complaint Forms
+                                    </span>
+                                </a>
                                 <ul class="menu-content">
                                     @if (Context.Session.GetString("DepartmentPermission") != "")
                                     {
@@ -339,7 +344,12 @@
                         if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
                         {
                             <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <a href="#">
+                                    <i class="ft-command"></i>
+                                    <span class="menu-title" data-i18n="">
+                                        Complaint Forms
+                                    </span>
+                                </a>
                                 <ul class="menu-content">
                                     @if (Context.Session.GetString("DepartmentPermission") != "Department User")
                                     {
@@ -384,7 +394,12 @@
                         if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
                         {
                             <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                                <a href="#"><i class="ft-command"></i>Complaint Forms</a>
+                                <a href="#">
+                                    <i class="ft-command"></i>
+                                    <span class="menu-title" data-i18n="">
+                                        Complaint Forms
+                                    </span>
+                                </a>
                                 <ul class="menu-content">
                                     @if (Context.Session.GetString("DepartmentPermission") != "Department User")
                                     {
@@ -509,26 +524,26 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/tooltip/tooltip.min.js"></script>
 
     <script>        
-    const sessionTimeout = 1 * 600 * 1000;                
-        let timeout;                
-        function resetTimer() {                
-            clearTimeout(timeout);                
-            timeout = setTimeout(() => {                
-                window.location.href = '/User/Login';                
-            }, sessionTimeout);                
-        }                
-        window.onload = resetTimer;                
-        document.onmousemove = resetTimer;                
-        document.onkeypress = resetTimer;                
-        document.onscroll = resetTimer;                
-        document.onclick = resetTimer;
+    // const sessionTimeout = 1 * 600 * 1000;                
+    //     let timeout;                
+    //     function resetTimer() {                
+    //         clearTimeout(timeout);                
+    //         timeout = setTimeout(() => {                
+    //             window.location.href = '/User/Login';                
+    //         }, sessionTimeout);                
+    //     }                
+    //     window.onload = resetTimer;                
+    //     document.onmousemove = resetTimer;                
+    //     document.onkeypress = resetTimer;                
+    //     document.onscroll = resetTimer;                
+    //     document.onclick = resetTimer;
                 
-        (function () {                
-            window.history.pushState(null, "", window.location.href);                
-            window.onpopstate = function () {                
-                window.history.pushState(null, "", window.location.href);                
-            };                
-        })();
+    //     (function () {                
+    //         window.history.pushState(null, "", window.location.href);                
+    //         window.onpopstate = function () {                
+    //             window.history.pushState(null, "", window.location.href);                
+    //         };                
+    //     })();
     </script>
 </body>
 </html>

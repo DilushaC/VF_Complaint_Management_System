@@ -31,6 +31,7 @@ namespace ComplaintManagementSystem.Business.NatureHandler
                                        CD.Name AS dep_name, 
                                        CD.Id AS dep_id, 
                                        CN.Nature AS nature, 
+                                       CN.NatureSinhala AS snature, 
                                        CN.Code AS code,
                                        CN.Active AS active,
                                        CN.CreatedDate AS createdDate
@@ -51,6 +52,7 @@ namespace ComplaintManagementSystem.Business.NatureHandler
                         Dep_Name = BRow["dep_name"].ToString(),
                         Dep_Id = Convert.ToInt32(BRow["dep_id"]),
                         Nature = BRow["nature"].ToString(),
+                        NatureSinhala = BRow["snature"].ToString(),
                         Code = BRow["code"].ToString(),
                         Active = Convert.ToBoolean(BRow["active"]),
                         CreatedDate = Convert.ToDateTime(BRow["createdDate"]),
@@ -103,15 +105,17 @@ namespace ComplaintManagementSystem.Business.NatureHandler
 
             var Dep_Id = collection["Dep_Id"].ToString();
             var Nature = collection["Nature"].ToString();
+            var NatureSinhala = collection["NatureSinhala"].ToString();
             var Code = collection["Code"].ToString();
 
-            var query = "INSERT INTO Complaint_Nature_Master (Dep_Id, Nature, Code, Active, CreatedDate) " +
-                    "VALUES (@depid, @nature, @code, @active , @createdDate);";
+            var query = "INSERT INTO Complaint_Nature_Master (Dep_Id, Nature, NatureSinhala, Code, Active, CreatedDate) " +
+                    "VALUES (@depid, @nature, @natureSinhala, @code, @active , @createdDate);";
 
             var parameters = new DynamicParameters();
 
             parameters.Add("depid", Convert.ToInt64(Dep_Id), DbType.Int64);
             parameters.Add("nature", Nature, DbType.String);
+            parameters.Add("natureSinhala", NatureSinhala, DbType.String);
             parameters.Add("code", Code, DbType.String);
             parameters.Add("active", 1, DbType.Int32);
             parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
@@ -130,6 +134,7 @@ namespace ComplaintManagementSystem.Business.NatureHandler
                                        CD.Name AS dep_name, 
                                        CD.Id AS dep_id, 
                                        CN.Nature AS nature, 
+                                       CN.NatureSinhala AS snature, 
                                        CN.Code AS code,
                                        CN.Active AS active,
                                        CN.CreatedDate AS createdDate
@@ -144,7 +149,8 @@ namespace ComplaintManagementSystem.Business.NatureHandler
                     Id = row["Id"] != DBNull.Value ? Convert.ToInt32(row["Id"]) : 0,
                     Dep_Name = row["dep_name"] != DBNull.Value ? row["dep_name"].ToString() : string.Empty,
                     Dep_Id = row["dep_id"] != DBNull.Value ? Convert.ToInt32(row["dep_id"]) : 0,
-                    Nature = row["Code"] != DBNull.Value ? row["nature"].ToString() : string.Empty,
+                    Nature = row["nature"] != DBNull.Value ? row["nature"].ToString() : string.Empty,
+                    NatureSinhala = row["snature"] != DBNull.Value ? row["snature"].ToString() : string.Empty,
                     Code = row["Code"] != DBNull.Value ? row["code"].ToString() : string.Empty,
                     Active = row["Active"] != DBNull.Value && Convert.ToBoolean(row["active"]),
                     CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["createdDate"]) : DateTime.MinValue

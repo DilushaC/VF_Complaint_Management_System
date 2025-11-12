@@ -12,6 +12,7 @@ namespace ComplaignManagementSystem.Data.Models
         public int Dep_Id { get; set; }
         public string Dep_Name { get; set; }
         public string Nature { get; set; }
+        public string NatureSinhala { get; set; }
         public string Code { get; set; }
         public bool Active { get; set; }
         public DateTime CreatedDate { get; set; }

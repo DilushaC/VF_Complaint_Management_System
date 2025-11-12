@@ -56,8 +56,11 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10); 
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    //options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+    //        ? CookieSecurePolicy.None
+    //        : CookieSecurePolicy.Always;
+    //options.Cookie.SameSite = SameSiteMode.Strict;
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
