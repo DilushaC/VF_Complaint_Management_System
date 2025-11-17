@@ -11,6 +11,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 {
     public interface IComplaintManageProcessService
     {
+        public Task<List<BranchModel>> getBranchList();
         public Task<List<Complaint_Method_MasterModel>> getMethodList();
         public Task<List<Complaint_Department_MasterModel>> getDepList();
         public List<Complaint_Nature_MasterModel> GetNaturesByDepartment(int DepId);

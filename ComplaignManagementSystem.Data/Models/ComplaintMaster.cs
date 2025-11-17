@@ -16,6 +16,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string Department { get; set; }
         public string Nature { get; set; }
         public string Branch { get; set; }
+        public string ComBranch { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }
         public DateTime CreatedDate { get; set; }

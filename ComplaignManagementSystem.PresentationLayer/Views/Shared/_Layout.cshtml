@@ -146,7 +146,7 @@
             <div class="navigation-background"
                  style="background-image: url('@Url.Content("/plugins/demo/chameleon-admin-template/app-assets/images/backgrounds/02.jpg")');">
             </div>
-            <div class="main-menu-content ps ps--active-y" style="height: 704px">
+            <div class="main-menu-content ps ps--active-y">
                 <hr style="margin-right:20px;margin-left:20px;margin-top:0px">
                 <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                     <li class="nav-item @(activeMenuTab == "Dashboard" ? "open" : "")">
@@ -450,7 +450,8 @@
                         if (Context.Session.GetString("DepartmentPermission") != "" || Context.Session.GetString("CentralPermission") != "")
                         {
                             <li class="nav-item has-sub @(activeMenuTab == "MainProcessMenu" ? "open" : "")">
-                                <a href="#"><i class="ft-command"></i>
+                                <a href="#">
+                                    <i class="ft-command"></i>
                                     <span class="menu-title" data-i18n="">Complaint Forms</span>
                                 </a>
                                 <ul class="menu-content">
@@ -488,15 +489,18 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-    <div class="border-top footer text-muted bottom">
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+    <div class="app-content content">
+        <div class="content-wrapper">
+            @*<div class="content-wrapper-before"></div>*@
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
         </div>
     </div>
 
@@ -523,27 +527,28 @@
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
     <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/tooltip/tooltip.min.js"></script>
 
-    <script>        
-    // const sessionTimeout = 1 * 600 * 1000;                
-    //     let timeout;                
-    //     function resetTimer() {                
-    //         clearTimeout(timeout);                
-    //         timeout = setTimeout(() => {                
-    //             window.location.href = '/User/Login';                
-    //         }, sessionTimeout);                
-    //     }                
-    //     window.onload = resetTimer;                
-    //     document.onmousemove = resetTimer;                
-    //     document.onkeypress = resetTimer;                
-    //     document.onscroll = resetTimer;                
-    //     document.onclick = resetTimer;
-                
-    //     (function () {                
-    //         window.history.pushState(null, "", window.location.href);                
-    //         window.onpopstate = function () {                
-    //             window.history.pushState(null, "", window.location.href);                
-    //         };                
-    //     })();
+    <script>
+
+        // const sessionTimeout = 1 * 600 * 1000;
+        //     let timeout;
+        //     function resetTimer() {
+        //         clearTimeout(timeout);
+        //         timeout = setTimeout(() => {
+        //             window.location.href = '/User/Login';
+        //         }, sessionTimeout);
+        //     }
+        //     window.onload = resetTimer;
+        //     document.onmousemove = resetTimer;
+        //     document.onkeypress = resetTimer;
+        //     document.onscroll = resetTimer;
+        //     document.onclick = resetTimer;
+
+        //     (function () {
+        //         window.history.pushState(null, "", window.location.href);
+        //         window.onpopstate = function () {
+        //             window.history.pushState(null, "", window.location.href);
+        //         };
+        //     })();
     </script>
 </body>
 </html>

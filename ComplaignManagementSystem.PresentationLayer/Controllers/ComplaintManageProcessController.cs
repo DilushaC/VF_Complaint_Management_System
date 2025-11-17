@@ -42,6 +42,8 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 return RedirectToAction("Login", "User");
             var getAllDeps = _complainProcess.getDepList();
             var getAllMethods = _complainProcess.getMethodList();
+            var getBranches = _complainProcess.getBranchList();
+            ViewBag.Branch_Id = new SelectList(getBranches.Result.ToList(), "Id", "Branch");
             ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method");
             ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name");
             return View();
@@ -173,6 +175,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             Complaint_ManageProcessModel complaint = _complainProcess.getComplainProcessUsingId(id); // Replace with real data fetch
             var getAllDeps = _complainProcess.getDepList();
             var getAllMethods = _complainProcess.getMethodList();
+            var getBranches = _complainProcess.getBranchList();
             ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
             if (complaintData == null)
             {
@@ -182,7 +185,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             {
                 complaint.AttachmentPath = Path.GetFileName(complaintData.AttachmentPath);
             }
-
+            ViewBag.Branch_Id = new SelectList(getBranches.Result.ToList(), "Id", "Branch", complaint.Branch_Id);
             ViewBag.ComplaintMethod_Id = new SelectList(getAllMethods.Result.ToList(), "Id", "Method", complaint.ComplaintMethod_Id);
             ViewBag.Dep_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Name", complaint.Dep_Id);
             ViewBag.Nature_Id = new SelectList(getAllDeps.Result.ToList(), "Id", "Nature", complaint.Nature_Id);

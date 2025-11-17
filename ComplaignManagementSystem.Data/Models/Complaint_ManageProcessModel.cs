@@ -22,6 +22,8 @@ namespace ComplaignManagementSystem.Data.Models
         public string Dep { get; set; }
         public int Nature_Id { get; set; }
         public string Nature { get; set; }
+        public int Branch_Id { get; set; }
+        public string ComBranch { get; set; }
         public string Priority { get; set; }
         public bool IsSentCentral { get; set; }
         public DateTime IsSentCentralDateTime { get; set; }
