@@ -1,5 +1,6 @@
 ﻿using ComplaignManagementSystem.Data.Context;
 using ComplaignManagementSystem.Data.Models;
+using ComplaintManagementSystem.Business.Authentication;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.Helpers;
 using Dapper;
@@ -11,7 +12,9 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ComplaintManagementSystem.Business.LoginHandler
@@ -20,44 +23,54 @@ namespace ComplaintManagementSystem.Business.LoginHandler
     {
         private readonly _ConnectionService _connectionService;
         private readonly PasswordHelper _passwordHelper;
+        private readonly ADAuthentication _aDAuthentication;
 
-        public UserService(_ConnectionService connectionService, PasswordHelper passwordHelper)
+        public UserService(_ConnectionService connectionService, PasswordHelper passwordHelper, ADAuthentication aDAuthentication)
         {
             _connectionService = connectionService;
             _passwordHelper = passwordHelper;
+            _aDAuthentication = aDAuthentication;
         }
 
         public async Task<UserModel> ValidateUserAsync(string username, string password)
         {
-            const string query = @"SELECT * FROM Complaint_User WHERE UserName = @UserName AND Active = 1";
+            var response = await _aDAuthentication.AuthenticatewithAD(username, password);
+            if(response.Status == true)
+            {
+                const string query = @"SELECT * FROM Complaint_User WHERE UserName = @UserName AND Active = 1";
 
-            var parameters = new DynamicParameters();
-            parameters.Add("@UserName", username);
+                var parameters = new DynamicParameters();
+                parameters.Add("@UserName", username);
+                // Use the centralized connection handler for DB access
+                var users = _connectionService.ReturnWithPara(query, parameters)
+                                              .AsEnumerable()
+                                              .Select(row => new UserModel
+                                              {
+                                                  Id = row.Field<int>("Id"),
+                                                  UserName = row.Field<string>("UserName"),
+                                                  //Password = row.Field<string>("Password"),
+                                                  Name = row.Field<string>("Name"),
+                                                  Email = row.Field<string>("Email"),
+                                                  BranchId = row.Field<int?>("BranchId"),
+                                                  Dep_Id = row.Field<int?>("Dep_Id"),
+                                                  CreatedDate = row.Field<System.DateTime>("CreatedDate"),
+                                                  Active = row.Field<bool>("Active"),
+                                                  IsReset = row.Field<bool>("IsReset")
+                                              })
+                                              .ToList();
 
-            // Use the centralized connection handler for DB access
-            var users = _connectionService.ReturnWithPara(query, parameters)
-                                          .AsEnumerable()
-                                          .Select(row => new UserModel
-                                          {
-                                              Id = row.Field<int>("Id"),
-                                              UserName = row.Field<string>("UserName"),
-                                              Password = row.Field<string>("Password"),
-                                              Name = row.Field<string>("Name"),
-                                              Email = row.Field<string>("Email"),
-                                              BranchId = row.Field<int?>("BranchId"),
-                                              Dep_Id = row.Field<int?>("Dep_Id"),
-                                              CreatedDate = row.Field<System.DateTime>("CreatedDate"),
-                                              Active = row.Field<bool>("Active"),
-                                              IsReset = row.Field<bool>("IsReset")
-                                          })
-                                          .ToList();
+                var user = users.FirstOrDefault();
+                if (user == null)
+                    return null;
 
-            var user = users.FirstOrDefault();
-            if (user == null)
+                //bool isValid = _passwordHelper.VerifyPassword(password, user.Password);
+                return user;
+            }
+            else
+            {
                 return null;
-
-            bool isValid = _passwordHelper.VerifyPassword(password, user.Password);
-            return isValid ? user : null;
+            }
+            
         }
 
         public async Task ResetPassword(string userId, string saltKey, string NewPassword)

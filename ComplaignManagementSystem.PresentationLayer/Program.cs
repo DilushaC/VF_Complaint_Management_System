@@ -1,5 +1,6 @@
 ﻿using ComplaignManagementSystem.Data.Context;
 using ComplaignManagementSystem.Presentation.Filters;
+using ComplaintManagementSystem.Business.Authentication;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.DepartmentHandler;
@@ -27,6 +28,8 @@ builder.Services.AddScoped<DapperContext>();
 builder.Services.AddScoped<_ConnectionService>();
 
 builder.Services.AddScoped<PasswordHelper>();
+
+builder.Services.AddScoped<ADAuthentication>();
 
 builder.Services.AddScoped<IComplaintManageProcessService, ComplaintManageProcessService>();
 
