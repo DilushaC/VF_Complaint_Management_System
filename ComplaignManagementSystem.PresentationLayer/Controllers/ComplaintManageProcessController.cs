@@ -597,5 +597,10 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        public IActionResult UserManual()
+        {
+            return View();
+        }
     }
 }

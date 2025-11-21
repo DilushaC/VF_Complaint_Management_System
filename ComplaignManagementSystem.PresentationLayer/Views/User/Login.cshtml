@@ -67,18 +67,22 @@
                                     <div class="card-body">
                                         <form class="form-horizontal" asp-action="Login" asp-controller="User" method="post" id="loginForm">
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="UserName" name="username" class="form-control round" placeholder="Your Username" required />
+                                                <input asp-for="UserName" name="username" id="username" class="form-control round" placeholder="Your Username" />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-user"></i>
                                                 </div>
-                                            </fieldset>
+                                                <span id="error-message-username"></span>
 
+                                            </fieldset>
+                                            
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input asp-for="Password" name="password" type="password" class="form-control round" placeholder="Enter Password" required />
+                                                <input asp-for="Password" name="password" type="password" id="password" class="form-control round" placeholder="Enter Password" />
                                                 <div class="form-control-position" style="margin-top:10px">
                                                     <i class="ft-lock"></i>
                                                 </div>
+                                                <span id="error-message-password"></span>
                                             </fieldset>
+                                           
 
                                             <div class="form-group text-center">
                                                 <button type="button" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1" onclick="submitLogin()">Login</button>
@@ -110,39 +114,69 @@
 
     <script type="text/javascript">            
         $("#Error").hide();
+                
+        $(document).keypress(function(e) {
+            if (e.which === 13) {
+                submitLogin();
+            }
+        });
         function submitLogin() {
             var form = $("#loginForm");
-            $.ajax({            
-                url: form.attr("/User/Login"), // Uses the form's asp-action and asp-controller            
-                type: "POST",            
-                data: form.serialize(),            
-                headers: { "X-Requested-With": "XMLHttpRequest" },   // Collects all form inputs            
-                success: function (response) {            
+            let isValid = true;
+            const username = document.getElementById("username");
+            const password = document.getElementById("password");        
+
+            const errorMessageusernameContainer = document.getElementById('error-message-username');
+            const errorMessagepasswordContainer = document.getElementById('error-message-password');                            
+            errorMessageusernameContainer.textContent = '';                
+            errorMessagepasswordContainer.textContent = '';
+            // --- User Name Validation ---        
+            if (username.value.trim() === "") {
+                errorMessageusernameContainer.textContent = 'Please Enter Username.';
+                errorMessageusernameContainer.style.color = 'red';                
+                isValid = false;
+            }
+            if (password.value.trim() === "") {
+                errorMessagepasswordContainer.textContent = 'Please Enter Password.';
+                errorMessagepasswordContainer.style.color = 'red';
+                isValid = false;
+            }
+            if (!isValid) {            
+                event.preventDefault();            
+                return false;        
+            }else{   
+                $.ajax({          
+                    url: form.attr("/User/Login"), // Uses the form's asp-action and asp-controller            
+                    type: "POST",           
+                    data: form.serialize(),           
+                    headers: { "X-Requested-With": "XMLHttpRequest" },   // Collects all form inputs            
+                    success: function (response) {            
                     // ✅ If your controller returns JSON            
-                    if (response.success) {              
-                        Swal.fire({            
-                            title: 'Successfully Login!',            
-                            text: 'Welcome to Complaint Management System.',            
-                            icon: 'success',            
-                            timer: 2000,            
-                            showConfirmButton: false            
-                        }).then(() => {            
-                            window.location.href = response.redirectUrl;            
-                        });            
-                    } else if(response.redirectUrl != null){
-                         window.location.href = response.redirectUrl
-                    } else{
-                        $("#Error").text("Invalid username or password!").show();
-                    }          
-                },            
-                error: function (xhr, status, error) {            
-                    Swal.fire({            
-                        icon: 'error',            
-                        title: 'Error',            
-                        text: 'Something went wrong! Please try again.'            
-                    });            
-                }            
-            });
+                        if (response.success) {            
+                            Swal.fire({            
+                                title: 'Successfully Login!',            
+                                text: 'Welcome to Complaint Management System.',            
+                                icon: 'success',            
+                                timer: 2000,            
+                                showConfirmButton: false            
+                            }).then(() => {         
+                                window.location.href = response.redirectUrl;            
+                            });            
+                        } else if(response.redirectUrl != null){
+                            window.location.href = response.redirectUrl
+                        } else{        
+                            $("#Error").text("Invalid username or password!").show();        
+                        }                  
+                    },                    
+                    error: function (xhr, status, error) {          
+                        Swal.fire({                    
+                            icon: 'error',           
+                            title: 'Error',          
+                            text: 'Something went wrong! Please try again.'           
+                        });           
+                    }            
+                });
+            }
         }
     </script>
 </body>
