@@ -33,6 +33,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 return RedirectToAction("Login", "User");
 
             ViewBag.CurrYear = System.DateTime.Now.Year;
+            HttpContext.Session.SetString("CurrYear", (System.DateTime.Now.Year).ToString());
             return View();
         }
 

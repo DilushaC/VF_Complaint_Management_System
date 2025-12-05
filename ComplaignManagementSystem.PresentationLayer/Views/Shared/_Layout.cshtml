@@ -572,7 +572,7 @@
 
     <footer class="border-top footer text-muted bottom">
         <div class="container">
-            &copy; @ViewBag.CurrYear - Complaint Maneagement System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @Context.Session.GetString("CurrYear") - Complaint Maneagement System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
