@@ -4,6 +4,7 @@ using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using log4net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -65,7 +66,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 log.Error($"Error Complain Saving : {ex.Message}.");
                 return RedirectToAction(nameof(Index));
@@ -374,6 +375,28 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
+
+
+        [HttpPost]
+        public JsonResult Delete(int id)
+        {
+            try
+            {
+                var UserName = HttpContext.Session.GetString("UserName");
+
+                _complainProcess.DeleteComplaint(id);
+                TempData["ToastMessage"] = "deletedSuccessfully!";
+                log.Info($"Deleted Complaint by : {UserName}. Complaint Record : {id}");
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error : {ex}");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         //------------------------ Central Process ------------------------------------>    
         public async Task<IActionResult> CentralProcess(int pageNumber = 1, int pageSize = 10, string searchString = null, string ComplaintMethod_Id = null, string priority = null)
         {
@@ -511,12 +534,19 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         }
 
         //------------------------ Complaint History ------------------------------------>    
-        public async Task<IActionResult> ComplaintHistoryProcess(int pageNumber = 1, int pageSize = 10, string searchString = null)
+        public async Task<IActionResult> ComplaintHistoryProcess()
         {
             try
             {
-                var getAllDeps = _complainProcess.getComplainNumberList();
-                ViewBag.Complaint = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
+                var getAllComplaint = await _complainProcess.getComplainNumberList();
+                if(getAllComplaint != null && getAllComplaint.Any())
+                {
+                    ViewBag.Complaint = new SelectList(getAllComplaint, "Id", "Refference");
+                }
+                else
+                {
+                    ViewBag.Complaint = new SelectList(new List<ComplaintMaster>(), "Id", "Refference");
+                }
                 return View();
             }
             catch (Exception ex)
@@ -540,44 +570,67 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
         public async Task<IActionResult> GetComplaintHistoryDetails(int id)
         {
-            var getAllDeps = await _complainProcess.GetComplaintHistoryDetails(id);
-
-            var result = getAllDeps.Select(x => new
+            try
             {
-                ForwordUser = x.ForwordUser,
-                Dep = x.Dep,
-                CreatedDate = x.CreatedDate,
-                MatrixOrder = x.MatrixOrder,
-                IsResolved = x.IsResolved,
-                ResolvedDateTime = x.ResolvedDateTime,
-                ResolvedRemark = x.ResolvedRemark,
-                ResolvedUser = x.ResolvedUser,
-                DepartmentName = x.DepartmentName,
-                IsSentDep = x.IsSentDep,
-                IsSentCentral = x.IsSentCentral,
-                Remark = x.Remark
-            }).ToList();
+                var getAllDeps = await _complainProcess.GetComplaintHistoryDetails(id);
 
-            return Json(result);
+                var result = getAllDeps.Select(x => new
+                {
+                    ForwordUser = x.ForwordUser,
+                    Dep = x.Dep,
+                    CreatedDate = x.CreatedDate,
+                    MatrixOrder = x.MatrixOrder,
+                    IsResolved = x.IsResolved,
+                    ResolvedDateTime = x.ResolvedDateTime,
+                    ResolvedRemark = x.ResolvedRemark,
+                    ResolvedUser = x.ResolvedUser,
+                    DepartmentName = x.DepartmentName,
+                    IsSentDep = x.IsSentDep,
+                    IsSentCentral = x.IsSentCentral,
+                    Remark = x.Remark
+                }).ToList();
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
 
         //------------------------ Customer inform ------------------------------------>    
-
-        public ActionResult CustomerInformProcess()
+        [HttpGet]
+        public async Task<IActionResult> CustomerInformProcess()
         {
             try
             {
-                var getAllDeps = _complainProcess.getCusInfoCompNoList();
-                var getAllNotifi = _complainProcess.getNotificationList();
-                ViewBag.ComplaintId = new SelectList(getAllDeps.Result.ToList(), "Id", "Refference");
-                ViewBag.notification = new SelectList(getAllNotifi.Result.ToList(), "Id", "Notification");
+                var getAllComplaints = await _complainProcess.getCusInfoCompNoList();
+                var getAllNotifi = await _complainProcess.getNotificationList();
+                if (getAllComplaints != null && getAllComplaints.Any())
+                {
+                    ViewBag.ComplaintId = new SelectList(getAllComplaints, "Id", "Refference");
+                }
+                else
+                {
+                    ViewBag.ComplaintId = new SelectList(new List<ComplaintMaster>(), "Id", "Refference");
+                }
+
+                if (getAllNotifi != null && getAllNotifi.Any())
+                {
+                    ViewBag.notification = new SelectList(getAllNotifi, "Id", "Notification");
+                }
+                else
+                {
+                    ViewBag.notification = new SelectList(new List<CustomerNotificationMasterModel>(), "Id", "Notification");
+                }
+
                 return View();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-        }      
+        }
 
         [HttpPost]
         public ActionResult UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file)

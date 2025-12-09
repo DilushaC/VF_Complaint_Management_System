@@ -294,7 +294,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 {
                     parameters.Add("status", 2, DbType.Int32);
                 }
-                    
+
                 parameters.Add("active", 1, DbType.Int32);
                 parameters.Add("createdUser", UserName, DbType.String);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
@@ -558,7 +558,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                 WHERE cmp.Id = @Id";
 
                 // Use Dapper to query the single record
-                var complaintDataTable = await _connection.SingleQueryReturn(query, Id);             
+                var complaintDataTable = await _connection.SingleQueryReturn(query, Id);
 
 
 
@@ -812,7 +812,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                     parameters.Add("status", 3, DbType.Int32);
                 }
 
-                    _connection.ExecuteWithPara(query, parameters);
+                _connection.ExecuteWithPara(query, parameters);
 
                 var depQuery = $"UPDATE Complaint_Send_Departments SET Dep_Id={Convert.ToInt64(Dep_Id)} WHERE ComplaintMngProcess_Id={Convert.ToInt64(ComProcessId)} AND Active=1 AND EscalatiomMatrix=1";
                 _connection.Return(depQuery);
@@ -1063,13 +1063,14 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 COUNT(*) AS TotalCount,
                 SUM(CASE WHEN cmp.IsResolved = 1 THEN 1 ELSE 0 END) AS ResolveCount,
                 SUM(CASE WHEN cmp.IsResolved IS NULL OR cmp.IsResolved = 0 THEN 1 ELSE 0 END) AS PendingCount
-                FROM Complaint_ManageProcess AS cmp; ";
+                FROM Complaint_ManageProcess AS cmp WHERE cmp.Active=1; ";
 
                 string query1 = @"
                 SELECT 
                 ct.Method, COUNT(c.Id) AS ComplaintCount
                 FROM Complaint_ManageProcess c
                 INNER JOIN Complaint_Method_Master ct ON c.ComplaintMethod_Id = ct.Id
+                WHERE c.Active=1
                 GROUP BY ct.Method
                 ORDER BY ComplaintCount DESC";
 
@@ -1078,11 +1079,11 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 d.Id, d.Name AS DepName, COUNT(c.Id) AS ComplaintCount
                 FROM Complaint_Department_Master d
                 LEFT JOIN Complaint_ManageProcess c ON d.Id = c.Dep_Id
-                WHERE d.Active=1 AND d.Status=1
+                WHERE d.Active=1 AND d.Status=1 AND c.Active=1
                 GROUP BY d.Id, d.Name
                 ORDER BY ComplaintCount DESC";
 
-                var dt = await _connection.SingleQueryReturn(query,0);
+                var dt = await _connection.SingleQueryReturn(query, 0);
                 if (dt.Rows.Count == 0)
                     return new DashboardComplaintCountModel();
 
@@ -1134,21 +1135,23 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             try
             {
                 string Query = $"SELECT Id,Refference FROM Complaint_ManageProcess WHERE Active = 1 ORDER BY Refference DESC";
-                var Data = _connection.Return(Query);
-                var Row = Data.Rows[0];
+                var Data = await Task.Run(() => _connection.Return(Query));
 
                 List<ComplaintMaster> ComplainList = new List<ComplaintMaster>();
-
-                for (int i = 0; i < Data.Rows.Count; i++)
+                if (Data != null && Data.Rows.Count > 0)
                 {
-                    var BRow = Data.Rows[i];
-                    ComplaintMaster bModel = new ComplaintMaster()
+                    for (int i = 0; i < Data.Rows.Count; i++)
                     {
-                        Id = Convert.ToInt32(BRow["Id"]),
-                        Refference = BRow["Refference"].ToString()                       
-                    };
-                    ComplainList.Add(bModel);
+                        var BRow = Data.Rows[i];
+                        ComplaintMaster bModel = new ComplaintMaster()
+                        {
+                            Id = Convert.ToInt32(BRow["Id"]),
+                            Refference = BRow["Refference"].ToString()
+                        };
+                        ComplainList.Add(bModel);
+                    }
                 }
+
                 return ComplainList.ToList();
 
             }
@@ -1161,7 +1164,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public async Task<List<Complaint_ManageProcessModel>> GetComplaintHistoryDetails(int Id)
         {
             try
-            {     
+            {
                 string query1 = @"
                 SELECT D.Id, D.CreatedDate , Us.Name AS ForwordUser, Dep.Name AS UserDepName, D.EscalatiomMatrix AS MatrixOrder , 
                 M.IsResolved, M.ResolvedDateTime, M.ResolvedRemark, ResUs.Name AS ResolvedUserName, ResDep.Name AS DepName, M.IsSentDep, 
@@ -1181,8 +1184,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 complainModel.Id = Convert.ToUInt16(row["Id"]);
 
 
-                List<Complaint_ManageProcessModel> methodCounts = new List<Complaint_ManageProcessModel>();                
-          
+                List<Complaint_ManageProcessModel> methodCounts = new List<Complaint_ManageProcessModel>();
+
                 for (int i = 0; i < Data.Rows.Count; i++)
                 {
                     var BRow = Data.Rows[i];
@@ -1191,7 +1194,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                         ForwordUser = BRow["ForwordUser"].ToString(),
                         Dep = BRow["UserDepName"].ToString(),
                         CreatedDate = Convert.ToDateTime(BRow["CreatedDate"].ToString()),
-                        MatrixOrder = Convert.ToInt32(BRow["MatrixOrder"]),                       
+                        MatrixOrder = Convert.ToInt32(BRow["MatrixOrder"]),
 
                         IsResolved = BRow["IsResolved"] != DBNull.Value && Convert.ToBoolean(BRow["IsResolved"]),
                         ResolvedDateTime = BRow["ResolvedDateTime"] != DBNull.Value ? Convert.ToDateTime(BRow["ResolvedDateTime"]) : (DateTime?)null,
@@ -1222,8 +1225,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             try
             {
                 string Query = $"SELECT Id, Notification FROM Complaint_CustomerNotification_Master WHERE Active = 1 ORDER BY Notification ASC";
-                var Data = _connection.Return(Query);
-                var Row = Data.Rows[0];
+                var Data = await Task.Run(() => _connection.Return(Query));
 
                 List<CustomerNotificationMasterModel> ComplainList = new List<CustomerNotificationMasterModel>();
 
@@ -1249,7 +1251,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public void UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file)
         {
             try
-            {                        
+            {
                 string query = @"
                                 UPDATE Complaint_ManageProcess
                                 SET 
@@ -1262,13 +1264,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var parameters = new DynamicParameters();
                 parameters.Add("@ComplainNo", Convert.ToInt64(ComplainNo), DbType.Int64);
                 parameters.Add("@NotifiID", Convert.ToInt64(NotifiID), DbType.Int64);
-                parameters.Add("@Complaint", Complaint, DbType.String);                
+                parameters.Add("@Complaint", Complaint, DbType.String);
                 parameters.Add("@isNotified", isNotified ? 1 : 0, DbType.Byte);
                 parameters.Add("@NotifiedDate", System.DateTime.Now, DbType.DateTime);
 
                 _connection.ExecuteWithPara(query, parameters);
 
-            
+
 
                 if (file != null && file.Length > 0)
                 {
@@ -1297,22 +1299,44 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {
                 string Query = $"SELECT Id,Refference FROM Complaint_ManageProcess WHERE Active = 1 AND IsResolved = 1 AND IsCusNotified IS NULL ORDER BY Refference DESC";
                 var Data = _connection.Return(Query);
-                var Row = Data.Rows[0];
 
                 List<ComplaintMaster> ComplainList = new List<ComplaintMaster>();
-
-                for (int i = 0; i < Data.Rows.Count; i++)
+                if (Data != null && Data.Rows.Count > 0)
                 {
-                    var BRow = Data.Rows[i];
-                    ComplaintMaster bModel = new ComplaintMaster()
+                    for (int i = 0; i < Data.Rows.Count; i++)
                     {
-                        Id = Convert.ToInt32(BRow["Id"]),
-                        Refference = BRow["Refference"].ToString()
-                    };
-                    ComplainList.Add(bModel);
+                        var BRow = Data.Rows[i];
+                        ComplaintMaster bModel = new ComplaintMaster()
+                        {
+                            Id = Convert.ToInt32(BRow["Id"]),
+                            Refference = BRow["Refference"].ToString()
+                        };
+                        ComplainList.Add(bModel);
+                    }
                 }
                 return ComplainList.ToList();
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void DeleteComplaint(int id)
+        {
+            try
+            {
+                string query = @"
+                                UPDATE Complaint_ManageProcess
+                                SET Active = 0
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Convert.ToInt64(id), DbType.Int64);
+
+                _connection.ExecuteWithPara(query, parameters);
+                return;
             }
             catch (Exception ex)
             {

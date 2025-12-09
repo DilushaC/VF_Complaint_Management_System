@@ -34,7 +34,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<List<CustomerNotificationMasterModel>> getNotificationList();
         public void UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file);
         public Task<List<ComplaintMaster>> getCusInfoCompNoList();
-
-
+        public void DeleteComplaint(int id);
     }
 }
