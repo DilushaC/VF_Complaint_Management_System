@@ -20,6 +20,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
         public Task<List<BranchModel>> getBranchList();
         public void CreateUser(IFormCollection collection);
         public Task<UserModel> getUserDetailId(int Id);
+        public UserModel checkUserName(string username);
         public void UpdateUser(IFormCollection collection);
         public void ResetPassword(IFormCollection collection);
         public void InactiveActive(int id, int status);

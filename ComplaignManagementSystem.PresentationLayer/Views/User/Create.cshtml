@@ -28,7 +28,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="UserName">User Name</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                                        <input type="text" id="UserName" class="form-control" placeholder="User Name" name="UserName" autocomplete="off">
+                                        <input type="text" id="UserName" class="form-control" placeholder="User Name" name="UserName" autocomplete="off" onkeyup="CheckUserName()">
+                                        <small id="error-message-Uname" style="color:red"></small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -115,7 +116,51 @@
       allowClear:true,
       placeholder: 'Select Department'
     });
+    function CheckUserName() {
+        var UserName = document.getElementById("UserName");
+        const errorMessageUnameContainer = document.getElementById('error-message-Uname');
+        errorMessageUnameContainer.textContent = '';
+             // alert(TrainingCourse_Sequance.value + TrainingCourse_TrainingId);
+        const savebtn = document.getElementById("save");
+        if(UserName.value != ""){
+            $.ajax({
+                url: '@Url.Action("CheckUserName", "User")',
+                type: 'GET', // or POST
+                data: {
+                    username: UserName.value
+                },
+                success: function (response) {
+                    if (response.status === true) {
+                        errorMessageUnameContainer.textContent = '';
+                        errorMessageUnameContainer.style.borderColor = "green";
+                        savebtn.disabled = false;
+                        console.log("User Name OK");
+                    } else {
+                        if(response.activestatus === true){                                                   
+                            errorMessageUnameContainer.textContent = 'User Name already exists.';                      
+                            errorMessageUnameContainer.style.color = 'red';
+                            errorMessageUnameContainer.style.borderColor = 'red';
+                            savebtn.disabled = true;
+                        }else{                                                        
+                            errorMessageUnameContainer.textContent = 'User Name already exists but you have to active this user.';
+                            errorMessageUnameContainer.style.color = 'red';
+                            errorMessageUnameContainer.style.borderColor = 'red';
+                            savebtn.disabled = true;
+                        }
 
+
+                        // console.log("Sequence already exists");
+                        // errorMessageSeqContainer.textContent = 'Sequence already exists!';
+                        return;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error occurred: " + error);
+                }
+            });
+        }
+
+    }
     function emailChange() {
         const email = document.getElementById("Email").value.trim();
         const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;          

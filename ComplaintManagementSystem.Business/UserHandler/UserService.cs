@@ -35,7 +35,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
         public async Task<UserModel> ValidateUserAsync(string username, string password)
         {
             var response = await _aDAuthentication.AuthenticatewithAD(username, password);
-            if(response.Status == true)
+            if (response.Status == true)
             {
                 const string query = @"SELECT * FROM Complaint_User WHERE UserName = @UserName AND Active = 1";
 
@@ -70,7 +70,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
             {
                 return null;
             }
-            
+
         }
 
         public async Task ResetPassword(string userId, string saltKey, string NewPassword)
@@ -164,8 +164,8 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                     pageAccessModel.Page = Row["Page"].ToString();
                     pageAccessModel.IsEdit = Convert.ToBoolean(Row["IsEdit"]);
                     pageAccessModel.Active = Convert.ToBoolean(Row["Active"]);
-                        //Role = Row["Role"].ToString(),
-                    
+                    //Role = Row["Role"].ToString(),
+
                     pageList.Add(pageAccessModel);
                 }
                 return pageList;
@@ -333,7 +333,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                 var UserName = collection["UserName"].ToString();
                 var Name = collection["Name"].ToString();
                 var Email = collection["Email"].ToString();
-                var BranchId = collection["BranchId"].ToString(); 
+                var BranchId = collection["BranchId"].ToString();
                 var Dep_Id = collection["Dep_Id"].ToString();
                 var Password = collection["Password"].ToString();
                 string EncryptNewPassword = _passwordHelper.ComputeHmac(Password);
@@ -350,7 +350,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                 parameters.Add("depId", Convert.ToInt64(Dep_Id), DbType.Int64);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 parameters.Add("active", 1, DbType.Int32);
-                parameters.Add("isReset", 0, DbType.Int32);           
+                parameters.Add("isReset", 1, DbType.Int32);
 
                 _connectionService.ReturnWithPara(query, parameters);
                 //Handle file upload
@@ -566,7 +566,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
 
                 // Use Dapper to query the single record
                 var complaintDataTable = _connectionService.Return(query);
-                if(complaintDataTable.Rows.Count != 0)
+                if (complaintDataTable.Rows.Count != 0)
                 {
                     var row = complaintDataTable.Rows[0];
                     UserPermissionModel model = new UserPermissionModel();
@@ -578,7 +578,7 @@ namespace ComplaintManagementSystem.Business.LoginHandler
                     model.Active = Convert.ToBoolean(row["Active"]);
                     return (model);
                 }
-                return null;               
+                return null;
             }
             catch (Exception ex)
             {
@@ -631,6 +631,58 @@ namespace ComplaintManagementSystem.Business.LoginHandler
             }
             catch (Exception ex)
             {
+                throw ex;
+            }
+        }
+
+        public UserModel checkUserName(string username)
+        {
+            try
+            {
+                string query = @$"
+                                SELECT CU.Id AS Id, 
+                                    CU.UserName AS UserName, 
+                                    CU.Name AS Name, 
+                                    CU.Email AS Email, 
+                                    CBM.Id AS BranchId, 
+                                    CBM.Branch AS Branch, 
+                                    CDM.Id as Dep_Id, 
+                                    CDM.Name AS Department , 
+                                    CU.CreatedDate AS CreatedDate, 
+                                    CU.IsReset AS IsReset,
+                                    CU.Active AS Active,   
+                                    CU.Password as Password
+                                FROM Complaint_User AS CU 
+                                INNER JOIN Complaint_Branch_Master as CBM ON CBM.Id = CU.BranchId
+                                INNER JOIN Complaint_Department_Master AS CDM ON CDM.Id = CU.Dep_Id
+                                WHERE CU.UserName = '" + username + "'";
+
+                // Use Dapper to query the single record
+                var complaintDataTable = _connectionService.Return(query);
+                if (complaintDataTable.Rows.Count != 0)
+                {
+                    var row = complaintDataTable.Rows[0];
+                    UserModel model = new UserModel();
+
+                    model.Id = Convert.ToUInt16(row["Id"]);
+                    model.UserName = row["UserName"].ToString();
+                    model.Name = row["Name"].ToString();
+                    model.Email = row["Email"].ToString();
+                    model.BranchId = Convert.ToUInt16(row["BranchId"]);
+                    model.Branch = row["Branch"].ToString();
+                    model.Dep_Id = Convert.ToUInt16(row["Dep_Id"]);
+                    model.Department = row["Department"].ToString();
+                    model.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
+                    model.Active = Convert.ToBoolean(row["Active"]);
+                    model.Password = row["Password"].ToString();
+                    return model;
+                }
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
         }

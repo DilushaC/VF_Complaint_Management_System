@@ -162,6 +162,17 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return View();
         }
 
+        [HttpGet]
+        public JsonResult CheckUserName(string username)
+        {
+            // Example - check if sequence exists in DB
+            var moduleResList = _loginService.checkUserName(username);
+            if (moduleResList != null)
+                return Json(new { status = false, activestatus = moduleResList.Active });
+            else
+                return Json(new { status = true });
+        }
+
         // POST: UserController/Create
         [HttpPost]
         public ActionResult CreateUser(IFormCollection collection)
@@ -305,7 +316,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 log.Info($"Success User Editted Permssion by : {UserName}. User Id : {UserId}. User Role Id : {UserRoleId}. ");
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 log.Error($"Error User Activation : {ex.Message}.");
                 return RedirectToAction(nameof(Index));
