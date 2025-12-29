@@ -269,17 +269,14 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-
 
 <div class="modal fade" id="complaintModal" tabindex="-1" role="dialog" aria-labelledby="complaintModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="complaintModalLabel">Complaint Details</h2>
-
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
             </div>
             <div class="modal-body">
@@ -313,8 +310,6 @@
         </div>
     </div>
 </div>
-
-
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
@@ -440,9 +435,6 @@
             // Set a new timeout to submit the form after a delay
             searchTimeout = setTimeout(submitSearch, 500); // 500ms delay
         });
-
-
-
 
         var ToastMessage = '@(TempData.ContainsKey("ToastMessage") ? TempData["ToastMessage"] as string : "")';
         if (ToastMessage) {

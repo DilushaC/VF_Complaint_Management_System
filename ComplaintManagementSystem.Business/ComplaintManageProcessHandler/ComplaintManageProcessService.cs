@@ -269,11 +269,20 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var Compaint = collection["Complaint"].ToString();
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
                 var ResolvedRemark = collection["ResolvedRemark"].ToString();
-
-                var query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Branch_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate) " +
+                var query = "";
+                if (Convert.ToInt64(Dep_Id) == 4)
+                {
+                    query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Branch_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate, IsSentCentralDateTime) " +
+                    "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @branchId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate, @isSentCentralDateTime)" +
+                    "SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                }
+                else
+                {
+                    query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Branch_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate) " +
                     "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @branchId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate)" +
                     "SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
+                }
                 var parameters = new DynamicParameters();
                 parameters.Add("comMethodId", Convert.ToInt64(ComplaintMethod_Id), DbType.Int64);
                 parameters.Add("reff", Refference, DbType.String);
@@ -286,15 +295,27 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("natId", Convert.ToInt64(Nature_Id), DbType.Int64);
                 parameters.Add("branchId", Convert.ToInt64(Branch_Id), DbType.Int64);
                 parameters.Add("priority", Priority, DbType.String);
-                parameters.Add("isCentral", 0, DbType.Int32);
-                parameters.Add("isDep", 1, DbType.Int32);
-                parameters.Add("isSentDepDate", System.DateTime.Now, DbType.DateTime);
-
-                if (ResolvedStatus == "No")
+                if (Convert.ToInt64(Dep_Id) == 4)
                 {
-                    parameters.Add("status", 2, DbType.Int32);
+                    parameters.Add("isCentral", 1, DbType.Int32);
+                    parameters.Add("isDep", 0, DbType.Int32);
+                    parameters.Add("isSentCentralDateTime", System.DateTime.Now, DbType.DateTime);
+                    if (ResolvedStatus == "No")
+                    {
+                        parameters.Add("status", 3, DbType.Int32);
+                    }
+                }
+                else
+                {
+                    parameters.Add("isCentral", 0, DbType.Int32);
+                    parameters.Add("isDep", 1, DbType.Int32);
+                    if (ResolvedStatus == "No")
+                    {
+                        parameters.Add("status", 2, DbType.Int32);
+                    }
                 }
 
+                parameters.Add("isSentDepDate", System.DateTime.Now, DbType.DateTime);
                 parameters.Add("active", 1, DbType.Int32);
                 parameters.Add("createdUser", UserName, DbType.String);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
@@ -308,7 +329,11 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 depParameters.Add("depId", Convert.ToInt64(Dep_Id), DbType.Int64);
                 depParameters.Add("esMatrix", 1, DbType.Int64);
                 depParameters.Add("active", 1, DbType.Int32);
-                depParameters.Add("status", 1, DbType.Int32);
+                if (Convert.ToInt64(Dep_Id) == 4)
+                    depParameters.Add("status", 3, DbType.Int32);
+                else
+                    depParameters.Add("status", 2, DbType.Int32);
+
                 depParameters.Add("forUser", UserName, DbType.String);
                 depParameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
                 _connection.ReturnWithPara(depQuery, depParameters);
@@ -768,7 +793,33 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 //    Cus_Refference={Cus_Refference}, Cus_MobileNumber={Cus_MobileNumber}, Dep_Id={Dep_Id}, Nature_Id={Nature_Id}, Priority={Priority} WHERE Id={ComProcessId}";
                 //_connection.Return(query);
 
-                string query = @"
+                string query = "";
+                if (Convert.ToInt64(Dep_Id) == 4)
+                {
+                    query = @"
+                                UPDATE Complaint_ManageProcess
+                                SET 
+                                    ComplaintMethod_Id = @ComplaintMethod_Id,
+                                    Complaint = @Complaint,
+                                    Cus_Name = @Cus_Name,
+                                    Cus_Nic = @Cus_Nic,
+                                    Cus_Refference = @Cus_Refference,
+                                    Cus_MobileNumber = @Cus_MobileNumber,
+                                    Dep_Id = @Dep_Id,
+                                    Nature_Id = @Nature_Id,
+                                    Branch_Id = @branchId,
+                                    Priority = @Priority,
+                                    EditedDateTime = @EditedDateTime,
+                                    IsSentDep = @IsSentDep,
+                                    IsSentDepDateTime = @IsSentDepDateTime,
+                                    status = @status,
+                                    IsSentCentral = @isSentCentral,
+                                    IsSentCentralDateTime = @isSentCentralDateTime
+                                WHERE Id = @Id";
+                }
+                else
+                {
+                    query = @"
                                 UPDATE Complaint_ManageProcess
                                 SET 
                                     ComplaintMethod_Id = @ComplaintMethod_Id,
@@ -786,6 +837,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     IsSentDepDateTime = @IsSentDepDateTime,
                                     status = @status
                                 WHERE Id = @Id";
+                }
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", Convert.ToInt64(ComProcessId), DbType.Int64);
@@ -800,16 +852,24 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("branchId", Convert.ToInt64(Branch_Id), DbType.Int64);
                 parameters.Add("@Priority", Priority, DbType.String);
                 parameters.Add("@EditedDateTime", System.DateTime.Now, DbType.DateTime);
-                parameters.Add("@IsSentDep", 1, DbType.Int32);
+                if (Convert.ToInt64(Dep_Id) == 4)
+                {
+                    parameters.Add("@isSentCentral", 1, DbType.Int32);
+                    parameters.Add("@IsSentDep", 0, DbType.Int32);
+                    parameters.Add("status", 3, DbType.Int32);
+                    parameters.Add("@isSentCentralDateTime", System.DateTime.Now, DbType.DateTime);
+                }
+                else
+                {
+                    parameters.Add("@IsSentDep", 1, DbType.Int32);
+                    parameters.Add("status", 2, DbType.Int32);
+
+                }
                 parameters.Add("@IsSentDepDateTime", System.DateTime.Now, DbType.DateTime);
 
                 if (ResolvedStatus == "No")
                 {
                     parameters.Add("status", 2, DbType.Int32);
-                }
-                else
-                {
-                    parameters.Add("status", 3, DbType.Int32);
                 }
 
                 _connection.ExecuteWithPara(query, parameters);
