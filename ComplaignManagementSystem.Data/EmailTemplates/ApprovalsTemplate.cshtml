@@ -1,0 +1,164 @@
+﻿@model ComplaignManagementSystem.Data.Models.Complaint_ManageProcessModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Approval Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 5px #ccc;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+            .header h2 {
+                color: #0078D7;
+            }
+
+        .content p {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+
+        <div class="header">
+            <h2>Pending Approval Notification</h2>
+        </div>
+
+        <div class="content">
+            <p>Dear @Model?.ApproverName,</p>
+            <p>The following complaint requires your approval:</p>
+            <table style="width:100%; border-collapse: collapse;">
+                <tr>
+                    <td><b>Reference:</b></td>
+                    <td>@Model?.Refference</td>
+                </tr>
+                <tr>
+                    <td><b>Mode:</b></td>
+                    <td>@Model?.ComplaintMethod</td>
+                </tr>
+                <tr>
+                    <td><b>Branch:</b></td>
+                    <td>@Model?.Branch</td>
+                </tr>
+                <tr>
+                    <td><b>Department:</b></td>
+                    <td>@Model?.Dep</td>
+                </tr>
+                <tr>
+                    <td><b>Complaint:</b></td>
+                    <td>@Model?.Complaint</td>
+                </tr>
+                <tr>
+                    <td><b>Created By:</b></td>
+                    <td>@Model?.CreatedUser</td>
+                </tr>
+                <tr>
+                    <td><b>Priority:</b></td>
+                    <td>@Model?.Priority</td>
+                </tr>
+                <tr>
+                    <td><b>Created Date:</b></td>
+                    <td>@Model?.CreatedDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+            </table>
+
+            <hr />
+
+            <p><b>Customer Details</b></p>
+
+            <table style="width:100%; border-collapse: collapse;">
+                @if (!string.IsNullOrWhiteSpace(Model?.Cus_Name))
+                {
+                    <text>
+                    <tr>
+                        <td><b>Customer Name:</b></td>
+                        <td>@Model.Cus_Name</td>
+                    </tr>
+                    </text>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model?.Cus_Nic))
+                {
+                    <text>
+                    <tr>
+                        <td><b>Customer NIC:</b></td>
+                        <td>@Model.Cus_Nic</td>
+                    </tr>
+                    </text>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model?.Cus_Refference))
+                {
+                    <text>
+                    <tr>
+                        <td><b>Customer Reference:</b></td>
+                        <td>@Model.Cus_Refference</td>
+                    </tr>
+                    </text>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model?.Cus_MobileNumber))
+                {
+                    <text>
+                    <tr>
+                        <td><b>Mobile Number:</b></td>
+                        <td>@Model.Cus_MobileNumber</td>
+                    </tr>
+                    </text>
+                }
+            </table>
+            <hr />
+            <p>
+                <a href="https://complaintmgt.vallibelfinance.com:50078/"
+                   style="color:#0078D7; text-decoration:none;">
+                    Complaint Management System
+                </a>
+            </p>
+            <hr />
+            <p>
+                Please review and take the necessary action at your earliest convenience.
+            </p>
+            <p>
+                Thank you,<br />
+                Complaint Management System
+            </p>
+        </div>
+        <div class="footer">
+            ⚠️ This is a system-generated email. Please do not reply.<br />
+            &copy; @DateTime.Now.Year Vallibel Finance PLC. All rights reserved.
+        </div>
+
+    </div>
+</body>
+</html>

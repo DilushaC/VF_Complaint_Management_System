@@ -1,10 +1,12 @@
 ﻿using ComplaignManagementSystem.Data.Context;
 using ComplaignManagementSystem.Data.Models;
 using ComplaintManagementSystem.Business.ConncetionHandler;
+using ComplaintManagementSystem.Business.EmailHandler;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +16,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using static ComplaintManagementSystem.Business.ConncetionHandler._ConnectionService;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
@@ -25,11 +29,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
     {
         private readonly _ConnectionService _connection;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IEmailService _emailService;
 
-        public ComplaintManageProcessService(_ConnectionService connection, IHttpContextAccessor httpContextAccessor)
+        public ComplaintManageProcessService(_ConnectionService connection, IEmailService emailService, IHttpContextAccessor httpContextAccessor)
         {
             _connection = connection;
             _httpContextAccessor = httpContextAccessor;
+            _emailService = emailService;
         }
 
         public async Task<List<BranchModel>> getBranchList()
@@ -233,10 +239,10 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                         file.CopyTo(stream);
                     }
                 }
-                if (ResolvedStatus == "Yes")
-                {
-                    ComplainResolve(ProcessId, ResolvedRemark);
-                }
+                //if (ResolvedStatus == "Yes")
+                //{
+                //    ComplainResolve(ProcessId, ResolvedRemark);
+                //}
 
                 return;
             }
@@ -968,6 +974,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("ResolvedUser", UserName, DbType.String);
 
                 _connection.ExecuteWithPara(query, parameters);
+                EmailInsert(Id, "Resolved", "ResolvedTemplate");
+                //sendEmail(Convert.ToInt16(Id));
+
             }
             catch (Exception ex)
             {
@@ -1400,6 +1409,349 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
             catch (Exception ex)
             {
+                throw ex;
+            }
+        }
+
+        public async Task<List<Complaint_ManageProcessModel>> getCreatedComplainLists()
+        {
+            try
+            {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+                string whereClause = $"WHERE cmp.Active = 1 AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
+
+                string query = $@"
+                                
+                              SELECT 
+                                    cmp.Id,
+                                    cmp.Refference,
+                                    cm.Method,
+                                    cmp.Complaint,
+                                    cmp.CreatedUser,
+                                    cb.Branch,
+                                    ccb.Branch ComBranch,
+                                    cmp.Dep_Id,
+                                    cp.Name Department,
+                                    cmp.Priority,
+                                    cmp.CreatedDate,
+                                    cmp.IsSentCentral,
+                                    cmp.IsSentCentralDateTime,
+                                    cmp.IsSentDep,
+                                    cmp.IsSentDepDateTime,
+                                    cmp.status,
+                                    s.status statusName,
+                                    cu.Name,
+                                    cmp.Cus_Name,
+                                    cmp.Cus_Email,
+                                    cmp.Cus_Nic,
+                                    cmp.Cus_Refference,
+                                    cmp.Cus_MobileNumber
+                                FROM Complaint_ManageProcess as cmp
+                                INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
+                                INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                INNER JOIN Complaint_Branch_Master as ccb on ccb.Id = cmp.Branch_Id
+                                INNER JOIN Complaint_Status_Master as s on s.Id = cmp.status
+                                {whereClause};";
+
+                var parameters = new DynamicParameters();
+                var Data = await Task.Run(() => _connection.Return(query));
+                List<Complaint_ManageProcessModel> ComplainList = new List<Complaint_ManageProcessModel>();
+                if (Data != null && Data.Rows.Count > 0)
+                {
+                    for (int i = 0; i < Data.Rows.Count; i++)
+                    {
+                        var BRow = Data.Rows[i];
+                        Complaint_ManageProcessModel bModel = new Complaint_ManageProcessModel()
+                        {
+                            Id = Convert.ToInt32(BRow["Id"]),
+                            Refference = BRow["Refference"].ToString(),
+                            ComplaintMethod = BRow["Method"].ToString(),
+                            Complaint = BRow["Complaint"].ToString(),
+                            //CreatedUser = BRow["CreatedUser"].ToString(),
+                            ComBranch = BRow["Branch"].ToString(),
+                            Branch = BRow["ComBranch"].ToString(),
+                            Dep_Id = Convert.ToInt32(BRow["Dep_Id"]),
+                            Dep = BRow["Department"].ToString(),
+                            Priority = BRow["Priority"].ToString(),
+                            CreatedDate = Convert.ToDateTime(BRow["CreatedDate"]),
+                            IsSentCentral = BRow["IsSentCentral"] == DBNull.Value ? false : Convert.ToBoolean(BRow["IsSentCentral"]),
+                            IsSentCentralDateTime = BRow["IsSentCentralDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(BRow["IsSentCentralDateTime"]),
+                            IsSentDep = BRow["IsSentDep"] == DBNull.Value ? false : Convert.ToBoolean(BRow["IsSentDep"]),
+                            IsSentDepDateTime = BRow["IsSentDepDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(BRow["IsSentDepDateTime"]),
+                            Status = Convert.ToInt32(BRow["status"]),
+                            StatusName = BRow["statusName"].ToString(),
+                            CreatedUser = BRow["Name"].ToString(),
+                            Cus_Name = BRow["Cus_Name"].ToString(),
+                            Cus_Email = BRow["Cus_Email"].ToString(),
+                            Cus_Nic = BRow["Cus_Nic"].ToString(),
+                            Cus_Refference = BRow["Cus_Refference"].ToString(),
+                            Cus_MobileNumber = BRow["Cus_MobileNumber"].ToString(),
+                        };
+                        ComplainList.Add(bModel);
+                    }
+                }
+                return ComplainList.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Complaint_ManageProcessModel> getCreatedComplainListsId(int id)
+        {
+            try
+            {
+
+                string query = $@"
+                                
+                              SELECT 
+                                    cmp.Id,
+                                    cmp.Refference,
+                                    cm.Method,
+                                    cmp.Complaint,
+                                    cmp.CreatedUser,
+                                    cb.Branch,
+                                    ccb.Branch ComBranch,
+                                    cmp.Dep_Id,
+                                    cp.Name Department,
+                                    cmp.Priority,
+                                    cmp.CreatedDate,
+                                    cmp.IsSentCentral,
+                                    cmp.IsSentCentralDateTime,
+                                    cmp.IsSentDep,
+                                    cmp.IsSentDepDateTime,
+                                    cmp.status,
+                                    s.status statusName,
+                                    cu.Name,
+                                    cu.Email CreatedUserEmail,
+                                    ru.Name ResolvedUser,
+                                    ru.Email ResolvedUserEmail,
+                                    cmp.ResolvedDateTime,
+                                    cmp.CusNotificationRemark,
+                                    cmp.ResolvedRemark,
+                                    cmp.Cus_Name,
+                                    cmp.Cus_Email,
+                                    cmp.Cus_Nic,
+                                    cmp.Cus_Refference,
+                                    cmp.Cus_MobileNumber
+                                FROM Complaint_ManageProcess as cmp
+                                INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
+                                INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                INNER JOIN Complaint_User as ru on ru.UserName = cmp.ResolvedUser
+                                INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                INNER JOIN Complaint_Branch_Master as ccb on ccb.Id = cmp.Branch_Id
+                                INNER JOIN Complaint_Status_Master as s on s.Id = cmp.status
+                                WHERE cmp.Active = 1 AND cmp.Id=@id";
+
+                var complaintDataTable = await _connection.SingleQueryReturn(query, id);
+
+
+                var row = complaintDataTable.Rows[0];
+                Complaint_ManageProcessModel complainModel = new Complaint_ManageProcessModel();
+
+                complainModel.Id = Convert.ToInt32(row["Id"]);
+                complainModel.Refference = row["Refference"].ToString();
+                complainModel.ComplaintMethod = row["Method"].ToString();
+                complainModel.Complaint = row["Complaint"].ToString();
+                //complainModel.CreatedUser = BRow["CreatedUser"].ToString();
+                complainModel.ComBranch = row["Branch"].ToString();
+                complainModel.Branch = row["ComBranch"].ToString();
+                complainModel.Dep_Id = Convert.ToInt32(row["Dep_Id"]);
+                complainModel.Dep = row["Department"].ToString();
+                complainModel.Priority = row["Priority"].ToString();
+                complainModel.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
+                complainModel.Status = Convert.ToInt32(row["status"]);
+                complainModel.StatusName = row["statusName"].ToString();
+                complainModel.CreatedUser = row["Name"].ToString();
+                complainModel.CreatedUserEmail = row["CreatedUserEmail"].ToString();
+                complainModel.ResolvedUser = row["ResolvedUser"].ToString();
+                complainModel.ResolvedUserEmail = row["ResolvedUserEmail"].ToString();
+                complainModel.ResolvedDateTime = Convert.ToDateTime(row["ResolvedDateTime"]);
+                complainModel.CusNotificationRemark = row["CusNotificationRemark"].ToString();
+                complainModel.ResolvedRemark = row["ResolvedRemark"].ToString();
+                complainModel.Cus_Name = row["Cus_Name"].ToString();
+                complainModel.Cus_Email = row["Cus_Email"].ToString();
+                complainModel.Cus_Nic = row["Cus_Nic"].ToString();
+                complainModel.Cus_Refference = row["Cus_Refference"].ToString();
+                complainModel.Cus_MobileNumber = row["Cus_MobileNumber"].ToString();
+
+                return (complainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public Complaint_Department_MasterModel getDepResPerson(int depId)
+        {
+            string query = $@" SELECT * FROM Complaint_Department_Master WHERE Id={depId} ";
+            var data = _connection.Return(query);
+            var row = data.Rows[0];
+            Complaint_Department_MasterModel depList = new Complaint_Department_MasterModel()
+            {
+                Id = row["Id"] != DBNull.Value ? Convert.ToInt32(row["Id"]) : 0,
+                Name = row["Name"] != DBNull.Value ? row["Name"].ToString() : string.Empty,
+                Code = row["Code"] != DBNull.Value ? row["Code"].ToString() : string.Empty,
+                DepHeadName = row["DepHeadName"] != DBNull.Value ? row["DepHeadName"].ToString() : string.Empty,
+                DepHeadEmail = row["DepHeadEmail"] != DBNull.Value ? row["DepHeadEmail"].ToString() : string.Empty,
+                DepResName = row["DepResName"] != DBNull.Value ? row["DepResName"].ToString() : string.Empty,
+                DepResEmail = row["DepResEmail"] != DBNull.Value ? row["DepResEmail"].ToString() : string.Empty,
+                Active = row["Active"] != DBNull.Value && Convert.ToBoolean(row["Active"]),
+                //Status = row["Status"] != DBNull.Value && Convert.ToBoolean(row["Status"]),
+                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
+            };
+            return depList;
+        }
+
+        public async Task<List<EmailRecipientsModel>> getCcEmails()
+        {
+            string query = $@" SELECT * FROM Complaint_EmailRecipients WHERE Active = 1";
+            var data = _connection.Return(query);
+            //var row = data.Rows[0];
+            //EmailRecipientsModel emailRecipients = new EmailRecipientsModel()
+            //{
+            //    Id = row["Id"] != DBNull.Value ? Convert.ToInt32(row["Id"]) : 0,
+            //    Email = row["Name"] != DBNull.Value ? row["Email"].ToString() : string.Empty,
+            //    Active = row["Active"] != DBNull.Value && Convert.ToBoolean(row["Active"]),
+            //};
+            //return emailRecipients;
+
+
+            List<EmailRecipientsModel> emailRecipientsList = new List<EmailRecipientsModel>();
+            if (data != null && data.Rows.Count > 0)
+            {
+                for (int i = 0; i < data.Rows.Count; i++)
+                {
+                    var BRow = data.Rows[i];
+                    EmailRecipientsModel emailRecipients = new EmailRecipientsModel()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        Email = BRow["Email"].ToString(),
+                    };
+                    emailRecipientsList.Add(emailRecipients);
+                }
+            }
+            return emailRecipientsList.ToList();
+
+        }
+
+        public async Task EmailInsert(int comProcessId, string EmailType, string EmailTemplate)
+        {
+
+            try
+            {
+                var query = "INSERT INTO Complaint_Email (ComProcessId, EmailType, EmailTemplateName, IsSent, Active) " +
+                                "VALUES (@comProcessId, @emailType, @emailTemplateName, @isSent , @active);";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("comProcessId", comProcessId, DbType.Int32);
+                parameters.Add("emailType", EmailType, DbType.String);
+                parameters.Add("emailTemplateName", EmailTemplate, DbType.String);
+                parameters.Add("isSent", 0, DbType.Int32);
+                parameters.Add("active", 1, DbType.Int32);
+
+                _connection.ReturnWithPara(query, parameters);
+                return;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task sendEmail(int comProcessId)
+        {
+            Complaint_ManageProcessModel ComplaintList = getCreatedComplainListsId(comProcessId).Result;
+            var ccEmails = getCcEmails();
+            var resPerson = getDepResPerson(ComplaintList.Dep_Id);
+
+            EmailRequest request = new EmailRequest
+            {
+                To = resPerson.DepResName,
+                //To = toEmail,
+                Subject = "Complaint Resolved Notification",
+                TemplateName = "ResolvedTemplate",
+                Model = ComplaintList, // List<ComplaintMaster>
+                ccEmailsModel = ccEmails.Result.Select(a => a.Email).ToList() // List<ComplaintMaster>
+            };
+
+            await _emailService.SendAsync(request);
+
+            return;
+        }
+
+        public async Task<List<EmailModel>> getEmails()
+        {
+            try
+            {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+
+                string query = $@"                                
+                              SELECT 
+                                    Id,
+                                    ComProcessId,
+                                    EmailType,
+                                    EmailTemplateName,
+                                    IsSent,
+                                    Active
+                                FROM Complaint_Email
+                                WHERE Active=1 AND IsSent=0";
+
+                var parameters = new DynamicParameters();
+                var Data = await Task.Run(() => _connection.Return(query));
+                List<EmailModel> emailList = new List<EmailModel>();
+                if (Data != null && Data.Rows.Count > 0)
+                {
+                    for (int i = 0; i < Data.Rows.Count; i++)
+                    {
+                        var BRow = Data.Rows[i];
+                        EmailModel bModel = new EmailModel()
+                        {
+                            Id = Convert.ToInt32(BRow["Id"]),
+                            ComProcessId = Convert.ToInt32(BRow["ComProcessId"]),
+                            EmailType = BRow["EmailType"].ToString(),
+                            EmailTemplateName = BRow["EmailTemplateName"].ToString(),
+                            IsSent = BRow["IsSent"] == DBNull.Value ? false : Convert.ToBoolean(BRow["IsSent"]),
+                            Active = BRow["Active"] == DBNull.Value ? false : Convert.ToBoolean(BRow["Active"]),   
+                        };
+                        emailList.Add(bModel);
+                    }
+                }
+                return emailList.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task deleteEmail(int EmailId)
+        {
+            try
+            {
+                string query = @"
+                                DELETE FROM Complaint_Email
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Convert.ToInt64(EmailId), DbType.Int64);
+
+                _connection.ExecuteWithPara(query, parameters);
+                return;
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
         }

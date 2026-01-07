@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+	  <PreserveCompilationContext>true</PreserveCompilationContext>
+	  <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.14.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="RazorLight" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ComplaignManagementSystem.Data\ComplaignManagementSystem.Data.csproj" />
+    <ProjectReference Include="..\ComplaignManagementSystem.PresentationLayer\ComplaignManagementSystem.Presentation.csproj" />
+    <ProjectReference Include="..\ComplaintManagementSystem.Business\ComplaintManagementSystem.Business.csproj" />
+  </ItemGroup>
+
+</Project>

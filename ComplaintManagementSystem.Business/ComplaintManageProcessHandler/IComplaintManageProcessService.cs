@@ -28,12 +28,17 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public void ComplainResolve(int Id, string Remark);
         public void UpdateForwardToDepartment(int CompId, int Department, string remark);        
         public Task<DashboardComplaintCountModel> GetDashboardComplaintCounts();
-
         public Task<List<ComplaintMaster>> getComplainNumberList();
         public Task<List<Complaint_ManageProcessModel>> GetComplaintHistoryDetails(int Id);
         public Task<List<CustomerNotificationMasterModel>> getNotificationList();
         public void UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file);
         public Task<List<ComplaintMaster>> getCusInfoCompNoList();
         public void DeleteComplaint(int id);
+        public Task<List<Complaint_ManageProcessModel>> getCreatedComplainLists();
+        public Task<Complaint_ManageProcessModel> getCreatedComplainListsId(int id);
+        public Task<List<EmailModel>> getEmails();
+        public Complaint_Department_MasterModel getDepResPerson(int depId);
+        public Task<List<EmailRecipientsModel>> getCcEmails();
+        public Task deleteEmail(int EmailId);
     }
 }

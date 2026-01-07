@@ -1,0 +1,148 @@
+﻿@model List<ComplaignManagementSystem.Data.Models.Complaint_ManageProcessModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Approval Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            max-width: 700px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 5px #ccc;
+        }
+
+        .system-note {
+            font-size: 12px;
+            color: #888888;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+            .header h2 {
+                color: #0078D7; /* Blue color */
+            }
+
+        .content {
+            padding: 20px 0;
+        }
+
+            .content p {
+                font-size: 14px;
+                color: #333333;
+                line-height: 1.5;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0078D7;
+            color: white;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .approve-btn {
+            background-color: #28a745;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #888888;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+
+        <!-- System Generated Note -->
+        <div class="system-note">
+            ⚠️ This is a system-generated email. Please do not reply.
+        </div>
+
+        <div class="header">
+            <h2>Pending Approval Notification</h2>
+        </div>
+
+        <div class="content">
+            <p>Dear @Model.FirstOrDefault()?.ApproverName,</p>
+            <p>The following complaints require your approval:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Complaint</th>
+                        <th>Created By</th>
+                        <th>Priority</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var complaint in Model)
+                    {
+                        <tr>
+                            <td>@complaint.Refference</td>
+                            <td>@complaint.Complaint</td>
+                            <td>@complaint.CreatedUser</td>
+                            <td>@complaint.Priority</td>
+                            <td>@complaint.CreatedDate.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br />
+            <a href="https://complaintmgt.vallibelfinance.com:50078/" style="color:#0078D7; text-decoration: none;">Complaint Management System Link</a>
+
+            <p>Please review and take the necessary action at your earliest convenience.</p>
+            <p>Thank you,<br />Complaint Management System</p>
+        </div>
+
+        <div class="footer">
+            ⚠️ This is a system-generated email. Please do not reply.<br />
+            &copy; @Model.FirstOrDefault()?.CreatedDate.ToString("yyyy") Vallibel Finance PLC. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

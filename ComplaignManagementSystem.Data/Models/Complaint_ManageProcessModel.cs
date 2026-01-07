@@ -14,6 +14,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string ComplaintMethod { get; set; }
         public string Refference { get; set; }
         public string Complaint { get; set; }
+        public string Cus_Email { get; set; }
         public string Cus_Name { get; set; }
         public string Cus_Nic { get; set; }
         public string Cus_Refference { get; set; }
@@ -23,27 +24,31 @@ namespace ComplaignManagementSystem.Data.Models
         public int Nature_Id { get; set; }
         public string Nature { get; set; }
         public int Branch_Id { get; set; }
+        public string Branch { get; set; }
         public string ComBranch { get; set; }
         public string Priority { get; set; }
         public bool IsSentCentral { get; set; }
-        public DateTime IsSentCentralDateTime { get; set; }
+        public DateTime? IsSentCentralDateTime { get; set; }
         public bool IsSentDep { get; set; }
-        public DateTime IsSentDepDateTime { get; set; }
+        public DateTime? IsSentDepDateTime { get; set; }
         public int Status { get; set; }
         public string StatusName { get; set; }
         public string? ResolvedRemark { get; set; }
         public bool? IsResolved { get; set; }
         public DateTime? ResolvedDateTime { get; set; }
         public string? ResolvedUser { get; set; }
+        public string? ResolvedUserEmail { get; set; }
         public DateTime EditedDateTime { get; set; }
         public bool Active { get; set; }
         public DateTime DeletedDate { get; set; }
         public string CreatedBranch { get; set; }
         public string DeletedUser { get; set; }
         public string CreatedUser { get; set; }
+        public string CreatedUserEmail { get; set; }
         public DateTime CreatedDate { get; set; }
         public IFormFile File { get; set; }
         public string AttachmentPath { get; set; }
+        public string CusNotificationRemark { get; set; }
 
 
         //------------
@@ -51,6 +56,7 @@ namespace ComplaignManagementSystem.Data.Models
         public int MatrixOrder { get; set; }
         public string DepartmentName { get; set; }
         public string Remark { get; set; }
+        public string ApproverName { get; set; }
 
 
     }

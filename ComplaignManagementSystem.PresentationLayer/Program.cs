@@ -4,6 +4,7 @@ using ComplaintManagementSystem.Business.Authentication;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using ComplaintManagementSystem.Business.ConncetionHandler;
 using ComplaintManagementSystem.Business.DepartmentHandler;
+using ComplaintManagementSystem.Business.EmailHandler;
 using ComplaintManagementSystem.Business.Helpers;
 using ComplaintManagementSystem.Business.LoginHandler; 
 using ComplaintManagementSystem.Business.MethodHandler;
@@ -46,6 +47,10 @@ builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IPageService, PageService>();
 
 builder.Services.AddScoped<IPageCapabilityService, PageCapabilityService>();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddScoped<IEmailTemplateRenderer, EmailTemplateRenderer>();
 
 builder.Logging.ClearProviders(); // Optional: clear default providers
 builder.Logging.AddLog4Net("log4net.config");
