@@ -11,7 +11,9 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<PackageReference Include="Dapper" Version="2.1.66" />
+		<PackageReference Include="DinkToPdf" Version="1.0.8" />
 		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
+		<PackageReference Include="IronPdf" Version="2025.12.2" />
 		<PackageReference Include="log4net" Version="3.2.0" />
 		<PackageReference Include="MailKit" Version="4.14.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />
@@ -19,7 +21,9 @@
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
+		<PackageReference Include="QuestPDF" Version="2025.12.2" />
 		<PackageReference Include="RazorLight" Version="2.3.1" />
+		<PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
 	</ItemGroup>
 

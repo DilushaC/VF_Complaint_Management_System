@@ -32,20 +32,26 @@ namespace ComplaignManagementSystem.EmailService
             {
                 string toEmail;
                 DateTime systemDate;
+                int diffDays;
                 var resPerson = _comManageProcess.getDepResPerson(itemA.Dep_Id);
 
                 switch (itemA.Priority)
                 {
                     case "High":
                         systemDate = DateTime.Now.AddDays(-3).Date;
+                        diffDays = (itemA.CreatedDate.Date.AddDays(3) - DateTime.Now.Date).Days;
                         break;
                     case "Medium":
                         systemDate = DateTime.Now.AddDays(-5).Date;
+                        diffDays = (itemA.CreatedDate.Date.AddDays(5) - DateTime.Now.Date).Days;
                         break;
                     default:
                         systemDate = DateTime.Now.AddDays(-7).Date;
+                        diffDays = (itemA.CreatedDate.Date.AddDays(7) - DateTime.Now.Date).Days;
                         break;
                 }
+
+                itemA.DiffDays = DateTime.Now.Date.AddDays(diffDays);
 
                 if (itemA.CreatedDate.Date < systemDate)
                 {
@@ -58,15 +64,36 @@ namespace ComplaignManagementSystem.EmailService
                     toEmail = resPerson.DepResEmail;
                 }
 
-                EmailRequest request = new EmailRequest
+                EmailRequest request = new EmailRequest();
+
+                if (diffDays < 2)
                 {
-                    To = toEmail,
-                    //To = toEmail,
-                    Subject = "COMPLAINT MANAGEMENT | Pending Approval Notification",
-                    TemplateName = "ApprovalsTemplate",
-                    Model = itemA,
-                    ccEmailsModel = ccEmails.Result.Select(a => a.Email).ToList()
-                };
+
+                    request = new EmailRequest
+                    {
+                        To = toEmail,
+                        //To = toEmail,
+                        Subject = "COMPLAINT MANAGEMENT | Pending Approval Notification",
+                        TemplateName = "ApprovalsTemplate",
+                        Model = itemA,
+                        ccEmailsModel = ccEmails.Result.Select(a => a.Email).ToList()
+                    };
+                }
+                else
+                {
+                    request = new EmailRequest
+                    {
+                        To = toEmail,
+                        //To = toEmail,
+                        Subject = "COMPLAINT MANAGEMENT | Pending Approval Notification",
+                        TemplateName = "ApprovalsTemplate",
+                        Model = itemA,
+                        ccEmailsModel = ccEmails.Result.Where(a => a.Status == 1).Select(a => a.Email).ToList()
+                    };
+                }
+
+
+
 
                 await _emailService.SendAsync(request);
                 File.AppendAllText(

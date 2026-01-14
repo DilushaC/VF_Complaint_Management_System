@@ -23,6 +23,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<PaginationResultsModel<ComplaintMaster>> getDepComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id = null, string priority = null);
         public Task<PaginationResultsModel<ComplaintMaster>> getCentralComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id = null, string priority = null);
         public Task<ComplaintMaster> getComplainUsingId(int Id);
+        public Task<Complaint_ManageProcessModel> getComplainMasterUsingId(int Id);
         public Complaint_ManageProcessModel getComplainProcessUsingId(int Id);
         public void UpdateForwardToCentral(int CompId, string remark);
         public void ComplainResolve(int Id, string Remark);
@@ -33,6 +34,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<List<CustomerNotificationMasterModel>> getNotificationList();
         public void UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file);
         public Task<List<ComplaintMaster>> getCusInfoCompNoList();
+        public Task<List<ComplaintMaster>> getCusNotifiedCompNoList();
         public void DeleteComplaint(int id);
         public Task<List<Complaint_ManageProcessModel>> getCreatedComplainLists();
         public Task<Complaint_ManageProcessModel> getCreatedComplainListsId(int id);

@@ -1,12 +1,20 @@
 ﻿using ComplaignManagementSystem.Data.Models;
 using ComplaignManagementSystem.Presentation.Filters;
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
+using ComplaintManagementSystem.Business.PDFHanlder;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using log4net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using QuestPDF.Fluent;
+using Rotativa.AspNetCore;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
@@ -16,11 +24,15 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         private readonly IComplaintManageProcessService _complainProcess;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private static readonly ILog log = LogManager.GetLogger(typeof(ComplaintManageProcessController));
+        private readonly ICompositeViewEngine _viewEngine;
+        private readonly IConverter _converter;
 
-        public ComplaintManageProcessController(IComplaintManageProcessService complainProcess, IWebHostEnvironment webHostEnvironment)
+        public ComplaintManageProcessController(IComplaintManageProcessService complainProcess, IWebHostEnvironment webHostEnvironment, ICompositeViewEngine viewEngine, IConverter converter)
         {
             _complainProcess = complainProcess;
             _webHostEnvironment = webHostEnvironment;
+            _viewEngine = viewEngine;
+            _converter = converter;
         }
 
         private bool IsUserLoggedIn()
@@ -151,6 +163,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             return PartialView("_ComplaintDetailsPartial", complaintData);
         }
 
+        [AllowAnonymous]
         public IActionResult DownloadAttachment(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -164,8 +177,47 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             {
                 return NotFound("File not found.");
             }
+            //Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{fileName}\"");
 
-            var mimeType = "application/octet-stream"; // A generic MIME type for file downloads
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+            Response.Headers.Add("Pragma", "no-cache");
+            Response.Headers.Add("Expires", "0");
+
+
+            var mimeType = "application/pdf"; // A generic MIME type for file downloads
+            //var mimeType = "application/octet-stream"; // A generic MIME type for file downloads
+
+            var fileBytes = System.IO.File.ReadAllBytes(path);
+
+            return File(fileBytes, mimeType, fileName);
+        }
+
+        [AllowAnonymous]
+        public IActionResult DownloadNAttachment(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return NotFound("Filename is not specified.");
+            }
+
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "Attachments", "Customer_Inform_Doc", fileName);
+
+            if (!System.IO.File.Exists(path))
+            {
+                return NotFound("File not found.");
+            }
+            //Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+            Response.Headers.Add("Pragma", "no-cache");
+            Response.Headers.Add("Expires", "0");
+
+
+            var mimeType = "application/pdf"; // A generic MIME type for file downloads
+            //var mimeType = "application/octet-stream"; // A generic MIME type for file downloads
+
             var fileBytes = System.IO.File.ReadAllBytes(path);
 
             return File(fileBytes, mimeType, fileName);
@@ -539,7 +591,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 var getAllComplaint = await _complainProcess.getComplainNumberList();
-                if(getAllComplaint != null && getAllComplaint.Any())
+                if (getAllComplaint != null && getAllComplaint.Any())
                 {
                     ViewBag.Complaint = new SelectList(getAllComplaint, "Id", "Refference");
                 }
@@ -605,7 +657,9 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             try
             {
                 var getAllComplaints = await _complainProcess.getCusInfoCompNoList();
+                var NotifiedComplainLists = await _complainProcess.getCusNotifiedCompNoList();
                 var getAllNotifi = await _complainProcess.getNotificationList();
+                ViewBag.ComplaintNId = new SelectList(NotifiedComplainLists, "Id", "Refference");
                 if (getAllComplaints != null && getAllComplaints.Any())
                 {
                     ViewBag.ComplaintId = new SelectList(getAllComplaints, "Id", "Refference");
@@ -631,6 +685,104 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 throw ex;
             }
         }
+
+        [HttpGet]
+        public IActionResult GetNotifiedData(int id)
+        {
+            Complaint_ManageProcessModel model = _complainProcess.getComplainMasterUsingId(id).Result;
+
+            if (model == null)
+                return NotFound();
+            var logoPath = Path.Combine(
+                                        Directory.GetCurrentDirectory(),
+                                        "wwwroot",
+                                        "vallibel-small-logo.png"
+                                    );
+
+            var base64Logo = ImageToBase64(logoPath);
+
+            ViewData["LogoBase64"] = $"data:image/png;base64,{base64Logo}";
+            ViewData["IsPdf"] = false;
+            return PartialView("_NotificationDetails", model);
+        }
+
+        public IActionResult ExportComplaintPdf(int id)
+        {
+            Complaint_ManageProcessModel model = _complainProcess.getComplainMasterUsingId(id).Result;
+
+            ViewData["IsPdf"] = true;
+
+            var logoPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "vallibel-small-logo.png"
+            );
+
+            var base64Logo = ImageToBase64(logoPath);
+
+            ViewData["LogoBase64"] = $"data:image/png;base64,{base64Logo}";
+
+            string htmlContent = RenderViewToString("_NotificationDetails", model);
+
+            var pdfDoc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait,
+                    Margins = new MarginSettings { Top = 15, Bottom = 20 }
+                },
+                Objects = 
+                        {
+                            new ObjectSettings
+                            {
+                                HtmlContent = htmlContent,
+                                WebSettings = new WebSettings
+                                {
+                                    DefaultEncoding = "utf-8"
+                                },
+                                FooterSettings = new FooterSettings
+                                {
+                                    Line = true,
+                                    Spacing = 5,
+                                    FontSize = 10,
+                                    Center = "Complaint Management System © " + DateTime.Now.Year + " Vallibel Finance PLC",
+                                    Right = "Page [page] of [toPage]"
+                                }
+                            }
+                        }
+            };
+
+            var pdfBytes = _converter.Convert(pdfDoc);
+
+            return File(pdfBytes, "application/pdf", $"Complaint_{id}.pdf");
+        }
+
+        private string ImageToBase64(string imagePath)
+        {
+            var bytes = System.IO.File.ReadAllBytes(imagePath);
+            return Convert.ToBase64String(bytes);
+        }
+
+        private string RenderViewToString(string viewName, object model)
+        {
+            ViewData.Model = model;
+            using var sw = new StringWriter();
+            var viewResult = _viewEngine.FindView(ControllerContext, viewName, false);
+
+            var viewContext = new ViewContext(
+                ControllerContext,
+                viewResult.View,
+                ViewData,
+                TempData,
+                sw,
+                new HtmlHelperOptions()
+            );
+
+            viewResult.View.RenderAsync(viewContext).GetAwaiter().GetResult();
+            return sw.ToString();
+        }
+
 
         [HttpPost]
         public ActionResult UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file)

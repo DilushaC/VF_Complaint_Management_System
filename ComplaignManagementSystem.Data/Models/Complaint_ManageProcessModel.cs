@@ -36,6 +36,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string? ResolvedRemark { get; set; }
         public bool? IsResolved { get; set; }
         public DateTime? ResolvedDateTime { get; set; }
+        public DateTime? CusNotifiedDate { get; set; }
         public string? ResolvedUser { get; set; }
         public string? ResolvedUserEmail { get; set; }
         public DateTime EditedDateTime { get; set; }
@@ -48,6 +49,10 @@ namespace ComplaignManagementSystem.Data.Models
         public DateTime CreatedDate { get; set; }
         public IFormFile File { get; set; }
         public string AttachmentPath { get; set; }
+        public string CAttachmentPath { get; set; }
+        public string downloadUrl { get; set; }
+        public bool? IsCusNotified { get; set; }
+        public string CusNotification { get; set; }
         public string CusNotificationRemark { get; set; }
 
 
@@ -57,6 +62,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string DepartmentName { get; set; }
         public string Remark { get; set; }
         public string ApproverName { get; set; }
+        public DateTime DiffDays { get; set; }
 
 
     }

@@ -54,8 +54,8 @@
                                 </div>
                             </div>
                         </div>
-                        <hr style="margin-top:20px" id="otherHR"/>
-                        <div class="row" style="margin-top:2%" id="otherDiv">                            
+                        <hr style="margin-top:20px" id="otherHR" />
+                        <div class="row" style="margin-top:2%" id="otherDiv">
                             <div class="col-md-6">
                                 <label for="notification">Customer informed status</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
                                 <select id="notification" name="notification" class="form-control" asp-items="ViewBag.notification">
@@ -80,7 +80,7 @@
                                     <span id="error-message-complaint"></span>
                                 </div>
                             </div>
-                            <br />                           
+                            <br />
                         </div>
                         <hr style="margin-top:20px" />
                         <div class="col-md-6" style="margin-top:2%" id="btnDiv">
@@ -90,6 +90,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card" style="margin-top:15px">
+            <div class="card-body">
+                @Html.Partial("_CutomerNotifiedDetails")
             </div>
         </div>
     </div>
@@ -112,21 +121,21 @@
       allowClear:true,
       placeholder: 'Select Type'
     });
-           
+
     $('#ComplaintId').on('change', function () {
         let selectedDepId = $(this).val();
         // Perform further actions based on the new selection
         if (selectedDepId) {
             $('#radioDiv').show();
             $('#btnDiv').show();
-        }else{                        
+        }else{
             $('#radioDiv').hide();
             $('#btnDiv').hide();
             $('#otherDiv').hide();
             $('#otherHR').hide();
         }
     });
-    $('#radioDiv').hide();         
+    $('#radioDiv').hide();
     $('#otherDiv').hide();
     $('#otherHR').hide();
     $('#btnDiv').hide();
@@ -134,10 +143,10 @@
       var selectedValue = $(this).val();
       onStatusChange(selectedValue);
     });
-    function onStatusChange(value) {      
-        // alert("Selected status: " + value);    
-        if(value == "Yes"){     
-            $('#radioDiv').show();    
+    function onStatusChange(value) {
+        // alert("Selected status: " + value);
+        if(value == "Yes"){
+            $('#radioDiv').show();
             $('#otherDiv').show();
             $('#btnDiv').show();
             $('#otherHR').show();
@@ -148,7 +157,7 @@
             $('#otherHR').hide();
         }
     }
-       
+
     document.addEventListener('DOMContentLoaded', function () {
         const fileInput = document.getElementById('file');
         const errorMessageContainer = document.getElementById('error-message-attachement');
@@ -182,58 +191,58 @@
         const errorStatus = document.getElementById('error-message-Status');
         const errorcomplaint = document.getElementById('error-message-complaint');
         //alert(CusNotified.value.trim());
-        if(CusNotified == "Yes"){                    
+        if(CusNotified == "Yes"){
             if (notification.value.trim() === "") {
                 errorStatus.textContent = 'Please Select the Status.';
                 errorStatus.style.color = 'red';
-                isValid = false;        
+                isValid = false;
             }
             if (notification.value.trim() === "") {
                 errorcomplaint.textContent = 'Please Enter the Complaint.';
                 errorcomplaint.style.color = 'red';
-                isValid = false;        
+                isValid = false;
             }
         }
-    
-        if (!isValid) {    
-            event.preventDefault();    
-            return false;    
-        }else{    
+
+        if (!isValid) {
+            event.preventDefault();
+            return false;
+        }else{
             formData.append("ComplainNo", $("#ComplaintId").val());
             formData.append("NotifiID", $("#notification").val());
-            formData.append("Complaint", $("#Complaint").val());    
-            var status = $('input[name="CusNotified"]:checked').val();    
-            formData.append("isNotified", status === "Yes");    
-            var fileInput = document.getElementById("CustomerFile");    
-            if (fileInput.files.length > 0) {    
-                formData.append("file", fileInput.files[0]);    
-            }    
-            $.ajax({    
-                url: '@Url.Action("UpdateCustomerInformDetails", "ComplaintManageProcess")',    
-                type: "POST",    
-                data: formData,    
-                contentType: false,    
-                processData: false,    
-                success: function (data) {    
-                    Swal.fire({    
-                        title: 'Success!',    
-                        text: 'Successfully informed the customer.',    
-                        icon: 'success',    
-                        timer: 2000,    
-                        showConfirmButton: false    
-                    }).then(() => {    
-                        $('#Compl').val('');    
-                        $('#notifi').val('');    
-                        $('#Complaint').val('');    
-                        $('#yourFileInputId').val('');    
-                        $('#ResolvedStatus-Yes').prop('checked', true);    
-                        window.location.href = '@Url.Action("CustomerInformProcess", "ComplaintManageProcess")';    
-                    })    
-                },    
-                error: function (xhr) {    
-                    console.log(xhr.responseText);    
-                }    
-            });    
+            formData.append("Complaint", $("#Complaint").val());
+            var status = $('input[name="CusNotified"]:checked').val();
+            formData.append("isNotified", status === "Yes");
+            var fileInput = document.getElementById("CustomerFile");
+            if (fileInput.files.length > 0) {
+                formData.append("file", fileInput.files[0]);
+            }
+            $.ajax({
+                url: '@Url.Action("UpdateCustomerInformDetails", "ComplaintManageProcess")',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Successfully informed the customer.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $('#Compl').val('');
+                        $('#notifi').val('');
+                        $('#Complaint').val('');
+                        $('#yourFileInputId').val('');
+                        $('#ResolvedStatus-Yes').prop('checked', true);
+                        window.location.href = '@Url.Action("CustomerInformProcess", "ComplaintManageProcess")';
+                    })
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
         }
     }
     $(document).ready(function() {

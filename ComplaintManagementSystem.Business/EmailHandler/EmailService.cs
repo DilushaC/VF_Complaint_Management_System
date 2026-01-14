@@ -33,11 +33,13 @@ namespace ComplaintManagementSystem.Business.EmailHandler
                 var body = await _renderer.RenderAsync(request.TemplateName, request.Model);
                 var emailMessage = new MimeMessage();
                 emailMessage.From.Add(new MailboxAddress(_config["Email:Smtp:Username"], _config["Email:Smtp:From"]));
-                foreach (var email in toEmails)
-                {
-                    emailMessage.To.Add(new MailboxAddress(email, email));
-                }
-                //emailMessage.To.Add(new MailboxAddress("kasunperera@vallibelfinance.com", "kasunperera@vallibelfinance.com"));
+
+                //foreach (var email in toEmails)
+                //{
+                //    emailMessage.To.Add(new MailboxAddress(email, email));
+                //}
+
+                emailMessage.To.Add(new MailboxAddress("kasunperera@vallibelfinance.com", "kasunperera@vallibelfinance.com"));
                 //emailMessage.To.Add(new MailboxAddress(request.To, request.To));
 
                 var ccEmails = request.ccEmailsModel;

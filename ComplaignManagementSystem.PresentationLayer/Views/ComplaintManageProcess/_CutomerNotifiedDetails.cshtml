@@ -1,0 +1,150 @@
+﻿
+
+<link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
+
+<h4 class="form-section">
+    <i class="ft-flag"></i> Customer Notified Details
+</h4>
+<hr>
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <label for="ComplaintNId">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+        <select id="ComplaintNId" name="ComplaintNId" class="form-control" asp-items="ViewBag.ComplaintNId">
+            <option value="">-- Select --</option>
+        </select>
+        <span id="error-message-dep"></span>
+    </div>
+</div>
+<div class="row">
+    <div id="result"></div>
+</div>
+
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
+
+<script>
+    $("#ComplaintNId").select2({
+      allowClear:true,
+      placeholder: 'Select Complaint'
+    });
+    // $("#notification").select2({
+    //   allowClear:true,
+    //   placeholder: 'Select Type'
+    // });
+
+    $('#ComplaintNId').on('change', function () {
+        let selectedId = $(this).val();
+
+        if (!selectedId) {
+            $('#result').html('');
+            return;
+        }
+
+        $.ajax({
+            url: '/ComplaintManageProcess/GetNotifiedData',
+            type: 'GET',
+            data: { id: selectedId },
+            success: function (html) {
+
+                // Inject partial view HTML
+                $('#result').html(html);
+            },
+            error: function () {
+                alert('Error loading data');
+            }
+        });
+    });
+    $('#radioDiv').hide();
+    $('#otherDiv').hide();
+    $('#otherHR').hide();
+    $('#btnDiv').hide();
+    $('input[name="CusNotified"]').on('change', function () {
+      var selectedValue = $(this).val();
+      onStatusChange(selectedValue);
+    });
+    function onStatusChange(value) {
+        // alert("Selected status: " + value);
+        if(value == "Yes"){
+            $('#radioDiv').show();
+            $('#otherDiv').show();
+            $('#btnDiv').show();
+            $('#otherHR').show();
+        }else{
+            $('#radioDiv').show();
+            $('#btnDiv').show();
+            $('#otherDiv').hide();
+            $('#otherHR').hide();
+        }
+    }
+
+
+    function CustomerInform() {
+        var formData = new FormData();
+        let isValid = true;
+
+        const CusNotified = $('input[name="CusNotified"]:checked').val();
+        const notification = document.getElementById("notification");
+        const Complaint = document.getElementById("Complaint");
+        const errorStatus = document.getElementById('error-message-Status');
+        const errorcomplaint = document.getElementById('error-message-complaint');
+        //alert(CusNotified.value.trim());
+        if(CusNotified == "Yes"){
+            if (notification.value.trim() === "") {
+                errorStatus.textContent = 'Please Select the Status.';
+                errorStatus.style.color = 'red';
+                isValid = false;
+            }
+            if (notification.value.trim() === "") {
+                errorcomplaint.textContent = 'Please Enter the Complaint.';
+                errorcomplaint.style.color = 'red';
+                isValid = false;
+            }
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+            return false;
+        }else{
+            formData.append("ComplainNo", $("#ComplaintId").val());
+            formData.append("NotifiID", $("#notification").val());
+            formData.append("Complaint", $("#Complaint").val());
+            var status = $('input[name="CusNotified"]:checked').val();
+            formData.append("isNotified", status === "Yes");
+            var fileInput = document.getElementById("CustomerFile");
+            if (fileInput.files.length > 0) {
+                formData.append("file", fileInput.files[0]);
+            }
+            $.ajax({
+                url: '@Url.Action("UpdateCustomerInformDetails", "ComplaintManageProcess")',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Successfully informed the customer.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $('#Compl').val('');
+                        $('#notifi').val('');
+                        $('#Complaint').val('');
+                        $('#yourFileInputId').val('');
+                        $('#ResolvedStatus-Yes').prop('checked', true);
+                        window.location.href = '@Url.Action("CustomerInformProcess", "ComplaintManageProcess")';
+                    })
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+    }
+
+</script>
+

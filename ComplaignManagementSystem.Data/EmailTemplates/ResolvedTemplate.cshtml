@@ -28,20 +28,20 @@
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
         }
-
-            .header h2 {
-                color: #0078D7; /* Blue color */
-            }
+        
+        .header h2 {        
+            color: #0078D7; /* Blue color */    
+        }
 
         .content {
             padding: 20px 0;
+        }                   
+        
+        .content p {       
+            font-size: 14px;       
+            color: #333333;        
+            line-height: 1.5;        
         }
-
-            .content p {
-                font-size: 14px;
-                color: #333333;
-                line-height: 1.5;
-            }
 
         .button-container {
             text-align: center;
@@ -158,11 +158,11 @@
                 }
             </table>
             <hr />
-            <table style="width:100%; border-collapse: collapse;">
-                    <tr>
-                        <td><b>Resolved Remark:</b></td>
-                        <td>@Model.ResolvedRemark</td>
-                    </tr>               
+            <table>
+                <tr>
+                    <td><b>Resolved Remark:</b></td>
+                    <td>@Model.ResolvedRemark</td>
+                </tr>
             </table>
             <hr />
             <hr />

@@ -52,7 +52,7 @@
     <div class="email-container">
 
         <div class="header">
-            <h2>Pending Approval Notification</h2>
+            <h2>Complaint Alert Reminder!</h2>
         </div>
 
         <div class="content">
@@ -60,36 +60,54 @@
             <p>The following complaint requires your approval:</p>
             <table style="width:100%; border-collapse: collapse;">
                 <tr>
-                    <td><b>Reference:</b></td>
-                    <td>@Model?.Refference</td>
+                    <td><b>Reference</b></td>
+                    <td>: @Model?.Refference</td>
                 </tr>
                 <tr>
-                    <td><b>Mode:</b></td>
-                    <td>@Model?.ComplaintMethod</td>
+                    <td><b>Mode</b></td>
+                    <td>: @Model?.ComplaintMethod</td>
                 </tr>
                 <tr>
-                    <td><b>Branch:</b></td>
-                    <td>@Model?.Branch</td>
+                    <td><b>Branch</b></td>
+                    <td>: @Model?.Branch</td>
                 </tr>
                 <tr>
-                    <td><b>Department:</b></td>
-                    <td>@Model?.Dep</td>
+                    <td><b>Department</b></td>
+                    <td>: @Model?.Dep</td>
                 </tr>
                 <tr>
-                    <td><b>Complaint:</b></td>
-                    <td>@Model?.Complaint</td>
+                    <td><b>Complaint</b></td>
+                    <td>: @Model?.Complaint</td>
                 </tr>
                 <tr>
-                    <td><b>Created By:</b></td>
-                    <td>@Model?.CreatedUser</td>
+                    <td><b>Created By</b></td>
+                    <td>: @Model?.CreatedUser</td>
                 </tr>
                 <tr>
-                    <td><b>Priority:</b></td>
-                    <td>@Model?.Priority</td>
+                    <td><b>Priority</b></td>
+                    <td>: @Model?.Priority</td>
                 </tr>
                 <tr>
-                    <td><b>Created Date:</b></td>
-                    <td>@Model?.CreatedDate.ToString("dd/MM/yyyy")</td>
+                    <td><b>Created Date</b></td>
+                    <td>: @Model?.CreatedDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr class="row" style="margin-top:7px">
+                    <td><b>Attachment</b></td>
+                    <td class="col-md-3">
+                        : @if (!string.IsNullOrEmpty(Model.AttachmentPath))
+                        {
+                            <a href="@Model.downloadUrl" style="margin-top:10px">
+                                <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>Click Download
+                            </a>
+@*                             <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
+                                <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
+                            </a> *@
+                        }                                                
+                        else
+                        {
+                            <span>No attachment</span>
+                        }
+                    </td>
                 </tr>
             </table>
 
@@ -102,8 +120,8 @@
                 {
                     <text>
                     <tr>
-                        <td><b>Customer Name:</b></td>
-                        <td>@Model.Cus_Name</td>
+                        <td><b>Customer Name</b></td>
+                        <td>: @Model.Cus_Name</td>
                     </tr>
                     </text>
                 }
@@ -112,8 +130,8 @@
                 {
                     <text>
                     <tr>
-                        <td><b>Customer NIC:</b></td>
-                        <td>@Model.Cus_Nic</td>
+                        <td><b>Customer NIC</b></td>
+                        <td>: @Model.Cus_Nic</td>
                     </tr>
                     </text>
                 }
@@ -122,8 +140,8 @@
                 {
                     <text>
                     <tr>
-                        <td><b>Customer Reference:</b></td>
-                        <td>@Model.Cus_Refference</td>
+                        <td><b>Customer Reference</b></td>
+                        <td>: @Model.Cus_Refference</td>
                     </tr>
                     </text>
                 }
@@ -132,8 +150,8 @@
                 {
                     <text>
                     <tr>
-                        <td><b>Mobile Number:</b></td>
-                        <td>@Model.Cus_MobileNumber</td>
+                        <td><b>Mobile Number</b></td>
+                        <td>: @Model.Cus_MobileNumber</td>
                     </tr>
                     </text>
                 }

@@ -1,10 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+	  <!--<PlatformTarget>x64</PlatformTarget>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
+	  <!--<NoWarn>NU1605</NoWarn>-->
+	  <PlatformTarget>x64</PlatformTarget>
+	  <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
+
+  <ItemGroup>
+	  <None Include="wkhtmltopdf\libwkhtmltox.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\css\bootstrap-extended.min.css" />
@@ -498,7 +510,10 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <PackageReference Include="IronPdf" Version="2025.12.2" />
+	  <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
     <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
     <PackageReference Include="log4net" Version="3.2.0" />
     <PackageReference Include="MailKit" Version="4.14.1" />
@@ -508,7 +523,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
+    <PackageReference Include="QuestPDF" Version="2025.12.2" />
     <PackageReference Include="RazorLight" Version="2.3.1" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
 
@@ -518,8 +535,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Attachments\Customer_Inform_Doc\" />
     <Folder Include="wwwroot\Plugins\demo\chameleon-admin-template\app-assets\Icons\" />
+    <Folder Include="wwwroot\wkhtmltopdf\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -529,6 +546,12 @@
     <Content Update="Views\EmailTemplates\EmailTemplate1.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="wkhtmltopdf\libwkhtmltox.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

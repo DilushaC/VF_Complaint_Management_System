@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ComplaignManagementSystem.Presentation.Filters
@@ -7,6 +8,13 @@ namespace ComplaignManagementSystem.Presentation.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            var allowAnonymous = context.ActionDescriptor.EndpointMetadata
+                                .OfType<AllowAnonymousAttribute>()
+                                .Any();
+
+            if (allowAnonymous)
+                return;
+
             var controllerName = context.ActionDescriptor.RouteValues["controller"];
             if (controllerName != null && controllerName.Equals("User", StringComparison.OrdinalIgnoreCase))
             {

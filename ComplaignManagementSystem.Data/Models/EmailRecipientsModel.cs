@@ -10,6 +10,7 @@ namespace ComplaignManagementSystem.Data.Models
     {
         public int Id { get; set; }
         public string Email { get; set; }
+        public int Status { get; set; }
         public bool Active { get; set; }
     }
 }

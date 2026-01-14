@@ -1,0 +1,192 @@
+﻿@model ComplaignManagementSystem.Data.Models.Complaint_ManageProcessModel
+
+<div class="card pdf-content" style="margin-left:50px">
+    <hr />
+    <br />
+    <table style="width:100%; border-collapse:collapse;">
+        <tr style="text-align:center">
+            @if (ViewData["IsPdf"] == null || !(bool)ViewData["IsPdf"])
+            {
+                <td style="width:60px; vertical-align:middle;">
+                    <img src="@ViewData["LogoBase64"]" style="width:50px;height:50px" />
+                </td>
+            }
+            else
+            {
+                <td style="width:60px; vertical-align:middle;">
+                    <img src="@ViewData["LogoBase64"]" style="width:70px;height:70px;margin-right:-450%;" />
+                </td>
+            }
+            <td style="vertical-align:middle;">
+                <h1 style="margin:0;">Complaint Management System</h1>
+            </td>
+        </tr>
+    </table>
+    <hr />
+    <h2 style="text-align:center">@Model?.Refference Complaint Details</h2>
+    <hr />
+    @if (ViewData["IsPdf"] == null || !(bool)ViewData["IsPdf"])
+    {
+        <a href="/ComplaintManageProcess/ExportComplaintPdf?id=@Model.Id"
+           class="btn btn-danger">
+            <i class="fa fa-file-pdf"></i> Export PDF
+        </a>
+    }
+    <div class="card-body">
+        <h3><b>Complaint Detail</b></h3>
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <td style="width:250px"><b>Reference</b></td>
+                <td>: @Model?.Refference</td>
+            </tr>
+            <tr>
+                <td><b>Mode</b></td>
+                <td>: @Model?.ComplaintMethod</td>
+            </tr>
+            <tr>
+                <td><b>Branch</b></td>
+                <td>: @Model?.Branch</td>
+            </tr>
+            <tr>
+                <td><b>Deartment</b></td>
+                <td>: @Model?.Dep</td>
+            </tr>
+            <tr>
+                <td><b>Nature of the Department</b></td>
+                <td>: @Model?.Nature</td>
+            </tr>
+            <tr>
+                <td><b>Complaint</b></td>
+                <td>: @Model?.Complaint</td>
+            </tr>
+            <tr>
+                <td><b>Priority</b></td>
+                <td>: @Model?.Priority</td>
+            </tr>
+            @if (ViewData["IsPdf"] == null || !(bool)ViewData["IsPdf"])
+            {
+                <tr>
+                    <td><b>Attachment</b></td>
+                    @if (!string.IsNullOrEmpty(Model.AttachmentPath))
+                    {
+                        <td>
+                            : <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
+                                <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
+                            </a>
+                        </td>
+                    }
+                                else
+                    {
+                        <td><span>: No attachment</span></td>
+                    }
+                </tr>
+            }
+            <tr>
+                <td><b>Created Date</b></td>
+                <td>: @Model?.CreatedDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+
+        </table>
+        <hr />
+        <h3><b>Customer Detail</b></h3>
+
+        <table style="width:100%; border-collapse: collapse;">
+            @if (!string.IsNullOrWhiteSpace(Model?.Cus_Name))
+            {
+                <text>
+                <tr>
+                    <td><b>Customer Name</b></td>
+                    <td>: @Model.Cus_Name</td>
+                </tr>
+                </text>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model?.Cus_Nic))
+            {
+                <text>
+                <tr>
+                    <td><b>Customer NIC</b></td>
+                    <td>: @Model.Cus_Nic</td>
+                </tr>
+                </text>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model?.Cus_Refference))
+            {
+                <text>
+                <tr>
+                    <td><b>Customer Reference</b></td>
+                    <td>: @Model.Cus_Refference</td>
+                </tr>
+                </text>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model?.Cus_MobileNumber))
+            {
+                <text>
+                <tr>
+                    <td><b>Mobile Number</b></td>
+                    <td>: @Model.Cus_MobileNumber</td>
+                </tr>
+                </text>
+            }
+        </table>
+        <hr />
+        <h3><b>Resolved Detail</b></h3>
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <td style="width:250px"><b>Resolved User</b></td>
+                <td>: @Model?.ResolvedUser</td>
+            </tr>
+            <tr>
+                <td><b>Resolved Remark</b></td>
+                <td>: @Model?.ResolvedRemark</td>
+            </tr>
+
+            <tr>
+                <td><b>Created Date</b></td>
+                <td>: @Model?.ResolvedDateTime.Value.ToString("dd/MM/yyyy")</td>
+            </tr>
+
+        </table>
+        <hr />
+        <h3><b>Customer Notified Detail</b></h3>
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <td style="width:250px"><b>Notified Method</b></td>
+                <td>: @Model?.CusNotification</td>
+            </tr>
+            @if (ViewData["IsPdf"] == null || !(bool)ViewData["IsPdf"])
+            {
+                <tr>
+                    <td><b>Customer Notified Attachment</b></td>
+                    @if (!string.IsNullOrEmpty(Model.CAttachmentPath))
+                    {
+                        <td>
+                            : <a href="@Url.Action("DownloadNAttachment", "ComplaintManageProcess", new { fileName = Model.CAttachmentPath })" target="_blank" style="margin-top:10px">
+                                <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
+                            </a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td><span>: No attachment</span></td>
+                    }
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model?.CusNotificationRemark))
+            {
+                <text>
+                <tr>
+                    <td><b>Notification Remark</b></td>
+                    <td>: @Model.CusNotificationRemark</td>
+                </tr>
+                </text>
+            }
+            <tr>
+                <td><b>Notified Date</b></td>
+                <td>: @Model?.CusNotifiedDate.Value.ToString("dd/MM/yyyy")</td>
+            </tr>
+
+        </table>
+    </div>
+</div>

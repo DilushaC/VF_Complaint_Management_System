@@ -12,8 +12,12 @@ using ComplaintManagementSystem.Business.NatureHandler;
 using ComplaintManagementSystem.Business.PageCapabilityHandler;
 using ComplaintManagementSystem.Business.PageHandler;
 using ComplaintManagementSystem.Business.UserRoleHandler;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using log4net;
 using Microsoft.AspNetCore.Http;
+using QuestPDF.Infrastructure;
+using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +25,18 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<SessionCheckAttribute>();
 });
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+//var context = new CustomAssemblyLoadContext();
+
+//context.LoadUnmanagedLibrary(Path.Combine(
+//    builder.Environment.ContentRootPath,
+//    "wwwroot", "wkhtmltopdf", "libwkhtmltox.dll"));
+
+//QuestPDF.Settings.License = LicenseType.Community;
+
+
+var dllPath = Path.Combine(AppContext.BaseDirectory, "wkhtmltopdf", "libwkhtmltox.dll");
+System.Runtime.InteropServices.NativeLibrary.Load(dllPath);
 
 builder.Services.AddControllersWithViews();
 
@@ -81,6 +97,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseHttpsRedirection();
+app.UseHsts();
+
 app.UseStaticFiles();
 
 app.UseRouting();
