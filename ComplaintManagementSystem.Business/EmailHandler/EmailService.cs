@@ -62,11 +62,9 @@ namespace ComplaintManagementSystem.Business.EmailHandler
                     client.Send(emailMessage);
                     client.Disconnect(true);
                 }    
-
             }
             catch (Exception ex)
             {
-
                 var emailMessage = new MimeMessage();
                 emailMessage.From.Add(new MailboxAddress(_config["Email:Smtp:Username"], _config["Email:Smtp:From"]));
                 emailMessage.To.Add(new MailboxAddress("kasunperera@vallibelfinance.com", "kasunperera@vallibelfinance.com"));

@@ -472,6 +472,21 @@
                         console.error("Toast body element not found.");
                     }
                 }
+                else if(ToastMessage == 'updateCentralSuccessfully!'){
+                    if (toastMsg) {
+                        toastMsg.textContent = "Successfully Cental Update";
+                        toastTitle.textContent = "Success";
+                        toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
+                        // Add the type class
+                        toastEl.classList.add("toast-success");
+                        var toast = new bootstrap.Toast(toastEl.querySelector('.toast'));
+                        var options = { delay: 3000 }; // 3 seconds
+                        var toast = new bootstrap.Toast(toastEl, options);
+                        toast.show();
+                    } else {
+                        console.error("Toast body element not found.");
+                    }
+                }
             } else {
                 console.error("Toast container element not found.");
             }

@@ -92,14 +92,10 @@ namespace ComplaignManagementSystem.EmailService
                     };
                 }
 
-
-
-
                 await _emailService.SendAsync(request);
                 File.AppendAllText(
                                     "email-log.txt",
-                                    $"Email job ran at {DateTime.Now}{Environment.NewLine}"
-);
+                                    $"Email job ran at {DateTime.Now}{Environment.NewLine}");
 
             }
         }

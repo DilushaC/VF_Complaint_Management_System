@@ -533,6 +533,25 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult CentralCommentUpdate(int Id, string CentralComment)
+        {
+            try
+            {
+                var UserName = HttpContext.Session.GetString("UserName");
+                _complainProcess.ComplainCentralUpdate(Id, CentralComment);
+                TempData["ToastMessage"] = "updateCentralSuccessfully!";
+                log.Info($"Success Central Adding Comment Complaint by : {UserName}. ComplaintId : {Id}.");
+                return Json(new { success = true, message = "Complain Resolve successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error Complain CentralComplainResolved : {ex.Message}. ComplaintId : {Id}.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         public async Task<IActionResult> CentralComplaintResolveDetails(int id)
         {
             // SQL query to retrieve the master data for the given complaint ID
@@ -755,7 +774,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
 
             var pdfBytes = _converter.Convert(pdfDoc);
 
-            return File(pdfBytes, "application/pdf", $"Complaint_{id}.pdf");
+            return File(pdfBytes, "application/pdf", $"Complaint_{model.Refference}.pdf");
         }
 
         private string ImageToBase64(string imagePath)

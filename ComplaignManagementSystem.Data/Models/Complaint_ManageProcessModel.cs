@@ -40,6 +40,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string? ResolvedUser { get; set; }
         public string? ResolvedUserEmail { get; set; }
         public DateTime EditedDateTime { get; set; }
+        public bool IsCentralComment { get; set; }
         public bool Active { get; set; }
         public DateTime DeletedDate { get; set; }
         public string CreatedBranch { get; set; }
@@ -54,6 +55,7 @@ namespace ComplaignManagementSystem.Data.Models
         public bool? IsCusNotified { get; set; }
         public string CusNotification { get; set; }
         public string CusNotificationRemark { get; set; }
+        public string CentralComment { get; set; }
 
 
         //------------

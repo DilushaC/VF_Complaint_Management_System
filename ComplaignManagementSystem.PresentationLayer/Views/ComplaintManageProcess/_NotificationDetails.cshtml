@@ -75,7 +75,7 @@
                             </a>
                         </td>
                     }
-                                else
+                    else
                     {
                         <td><span>: No attachment</span></td>
                     }
@@ -90,7 +90,7 @@
         <hr />
         <h3><b>Customer Detail</b></h3>
 
-        <table style="width:100%; border-collapse: collapse;">
+        <table style="width:80%; border-collapse: collapse;">
             @if (!string.IsNullOrWhiteSpace(Model?.Cus_Name))
             {
                 <text>
@@ -150,7 +150,7 @@
         </table>
         <hr />
         <h3><b>Customer Notified Detail</b></h3>
-        <table style="width:100%; border-collapse: collapse;">
+        <table style="width:80%; border-collapse: collapse;">
             <tr>
                 <td style="width:250px"><b>Notified Method</b></td>
                 <td>: @Model?.CusNotification</td>
@@ -186,7 +186,16 @@
                 <td><b>Notified Date</b></td>
                 <td>: @Model?.CusNotifiedDate.Value.ToString("dd/MM/yyyy")</td>
             </tr>
-
         </table>
+        <hr />
+        @if (!string.IsNullOrWhiteSpace(Model?.CentralComment))
+        {
+            <table style="width:30%; border-collapse: collapse;">
+                <tr>
+                    <td><b>Central Comment</b></td>
+                    <td>: @Model.CentralComment</td>
+                </tr>
+            </table>
+        }
     </div>
 </div>

@@ -196,8 +196,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var ResolvedStatus = collection["ResolvedStatus"].ToString();
                 var ResolvedRemark = collection["ResolvedRemark"].ToString();
 
-                var query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Branch_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate) " +
-                    "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @branchId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate)" +
+                var query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Branch_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate, IsCentralComment) " +
+                    "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @branchId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate, @isCentralComment)" +
                     "SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 var parameters = new DynamicParameters();
@@ -219,6 +219,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("active", 1, DbType.Int32);
                 parameters.Add("createdUser", UserName, DbType.String);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
+                parameters.Add("isCentralComment", 0, DbType.Int32);
 
                 var ProcessId = _connection.InsertAndGetId(query, parameters);
 
@@ -284,8 +285,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 var ResolvedRemark = collection["ResolvedRemark"].ToString();
                 var query = "";
 
-                query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Branch_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate) " +
-                "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @branchId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate)" +
+                query = "INSERT INTO Complaint_ManageProcess (ComplaintMethod_Id, Refference, Complaint, Cus_Name, Cus_Nic, Cus_Refference, Cus_MobileNumber, Dep_Id, Nature_Id, Branch_Id, Priority, IsSentCentral, IsSentDep, IsSentDepDateTime, Status, Active, CreatedUser, CreatedDate, IsCentralComment) " +
+                "VALUES (@comMethodId, @reff, @complaint, @cusName , @cus_Nic, @cusReff, @cusMob, @depId, @natId, @branchId, @priority, @isCentral, @isDep, @isSentDepDate, @status, @active, @createdUser, @createdDate, @isCentralComment)" +
                 "SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 var parameters = new DynamicParameters();
@@ -312,6 +313,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("active", 1, DbType.Int32);
                 parameters.Add("createdUser", UserName, DbType.String);
                 parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
+                parameters.Add("isCentralComment", 0, DbType.Int32);
 
                 var ProcessId = _connection.InsertAndGetId(query, parameters);
 
@@ -562,10 +564,18 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     cmp.Priority,
                                     cmp.CreatedDate,
                                     cmp.CreatedUser,
+                                    cmp.Cus_Name,
+	                                cmp.Cus_Nic,
+	                                cmp.Cus_MobileNumber,
+	                                cmp.Cus_Refference,
+	                                cmp.Cus_Email,
                                     cb.Branch,
                                     cp.Name Department,
                                     cn.Nature,
-                                    cob.Branch AS ComBranch
+                                    cob.Branch AS ComBranch,
+                                    cmp.IsCentralComment,
+                                    cmp.CentralComment,
+                                    s.Status
                                 FROM Complaint_ManageProcess as cmp
                                 INNER JOIN Complaint_Method_Master as cm ON cm.Id = cmp.ComplaintMethod_Id
                                 INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
@@ -573,12 +583,11 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                 INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
                                 INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
                                 INNER JOIN Complaint_Branch_Master as cob on cob.Id = cmp.Branch_Id
+                                INNER JOIN Complaint_Status_Master as s on s.Id = cmp.Status
                                 WHERE cmp.Id = @Id";
 
                 // Use Dapper to query the single record
                 var complaintDataTable = await _connection.SingleQueryReturn(query, Id);
-
-
 
                 var row = complaintDataTable.Rows[0];
                 ComplaintMaster complainModel = new ComplaintMaster();
@@ -594,6 +603,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 complainModel.Department = row["Department"].ToString();
                 complainModel.Nature = row["Nature"].ToString();
                 complainModel.ComBranch = row["ComBranch"].ToString();
+                complainModel.Cus_Name = row["Cus_Name"].ToString();
+                complainModel.Cus_Nic = row["Cus_Nic"].ToString();
+                complainModel.Cus_MobileNumber = row["Cus_MobileNumber"].ToString();
+                complainModel.Cus_Refference = row["Cus_Refference"].ToString();
+                complainModel.IsCentralComment = Convert.ToBoolean(row["IsCentralComment"]);
+                complainModel.CentralComment = row["CentralComment"].ToString();
+                complainModel.Status = row["Status"].ToString();
 
                 string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Attachments");
                 string physicalPath = Path.Combine(rootPath, $"_{Id}.pdf");
@@ -607,7 +623,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -640,7 +655,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
 	                                cmp.Cus_Email,
 	                                ru.Name ResolvedUser,
 	                                cmp.ResolvedDateTime,
-	                                cmp.ResolvedRemark
+	                                cmp.ResolvedRemark,
+                                    cmp.CentralComment,
+                                    cmp.IsCentralComment
                                 FROM Complaint_ManageProcess as cmp
                                 INNER JOIN Complaint_Method_Master as cm ON cm.Id = cmp.ComplaintMethod_Id
                                 INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
@@ -683,6 +700,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                     complainModel.ResolvedUser = row["ResolvedUser"].ToString();
                     complainModel.ResolvedRemark = row["ResolvedRemark"].ToString();
                     complainModel.ResolvedDateTime = Convert.ToDateTime(row["ResolvedDateTime"]);
+                    complainModel.IsCentralComment = Convert.ToBoolean(row["IsCentralComment"]);
+                    complainModel.CentralComment = row["CentralComment"].ToString();
 
                     string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Attachments");
                     string physicalPath = Path.Combine(rootPath, $"_{Id}.pdf");
@@ -710,7 +729,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 throw ex;
             }
         }
-
 
         public Complaint_ManageProcessModel getComplainProcessUsingId(int Id)
         {
@@ -1036,6 +1054,31 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 _connection.ExecuteWithPara(query, parameters);
                 EmailInsert(Id, "Resolved", "ResolvedTemplate");
                 //sendEmail(Convert.ToInt16(Id));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void ComplainCentralUpdate(int Id, string CentralComment)
+        {
+            try
+            {
+                string query = @"
+                                UPDATE Complaint_ManageProcess 
+                                SET 
+                                    IsCentralComment = 1, 
+                                    CentralCommentDatetime = @CentralCommentDatetime, 
+                                    CentralComment = @CentralComment
+                                WHERE Id = @Id";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", Id, DbType.Int64);
+                parameters.Add("@CentralComment", CentralComment, DbType.String);
+                parameters.Add("@CentralCommentDatetime", DateTime.Now, DbType.DateTime);
+                _connection.ExecuteWithPara(query, parameters);
 
             }
             catch (Exception ex)

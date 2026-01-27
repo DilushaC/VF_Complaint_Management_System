@@ -19,6 +19,13 @@ namespace ComplaignManagementSystem.Data.Models
         public string ComBranch { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }
+        public string Cus_Email { get; set; }
+        public string Cus_Name { get; set; }
+        public string Cus_Nic { get; set; }
+        public string Cus_Refference { get; set; }
+        public string Cus_MobileNumber { get; set; }
+        public bool IsCentralComment { get; set; }
+        public string CentralComment { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Active { get; set; }
         public string AttachmentPath { get; set; }
