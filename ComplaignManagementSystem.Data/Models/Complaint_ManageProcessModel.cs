@@ -64,7 +64,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string DepartmentName { get; set; }
         public string Remark { get; set; }
         public string ApproverName { get; set; }
-        public DateTime DiffDays { get; set; }
+        public int DiffDays { get; set; }
 
 
     }

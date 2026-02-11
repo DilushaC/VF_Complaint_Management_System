@@ -60,10 +60,6 @@ namespace ComplaignManagementSystem.EmailService
                 string currentTime = DateTime.Now.ToString("hh:mm tt");
 
 
-
-
-
-
                 var console = serviceProvider.GetRequiredService<ComplaintEmailService>();
                 //console.InsertToMiddle();
 

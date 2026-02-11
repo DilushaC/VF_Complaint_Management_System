@@ -27,6 +27,42 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="DepResName">Responsible Person Name</label>
+                                <input type="text" id="DepResName" class="form-control" placeholder="Responsible Person Name" name="DepResName" autocomplete="off">
+                                <span id="error-message-DepResName"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Dep_Code">Responsible Person Email</label>
+                                <input type="text" id="DepResEmail" class="form-control" placeholder="Responsible Person Email" name="DepResEmail" autocomplete="off" onkeyup="emailChangeRes()">
+                                <small id="DepResEmailError" style="color:red; display:none;">Invalid Email</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="DepResName">Department Head Name</label>
+                                <input type="text" id="DepHeadName" class="form-control" placeholder="Department Head Name" name="DepHeadName" autocomplete="off">
+                                <span id="error-message-DepHeadName"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Dep_Code">Department Head Email</label>
+                                <input type="text" id="DepHeadEmail" class="form-control" placeholder="Department Head Email" name="DepHeadEmail" autocomplete="off" onkeyup="emailChangeHead()">
+                                <small id="DepHeadEmailError" style="color:red; display:none;">Invalid Email</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group" style="margin-top:10px">
                     <label for="Status">Complaint Department</label>
@@ -106,5 +142,54 @@
         form.attr('action', '/Department/Create');
         form.submit();
     });
-    
+    function emailChangeRes() {
+        const email = document.getElementById("DepResEmail").value.trim();
+        const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        const save = document.getElementById("save");
+        const emailError = document.getElementById("DepResEmailError");
+        if (email === "") {
+            // Empty field → reset border and hide error
+            document.getElementById("DepResEmail").style.borderColor = "";
+            emailError.style.display = "none";
+            save.disabled = true;
+            return;
+        }
+
+        if (emailPattern.test(email)) {
+            // ✅ Valid email
+            document.getElementById("DepResEmail").style.borderColor = "green";
+            emailError.style.display = "none";
+            save.disabled = false;
+        } else {
+            // ❌ Invalid email
+            document.getElementById("DepResEmail").style.borderColor = "red";
+            emailError.style.display = "inline";
+            save.disabled = true;
+        }
+    }
+    function emailChangeHead() {
+        const email = document.getElementById("DepHeadEmail").value.trim();
+        const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        const save = document.getElementById("save");
+        const emailError = document.getElementById("DepHeadEmailError");
+        if (email === "") {
+            // Empty field → reset border and hide error
+            document.getElementById("DepHeadEmail").style.borderColor = "";
+            emailError.style.display = "none";
+            save.disabled = true;
+            return;
+        }
+
+        if (emailPattern.test(email)) {
+            // ✅ Valid email
+            document.getElementById("DepHeadEmail").style.borderColor = "green";
+            emailError.style.display = "none";
+            save.disabled = false;
+        } else {
+            // ❌ Invalid email
+            document.getElementById("DepHeadEmail").style.borderColor = "red";
+            emailError.style.display = "inline";
+            save.disabled = true;
+        }
+    }
 </script>

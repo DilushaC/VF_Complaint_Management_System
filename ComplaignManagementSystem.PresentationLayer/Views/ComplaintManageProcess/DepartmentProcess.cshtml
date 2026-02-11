@@ -44,7 +44,7 @@
                         <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
                             <div class="row" style="margin-bottom:-10px">
                                 <div class="col-sm-12 col-md-3">
-                                    <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
+                                    <form id="pageSizeForm" asp-controller="ComplaintManageProcess" asp-action="DepartmentProcess" method="get">
                                         <div class="dataTables_length" id="DataTables_Table_0_length">
                                             <label>
                                                 Show
@@ -60,7 +60,7 @@
                                 </div>
 
                                 <div class="col-sm-12 col-md-6" style="margin-left:-40px">
-                                    <form id="filterForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
+                                    <form id="filterForm" asp-controller="ComplaintManageProcess" asp-action="DepartmentProcess" method="get">
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <select id="ComplaintMethod_Id" name="ComplaintMethod_Id" class="form-control" asp-items="ViewBag.ComplaintMethod_Id">
@@ -94,14 +94,13 @@
                                                     {
                                                         <option value="Low">Low</option>
                                                     }
-
                                                 </select>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="col-sm-12 col-md-3" style="margin-left:40px;margin-bottom:10px">
-                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="Index" method="get">
+                                    <form id="searchForm" asp-controller="ComplaintManageProcess" asp-action="DepartmentProcess" method="get">
                                         <div id="DataTables_Table_0_filter" class="dataTables_filter">
                                             <label>
                                                 Search:
@@ -157,9 +156,7 @@
                                                                             <button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="Resolve" onclick="ComplaintDepResolve(@item.Id)" ><i class="ft-check-square"></i></button>
                                                                         </div>
                                                                     }
-
                                                                 </div>
-
                                                             </td>
                                                         </tr>
                                                         i++;
@@ -188,7 +185,6 @@
                                                                             <button type="button" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="top" title="Resolve" onclick="ComplaintDepResolve(@item.Id)" ><i class="ft-check-square"></i></button>
                                                                         </div>
                                                                     }
-
                                                                 </div>
 
                                                             </td>

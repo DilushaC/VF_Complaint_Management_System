@@ -11,6 +11,7 @@ namespace ComplaignManagementSystem.Data.Models
         public int Id { get; set; }
         public string Branch { get; set; }
         public string Code { get; set; }
+        public string BranchEmail { get; set; }
         public bool Active { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Status { get; set; }

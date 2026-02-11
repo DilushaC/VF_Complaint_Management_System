@@ -62,9 +62,13 @@ namespace ComplaintManagementSystem.Business.DepartmentHandler
             var Name = collection["Dep_Name"].ToString();
             var Code = collection["Dep_Code"].ToString();
             var Status = collection["Status"].ToString();
+            var DepHeadName = collection["DepHeadName"].ToString();
+            var DepHeadEmail = collection["DepHeadEmail"].ToString();
+            var DepResName = collection["DepResName"].ToString();
+            var DepResEmail = collection["DepResEmail"].ToString();
 
-            var query = "INSERT INTO Complaint_Department_Master (Name, Code, Active, CreatedDate, Status) " +
-                    "VALUES (@name, @code, @active, @createdDate , @status);";
+            var query = "INSERT INTO Complaint_Department_Master (Name, Code, Active, CreatedDate, Status, DepHeadName, DepHeadEmail, DepResName, DepResEmail) " +
+                    "VALUES (@name, @code, @active, @createdDate , @status, @depHeadName, @depHeadEmail, @depResName, @depResEmail);";
 
             var parameters = new DynamicParameters();
 
@@ -73,6 +77,10 @@ namespace ComplaintManagementSystem.Business.DepartmentHandler
             parameters.Add("active", 1, DbType.Int32);
             parameters.Add("createdDate", System.DateTime.Now, DbType.DateTime);
             parameters.Add("status", Convert.ToInt32(Status), DbType.Int32);
+            parameters.Add("depHeadName", DepHeadName, DbType.String);
+            parameters.Add("depHeadEmail", DepHeadEmail, DbType.String);
+            parameters.Add("depResName", DepResName, DbType.String);
+            parameters.Add("depResEmail", DepResEmail, DbType.String);
 
             _connectionService.ReturnWithPara(query, parameters);
 
@@ -90,6 +98,10 @@ namespace ComplaintManagementSystem.Business.DepartmentHandler
                 Id = row["Id"] != DBNull.Value ? Convert.ToInt32(row["Id"]) : 0,
                 Name = row["Name"] != DBNull.Value ? row["Name"].ToString() : string.Empty,
                 Code = row["Code"] != DBNull.Value ? row["Code"].ToString() : string.Empty,
+                DepHeadName = row["DepHeadName"] != DBNull.Value ? row["DepHeadName"].ToString() : string.Empty,
+                DepHeadEmail = row["DepHeadEmail"] != DBNull.Value ? row["DepHeadEmail"].ToString() : string.Empty,
+                DepResName = row["DepResName"] != DBNull.Value ? row["DepResName"].ToString() : string.Empty,
+                DepResEmail = row["DepResEmail"] != DBNull.Value ? row["DepResEmail"].ToString() : string.Empty,
                 Active = row["Active"] != DBNull.Value && Convert.ToBoolean(row["Active"]),
                 Status = row["Status"] != DBNull.Value && Convert.ToBoolean(row["Status"]),
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
@@ -105,12 +117,21 @@ namespace ComplaintManagementSystem.Business.DepartmentHandler
                 var Name = collection["Dep_Names"].ToString();
                 var Code = collection["Dep_Codes"].ToString();
                 var Status = collection["Status"].ToString();
+                var DepHeadName = collection["DepHeadName"].ToString();
+                var DepHeadEmail = collection["DepHeadEmail"].ToString();
+                var DepResName = collection["DepResName"].ToString();
+                var DepResEmail = collection["DepResEmail"].ToString();
+
                 string query = @"
                                 UPDATE Complaint_Department_Master
                                 SET 
                                     Name = @name,
                                     Code = @code,
-                                    Status = @status
+                                    Status = @status,
+                                    DepHeadName = @depHeadName, 
+                                    DepHeadEmail = @DepHeadEmail, 
+                                    DepResName = @depResName, 
+                                    DepResEmail = @depResEmail
                                 WHERE Id = @Id";
 
                 var parameters = new DynamicParameters();
@@ -118,8 +139,12 @@ namespace ComplaintManagementSystem.Business.DepartmentHandler
                 parameters.Add("@name", Name, DbType.String);
                 parameters.Add("@Code", Code, DbType.String);
                 parameters.Add("@Status", Status, DbType.String);
+                parameters.Add("@DepHeadName", DepHeadName, DbType.String);
+                parameters.Add("@DepHeadEmail", DepHeadEmail, DbType.String);
+                parameters.Add("@DepResName", DepResName, DbType.String);
+                parameters.Add("@DepResEmail", DepResEmail, DbType.String);
 
-                _connectionService.ExecuteWithPara(query, parameters);
+                //_connectionService.ExecuteWithPara(query, parameters);
                 return;
             }
             catch (Exception ex)

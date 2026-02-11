@@ -57,7 +57,8 @@
 
         <div class="content">
             <p>Dear @Model?.ApproverName,</p>
-            <p>The following complaint requires your approval:</p>
+            <p>We kindly request you to take actions on the Customer Complaint and provide us with feedback explaining the cause of the complaint and the solution to rectify if within @Model?.DiffDays days.</p>
+            @*<p>The following complaint requires your approval:</p>*@ 
             <table style="width:100%; border-collapse: collapse;">
                 <tr>
                     <td><b>Reference</b></td>
@@ -99,11 +100,11 @@
                             <a href="@Model.downloadUrl" style="margin-top:10px">
                                 <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>Click Download
                             </a>
-@*                             <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
+                            @*                             <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
                                 <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
                             </a> *@
-                        }                                                
-                        else
+                        }
+                                                else
                         {
                             <span>No attachment</span>
                         }
@@ -165,7 +166,8 @@
             </p>
             <hr />
             <p>
-                Please review and take the necessary action at your earliest convenience.
+                Customer Complaints cannot be ignored promt action on Complaint os essential for a leading financial Institution.
+                @* Please review and take the necessary action at your earliest convenience. *@
             </p>
             <p>
                 Thank you,<br />

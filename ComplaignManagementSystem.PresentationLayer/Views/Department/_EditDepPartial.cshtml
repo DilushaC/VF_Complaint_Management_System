@@ -27,6 +27,38 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="DepResName">Responsible Person Name</label>
+                            <input type="text" id="DepResName" class="form-control" placeholder="Responsible Person Name" value="@Model.DepResName" name="DepResName" autocomplete="off">
+                            <span id="error-message-DepResName"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Dep_Code">Responsible Person Email</label>
+                            <input type="text" id="EDepResEmail" class="form-control" placeholder="Responsible Person Email" value="@Model.DepResEmail" name="DepResEmail" autocomplete="off" onkeyup="emailChangeResE()">
+                            <small id="DepResEmailErrorE"E style="color:red; display:none;">Invalid Email</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="DepResName">Department Head Name</label>
+                            <input type="text" id="DepHeadName" class="form-control" placeholder="Department Head Name" value="@Model.DepHeadName" name="DepHeadName" autocomplete="off">
+                            <span id="error-message-DepHeadName"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Dep_Code">Department Head Email</label>
+                            <input type="text" id="EDepHeadEmail" class="form-control" placeholder="Department Head Email" value="@Model.DepHeadEmail" name="DepHeadEmail" autocomplete="off" onkeyup="emailChangeHeadE()">
+                            <small id="DepHeadEmailErrorE" style="color:red; display:none;">Invalid Email</small>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group" style="margin-top:10px">
@@ -109,5 +141,55 @@
         form.attr('action', '/Department/Edit');
         form.submit();
     });
+        
+    function emailChangeResE() {
+        const email = document.getElementById("EDepResEmail").value.trim();
+        const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        const save = document.getElementById("saven");
+        const emailError = document.getElementById("DepResEmailErrorE");
+        if (email === "") {
+            // Empty field → reset border and hide error
+            document.getElementById("EDepResEmail").style.borderColor = "";
+            emailError.style.display = "none";
+            save.disabled = true;
+            return;
+        }
 
+        if (emailPattern.test(email)) {
+            // ✅ Valid email
+            document.getElementById("EDepResEmail").style.borderColor = "green";
+            emailError.style.display = "none";
+            save.disabled = false;
+        } else {
+            // ❌ Invalid email
+            document.getElementById("EDepResEmail").style.borderColor = "red";
+            emailError.style.display = "inline";
+            save.disabled = true;
+        }
+    }
+    function emailChangeHeadE() {
+        const email = document.getElementById("EDepHeadEmail").value.trim();
+        const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        const save = document.getElementById("saven");
+        const emailError = document.getElementById("DepHeadEmailErrorE");
+        if (email === "") {
+            // Empty field → reset border and hide error
+            document.getElementById("EDepHeadEmail").style.borderColor = "";
+            emailError.style.display = "none";
+            save.disabled = true;
+            return;
+        }
+
+        if (emailPattern.test(email)) {
+            // ✅ Valid email
+            document.getElementById("EDepHeadEmail").style.borderColor = "green";
+            emailError.style.display = "none";
+            save.disabled = false;
+        } else {
+            // ❌ Invalid email
+            document.getElementById("EDepHeadEmail").style.borderColor = "red";
+            emailError.style.display = "inline";
+            save.disabled = true;
+        }
+    }
 </script>

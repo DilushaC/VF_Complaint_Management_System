@@ -85,7 +85,6 @@
                 <td><b>Created Date</b></td>
                 <td>: @Model?.CreatedDate.ToString("dd/MM/yyyy")</td>
             </tr>
-
         </table>
         <hr />
         <h3><b>Customer Detail</b></h3>
@@ -141,12 +140,10 @@
                 <td><b>Resolved Remark</b></td>
                 <td>: @Model?.ResolvedRemark</td>
             </tr>
-
             <tr>
                 <td><b>Created Date</b></td>
                 <td>: @Model?.ResolvedDateTime.Value.ToString("dd/MM/yyyy")</td>
             </tr>
-
         </table>
         <hr />
         <h3><b>Customer Notified Detail</b></h3>
@@ -190,9 +187,9 @@
         <hr />
         @if (!string.IsNullOrWhiteSpace(Model?.CentralComment))
         {
-            <table style="width:30%; border-collapse: collapse;">
+            <table style="width:80%; border-collapse: collapse;">
                 <tr>
-                    <td><b>Central Comment</b></td>
+                    <td style="width:250px"><b>Central Comment</b></td>
                     <td>: @Model.CentralComment</td>
                 </tr>
             </table>

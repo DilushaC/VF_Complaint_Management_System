@@ -41,6 +41,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<Complaint_ManageProcessModel> getCreatedComplainListsId(int id);
         public Task<List<EmailModel>> getEmails();
         public Complaint_Department_MasterModel getDepResPerson(int depId);
+        public BranchModel getBranchResPerson(int branchId);
         public Task<List<EmailRecipientsModel>> getCcEmails();
         public Task deleteEmail(int EmailId);
     }

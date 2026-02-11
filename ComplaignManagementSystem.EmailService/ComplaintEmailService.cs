@@ -2,6 +2,7 @@
 using ComplaintManagementSystem.Business.ComplaintManageProcessHandler;
 using ComplaintManagementSystem.Business.EmailHandler;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using NuGet.Packaging;
 using NuGet.Versioning;
 using System;
 using System.Collections.Generic;
@@ -27,14 +28,13 @@ namespace ComplaignManagementSystem.EmailService
             var ComplaintList = _comManageProcess.getCreatedComplainLists().Result.ToList();
             //var DepIdDistint = ComplaintList.Select(a => a.Dep_Id).Distinct().ToList();
             var ccEmails = _comManageProcess.getCcEmails();
-
             foreach (var itemA in ComplaintList)
             {
                 string toEmail;
                 DateTime systemDate;
                 int diffDays;
                 var resPerson = _comManageProcess.getDepResPerson(itemA.Dep_Id);
-
+                var resBPerson = _comManageProcess.getBranchResPerson(itemA.Branch_Id);
                 switch (itemA.Priority)
                 {
                     case "High":
@@ -50,25 +50,30 @@ namespace ComplaignManagementSystem.EmailService
                         diffDays = (itemA.CreatedDate.Date.AddDays(7) - DateTime.Now.Date).Days;
                         break;
                 }
-
-                itemA.DiffDays = DateTime.Now.Date.AddDays(diffDays);
-
-                if (itemA.CreatedDate.Date < systemDate)
-                {
-                    itemA.ApproverName = resPerson.DepHeadName;
-                    toEmail = resPerson.DepHeadEmail;
-                }
-                else
-                {
-                    itemA.ApproverName = resPerson.DepResName;
-                    toEmail = resPerson.DepResEmail;
-                }
-
+                itemA.DiffDays = diffDays;
+                //if (itemA.CreatedDate.Date < systemDate)
+                //{
+                //    itemA.ApproverName = resPerson.DepResName;
+                //    //itemA.ApproverName = resPerson.DepHeadName;
+                //    toEmail = resPerson.DepHeadEmail + resBPerson.BranchEmail;
+                //}
+                //else
+                //{
+                //    itemA.ApproverName = resPerson.DepResName;
+                //    toEmail = resPerson.DepResEmail;
+                //}
+                itemA.ApproverName = resPerson.DepResName;
+                toEmail = resPerson.DepResEmail + "," + resBPerson.BranchEmail;
                 EmailRequest request = new EmailRequest();
-
                 if (diffDays < 2)
                 {
-
+                    //var ccEmailsModel = ccEmails.Result.Select(a => a.Email).ToList();
+                    //if (!string.IsNullOrWhiteSpace(resBPerson.BranchEmail) &&
+                    //    !ccEmailsModel.Any(e =>
+                    //        e.Equals(resBPerson.BranchEmail, StringComparison.OrdinalIgnoreCase)))
+                    //{
+                    //    ccEmailsModel.Add(resBPerson.BranchEmail);
+                    //}
                     request = new EmailRequest
                     {
                         To = toEmail,
@@ -76,7 +81,12 @@ namespace ComplaignManagementSystem.EmailService
                         Subject = "COMPLAINT MANAGEMENT | Pending Approval Notification",
                         TemplateName = "ApprovalsTemplate",
                         Model = itemA,
-                        ccEmailsModel = ccEmails.Result.Select(a => a.Email).ToList()
+                        ccEmailsModel = ccEmails.Result
+                                        .Select(a => a.Email)
+                                        .Append(resPerson.DepHeadEmail)
+                                        .Where(e => !string.IsNullOrWhiteSpace(e))
+                                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                                        .ToList()
                     };
                 }
                 else
@@ -88,10 +98,15 @@ namespace ComplaignManagementSystem.EmailService
                         Subject = "COMPLAINT MANAGEMENT | Pending Approval Notification",
                         TemplateName = "ApprovalsTemplate",
                         Model = itemA,
-                        ccEmailsModel = ccEmails.Result.Where(a => a.Status == 1).Select(a => a.Email).ToList()
+                        ccEmailsModel = ccEmails.Result.Where(a => a.Status == 1)
+                                        .Select(a => a.Email)
+                                        .Append(resPerson.DepHeadEmail)
+                                        .Where(e => !string.IsNullOrWhiteSpace(e))
+                                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                                        .ToList()
                     };
                 }
-
+                //request.ccEmailsModel.AddRange(resBPerson.BranchEmail);
                 await _emailService.SendAsync(request);
                 File.AppendAllText(
                                     "email-log.txt",

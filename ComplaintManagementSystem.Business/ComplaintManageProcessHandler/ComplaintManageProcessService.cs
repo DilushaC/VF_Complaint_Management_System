@@ -719,13 +719,10 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                         complainModel.CAttachmentPath = $"_{Id}.pdf";
                     }
                 }
-
                 return (complainModel);
-
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -1079,7 +1076,6 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 parameters.Add("@CentralComment", CentralComment, DbType.String);
                 parameters.Add("@CentralCommentDatetime", DateTime.Now, DbType.DateTime);
                 _connection.ExecuteWithPara(query, parameters);
-
             }
             catch (Exception ex)
             {
@@ -1624,7 +1620,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     cmp.Cus_Email,
                                     cmp.Cus_Nic,
                                     cmp.Cus_Refference,
-                                    cmp.Cus_MobileNumber
+                                    cmp.Cus_MobileNumber,
+                                    cmp.Branch_Id
                                 FROM Complaint_ManageProcess as cmp
                                 INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
                                 INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
@@ -1668,6 +1665,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                             Cus_Nic = BRow["Cus_Nic"].ToString(),
                             Cus_Refference = BRow["Cus_Refference"].ToString(),
                             Cus_MobileNumber = BRow["Cus_MobileNumber"].ToString(),
+                            Branch_Id = Convert.ToInt32(BRow["Branch_Id"]),
                         };
 
                         string attachmentPath = Path.Combine(
@@ -1805,6 +1803,24 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
             };
             return depList;
+        }
+
+        public BranchModel getBranchResPerson(int branchId)
+        {
+            string query = $@" SELECT * FROM Complaint_Branch_Master WHERE Id={branchId} ";
+            var data = _connection.Return(query);
+            var row = data.Rows[0];
+            BranchModel branchModal = new BranchModel()
+            {
+                Id = row["Id"] != DBNull.Value ? Convert.ToInt32(row["Id"]) : 0,
+                Branch = row["Branch"] != DBNull.Value ? row["Branch"].ToString() : string.Empty,
+                Code = row["Code"] != DBNull.Value ? row["Code"].ToString() : string.Empty,
+                BranchEmail = row["BranchEmail"] != DBNull.Value ? row["BranchEmail"].ToString() : string.Empty,
+                Active = row["Active"] != DBNull.Value && Convert.ToBoolean(row["Active"]),
+                //Status = row["Status"] != DBNull.Value && Convert.ToBoolean(row["Status"]),
+                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
+            };
+            return branchModal;
         }
 
         public async Task<List<EmailRecipientsModel>> getCcEmails()
