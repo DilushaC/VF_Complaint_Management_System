@@ -54,6 +54,7 @@ namespace ComplaintManagementSystem.Business.EmailHandler
 
                 using (var client = new SmtpClient())
                 {
+                    client.CheckCertificateRevocation = false;
                     // Port 465 requires SSL
                     client.Connect(_config["Email:Smtp:Host"], int.Parse(_config["Email:Smtp:Port"]), true);
                     // Authenticate
@@ -65,6 +66,8 @@ namespace ComplaintManagementSystem.Business.EmailHandler
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
+
                 var emailMessage = new MimeMessage();
                 emailMessage.From.Add(new MailboxAddress(_config["Email:Smtp:Username"], _config["Email:Smtp:From"]));
                 emailMessage.To.Add(new MailboxAddress("kasunperera@vallibelfinance.com", "kasunperera@vallibelfinance.com"));

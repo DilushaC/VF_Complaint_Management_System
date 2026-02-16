@@ -9,7 +9,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="EmailTemplates\Template2.cshtml">
+		<Content Include="EmailTemplates\CentralTemplate.cshtml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>

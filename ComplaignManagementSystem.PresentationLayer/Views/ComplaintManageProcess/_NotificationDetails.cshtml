@@ -18,7 +18,7 @@
                 </td>
             }
             <td style="vertical-align:middle;">
-                <h1 style="margin:0;">Complaint Management System</h1>
+                <h1 style="margin:0;">Complaint Management Unit</h1>
             </td>
         </tr>
     </table>
@@ -45,14 +45,14 @@
             </tr>
             <tr>
                 <td><b>Branch</b></td>
-                <td>: @Model?.Branch</td>
+                <td>: @Model?.ComBranch</td>
             </tr>
             <tr>
                 <td><b>Deartment</b></td>
                 <td>: @Model?.Dep</td>
             </tr>
             <tr>
-                <td><b>Nature of the Department</b></td>
+                <td><b>Nature of the Complaint</b></td>
                 <td>: @Model?.Nature</td>
             </tr>
             <tr>
@@ -141,7 +141,7 @@
                 <td>: @Model?.ResolvedRemark</td>
             </tr>
             <tr>
-                <td><b>Created Date</b></td>
+                <td><b>Resolved Date</b></td>
                 <td>: @Model?.ResolvedDateTime.Value.ToString("dd/MM/yyyy")</td>
             </tr>
         </table>
@@ -179,10 +179,10 @@
                 </tr>
                 </text>
             }
-            <tr>
+@*             <tr>
                 <td><b>Notified Date</b></td>
                 <td>: @Model?.CusNotifiedDate.Value.ToString("dd/MM/yyyy")</td>
-            </tr>
+            </tr> *@
         </table>
         <hr />
         @if (!string.IsNullOrWhiteSpace(Model?.CentralComment))

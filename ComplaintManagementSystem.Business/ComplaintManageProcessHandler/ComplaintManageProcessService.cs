@@ -182,7 +182,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 string Query = $"SELECT * FROM Complaint_ManageProcess WHERE Active=1";
                 var Data = _connection.Return(Query);
                 var newCode = Data.Rows.Count + 1;
-                var Refference = "CMAF" + newCode.ToString("D5");
+                var Refference = "CMVF" + newCode.ToString("D5");
                 var ComplaintMethod_Id = collection["ComplaintMethod_Id"].ToString();
                 var Cu_Name = collection["Cus_Name"].ToString();
                 var Cus_Nic = collection["Cus_Nic"].ToString();
@@ -270,7 +270,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 string Query = $"SELECT * FROM Complaint_ManageProcess WHERE Active=1";
                 var Data = _connection.Return(Query);
                 var newCode = Data.Rows.Count + 1;
-                var Refference = "CMAF" + newCode.ToString("D5");
+                var Refference = "CMVF" + newCode.ToString("D5");
                 var ComplaintMethod_Id = collection["ComplaintMethod_Id"].ToString();
                 var Cu_Name = collection["Cus_Name"].ToString();
                 var Cus_Nic = collection["Cus_Nic"].ToString();
@@ -886,7 +886,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 string Query = $"SELECT * FROM Complaint_ManageProcess WHERE Active=1";
                 var Data = _connection.Return(Query);
                 var newCode = Data.Rows.Count + 1;
-                var Refference = "CMAF" + newCode.ToString("D5");
+                var Refference = "CMVF" + newCode.ToString("D5");
                 var ComProcessId = collection["Id"].ToString();
                 var ComplaintMethod_Id = collection["ComplaintMethod_Ids"].ToString();
                 var Cu_Name = collection["Cus_Name"].ToString();
@@ -1379,13 +1379,18 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             try
             {
                 string query1 = @"
-                SELECT D.Id, D.CreatedDate , Us.Name AS ForwordUser, Dep.Name AS UserDepName, D.EscalatiomMatrix AS MatrixOrder , 
+                SELECT D.Id, M.Refference AS Refference, B.Branch AS Branch, CM.Method AS Method, D.CreatedDate , Us.Name AS ForwordUser, Dep.Name AS UserDepName, 
+                N.Nature AS Nature, M.Complaint AS Complaint, D.EscalatiomMatrix AS MatrixOrder, M.Cus_Refference AS CusRefference, 
                 M.IsResolved, M.ResolvedDateTime, M.ResolvedRemark, ResUs.Name AS ResolvedUserName, ResDep.Name AS DepName, M.IsSentDep, 
-                M.IsSentCentral, D.Remark
+                M.IsSentCentral, D.Remark, S.Status
                 FROM Complaint_Send_Departments AS D
                 INNER JOIN  Complaint_ManageProcess As M ON D.ComplaintMngProcess_Id = M.Id
                 INNER JOIN  Complaint_User As Us ON D.ForwardUser = us.UserName
                 INNER JOIN  Complaint_Department_Master As Dep ON Us.Dep_Id = Dep.Id
+                INNER JOIN Complaint_Nature_Master AS N ON N.Id = M.Nature_Id
+                INNER JOIN Complaint_Method_Master AS CM ON CM.Id = M.ComplaintMethod_Id
+                INNER JOIN Complaint_Branch_Master AS B ON B.Id = M.Branch_Id
+                INNER JOIN Complaint_Status_Master AS S ON S.Id = M.Status
                 LEFT JOIN Complaint_User AS ResUs ON M.ResolvedUser = ResUs.UserName
                 LEFT JOIN Complaint_Department_Master AS ResDep ON d.Dep_Id = ResDep.Id
                 WHERE M.Id = @Id order by D.EscalatiomMatrix ASC";
@@ -1405,7 +1410,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                     Complaint_ManageProcessModel bModel = new Complaint_ManageProcessModel()
                     {
                         ForwordUser = BRow["ForwordUser"].ToString(),
+                        Refference = BRow["Refference"].ToString(),
                         Dep = BRow["UserDepName"].ToString(),
+                        Nature = BRow["Nature"].ToString(),
+                        Complaint = BRow["Complaint"].ToString(),
+                        ComplaintMethod = BRow["Method"].ToString(),
+                        Branch = BRow["Branch"].ToString(),
+                        Cus_Refference = BRow["CusRefference"].ToString(),
                         CreatedDate = Convert.ToDateTime(BRow["CreatedDate"].ToString()),
                         MatrixOrder = Convert.ToInt32(BRow["MatrixOrder"]),
 
@@ -1418,6 +1429,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                         IsSentDep = BRow["IsSentDep"] != DBNull.Value && Convert.ToBoolean(BRow["IsSentDep"]),
                         IsSentCentral = BRow["IsSentCentral"] != DBNull.Value && Convert.ToBoolean(BRow["IsSentCentral"]),
                         Remark = BRow["Remark"].ToString(),
+                        StatusName = BRow["Status"].ToString(),
 
                     };
                     methodCounts.Add(bModel);
@@ -1593,7 +1605,115 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             {
                 var httpContext = _httpContextAccessor.HttpContext;
                 var UserName = httpContext?.Session.GetString("UserName");
-                string whereClause = $"WHERE cmp.Active = 1 AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
+                string whereClause = $"WHERE cmp.Active = 1 AND cmp.status = 2 AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
+
+                string query = $@"                                
+                              SELECT 
+                                    cmp.Id,
+                                    cmp.Refference,
+                                    cm.Method,
+                                    cmp.Complaint,
+                                    cmp.CreatedUser,
+                                    cb.Branch,
+                                    ccb.Branch ComBranch,
+                                    cmp.Dep_Id,
+                                    cp.Name Department,
+                                    cmp.Priority,
+                                    cmp.CreatedDate,
+                                    cmp.IsSentCentral,
+                                    cmp.IsSentCentralDateTime,
+                                    cmp.IsSentDep,
+                                    cmp.IsSentDepDateTime,
+                                    cmp.status,
+                                    s.status statusName,
+                                    cu.Name,
+                                    cmp.Cus_Name,
+                                    cmp.Cus_Email,
+                                    cmp.Cus_Nic,
+                                    cmp.Cus_Refference,
+                                    cmp.Cus_MobileNumber,
+                                    cmp.Branch_Id
+                                FROM Complaint_ManageProcess as cmp
+                                INNER JOIN Complaint_Method_Master as cm on cm.Id = cmp.ComplaintMethod_Id
+                                INNER JOIN Complaint_Department_Master as cp on cp.Id = cmp.Dep_Id
+                                INNER JOIN Complaint_Nature_Master as cn on cn.Id = cmp.Nature_Id
+                                INNER JOIN Complaint_User as cu on cu.UserName = cmp.CreatedUser
+                                INNER JOIN Complaint_Branch_Master as cb on cb.Id = cu.BranchId
+                                INNER JOIN Complaint_Branch_Master as ccb on ccb.Id = cmp.Branch_Id
+                                INNER JOIN Complaint_Status_Master as s on s.Id = cmp.status
+                                {whereClause};";
+
+                var parameters = new DynamicParameters();
+                var Data = await Task.Run(() => _connection.Return(query));
+                List<Complaint_ManageProcessModel> ComplainList = new List<Complaint_ManageProcessModel>();
+                if (Data != null && Data.Rows.Count > 0)
+                {
+                    for (int i = 0; i < Data.Rows.Count; i++)
+                    {
+                        var BRow = Data.Rows[i];
+                        Complaint_ManageProcessModel bModel = new Complaint_ManageProcessModel()
+                        {
+                            Id = Convert.ToInt32(BRow["Id"]),
+                            Refference = BRow["Refference"].ToString(),
+                            ComplaintMethod = BRow["Method"].ToString(),
+                            Complaint = BRow["Complaint"].ToString(),
+                            //CreatedUser = BRow["CreatedUser"].ToString(),
+                            ComBranch = BRow["Branch"].ToString(),
+                            Branch = BRow["ComBranch"].ToString(),
+                            Dep_Id = Convert.ToInt32(BRow["Dep_Id"]),
+                            Dep = BRow["Department"].ToString(),
+                            Priority = BRow["Priority"].ToString(),
+                            CreatedDate = Convert.ToDateTime(BRow["CreatedDate"]),
+                            IsSentCentral = BRow["IsSentCentral"] == DBNull.Value ? false : Convert.ToBoolean(BRow["IsSentCentral"]),
+                            IsSentCentralDateTime = BRow["IsSentCentralDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(BRow["IsSentCentralDateTime"]),
+                            IsSentDep = BRow["IsSentDep"] == DBNull.Value ? false : Convert.ToBoolean(BRow["IsSentDep"]),
+                            IsSentDepDateTime = BRow["IsSentDepDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(BRow["IsSentDepDateTime"]),
+                            Status = Convert.ToInt32(BRow["status"]),
+                            StatusName = BRow["statusName"].ToString(),
+                            CreatedUser = BRow["Name"].ToString(),
+                            Cus_Name = BRow["Cus_Name"].ToString(),
+                            Cus_Email = BRow["Cus_Email"].ToString(),
+                            Cus_Nic = BRow["Cus_Nic"].ToString(),
+                            Cus_Refference = BRow["Cus_Refference"].ToString(),
+                            Cus_MobileNumber = BRow["Cus_MobileNumber"].ToString(),
+                            Branch_Id = Convert.ToInt32(BRow["Branch_Id"]),
+                        };
+
+                        string attachmentPath = Path.Combine(
+                                    Directory.GetCurrentDirectory(),
+                                    _config["FileSettings:AttachmentsRootPath"]
+                                );
+
+                        string baseUrl = _baseUrl;
+                        string filePath = Path.Combine(
+                                            attachmentPath,
+                                            $"_{bModel.Id}.pdf"
+                                        );
+
+                        if (File.Exists(filePath))
+                        {
+                            bModel.AttachmentPath = $"/Attachments/_{bModel.Id}.pdf";
+                            bModel.downloadUrl = $"{baseUrl}/ComplaintManageProcess/DownloadAttachment?fileName=_{bModel.Id}.pdf";
+                        }
+
+                        ComplainList.Add(bModel);
+                    }
+                }
+                return ComplainList.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<Complaint_ManageProcessModel>> getCreatedCentralComplainLists()
+        {
+            try
+            {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+                string whereClause = $"WHERE cmp.Active = 1 AND cmp.status = 3 AND (cmp.IsResolved IS NULL OR cmp.IsResolved <> 1)";
 
                 string query = $@"
                                 
@@ -1689,6 +1809,48 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                     }
                 }
                 return ComplainList.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<UserModel>> getCentralResPersons()
+        {
+            try
+            {
+                var httpContext = _httpContextAccessor.HttpContext;
+                var UserName = httpContext?.Session.GetString("UserName");
+                string whereClause = $"WHERE cur.Role='Central User' and u.Active=1";
+
+                string query = $@"                                
+                              SELECT u.Id, u.UserName,u.Name,u.Email FROM Complaint_User AS u
+                                    INNER JOIN Complaint_User_Permission AS cup ON cup.UserId = u.Id
+                                    INNER JOIN Complaint_User_Role AS cur ON cur.Id = cup.UserRoleId
+                                {whereClause};";
+
+                var parameters = new DynamicParameters();
+                var Data = await Task.Run(() => _connection.Return(query));
+                List<UserModel> UserList = new List<UserModel>();
+                if (Data != null && Data.Rows.Count > 0)
+                {
+                    for (int i = 0; i < Data.Rows.Count; i++)
+                    {
+                        var BRow = Data.Rows[i];
+                        UserModel bModel = new UserModel()
+                        {
+                            Id = Convert.ToInt32(BRow["Id"]),
+                            UserName = BRow["UserName"].ToString(),
+                            Name = BRow["Name"].ToString(),
+                            Email = BRow["Email"].ToString(),
+                            //CreatedUser = BRow["CreatedUser"].ToString(),
+
+                        };
+                        UserList.Add(bModel);
+                    }
+                }
+                return UserList.ToList();
             }
             catch (Exception ex)
             {

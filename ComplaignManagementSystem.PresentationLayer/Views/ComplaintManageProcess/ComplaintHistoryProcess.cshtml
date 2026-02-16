@@ -144,99 +144,137 @@
       placeholder: 'Select Complaint'
     });
     $('#timelineList').hide();
-    function ViewHistory() {
-        var ComplainNo = document.getElementById("Complaint").value;
-        $('#timelineList').show();
-        $.ajax({
-            url: '@Url.Action("GetComplaintHistoryDetails", "ComplaintManageProcess")',
-            type: "GET",
-            data: { id: ComplainNo },
-            dataType: 'json',
-            success: function (data) {
+    function ViewHistory() {        
+        var ComplainNo = document.getElementById("Complaint").value;        
+        $('#timelineList').show();        
+        $.ajax({        
+            url: '@Url.Action("GetComplaintHistoryDetails", "ComplaintManageProcess")',        
+            type: "GET",        
+            data: { id: ComplainNo },        
+            dataType: 'json',        
+            success: function (data) {        
+                var Compleathtml = ``;        
+                var Bodyhtml = ``;        
+                var html = ``;        
+                var forloopNo = 0;        
 
-                var Compleathtml = ``;
-                var Bodyhtml = ``;
-                var html = ``;
-                var forloopNo = 0;
-                $.each(data, function (index, item) {
-                    forloopNo++;
-                    var titleText = (item.matrixOrder == 1) ? "Complaint Registered": "Complaint Assigned";
-                    var formattedDate = item.createdDate.replace("T", "  ");
-                    var DepName = item.departmentName;
+                $.each(data, function (index, item) {        
+                    forloopNo++;        
+                    var titleText = (item.matrixOrder == 1) ? "Complaint Registered": "Complaint Assigned";        
+                    var formattedDate = item.createdDate.replace("T", "  ");        
+                    var DepName = item.departmentName; 
                     
-                    if(item.isSentDep == 1){
-                        console.log(DepName);
-                        if(DepName != "Central"){                            
-                            DepName = DepName + ' Department';
-                        }
+                    var jk = data[index + 1];
 
-                    Bodyhtml += `
-                            <div class="timeline-item">
-                                 <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                            <h5 class="mb-1">Complaint assigned to ${DepName} </h5>
-                                            <p class="mb-0 small"><strong>Forwarder Name : </strong> ${item.forwordUser}</p>
-                                            <p class="mb-0 small"><strong>Forwarder Remark : </strong> ${item.remark}</p>
-                                     <div class="small opacity-75 mt-1">${formattedDate}</div>
-                                </div>
-                              </div>
-                        `;
-                        }
+                    if(item.isSentDep == 1){        
+                        console.log(DepName);        
+                        if(DepName != "Central"){                          
+                            DepName = DepName + ' Department';        
+                        }    
+                        var lastItem = data[data.length - 1];                                                
+                        var lastItemCount = data.length - 1;
 
-                    if(forloopNo == 1){                                                
-
-                        html += `
-                            <div class="timeline-item">
-                                 <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                            <h5 class="mb-1">${titleText}</h5>
-                                            <p class="mb-0 small"><strong>User Name : </strong> ${item.forwordUser}</p>
-                                            <p class="mb-0 small"><strong>Department : </strong> ${item.dep}</p>
-                                    <div class="small opacity-75 mt-1">${formattedDate}</div>
-                                </div>
-                              </div>
-                        `;
-
-                         // ----------------------------------------------------------------------------------
-
-                        var lastItem = data[data.length - 1];
-                         if (lastItem.isResolved) {
+                        if(lastItem.isResolved == true && lastItemCount == (forloopNo - 1)){
                             var resolvedDate = lastItem.resolvedDateTime ? lastItem.resolvedDateTime.replace("T", "  ") : "";
+                            Bodyhtml += `
+                            <div class="timeline-item">
+                                <div class="timeline-node"></div>
+                                <div class="timeline-card">
+                                    <h5 class="mb-1">Complaint Resolved by ${DepName} </h5>
 
-                            Compleathtml += `
-                                <div class="timeline-item">
-                                 <div class="timeline-node"></div>
-                                    <div class="timeline-card">
-                                            <h5 class="mb-1">Complaint Resolved</h5>
-                                            <p class="mb-0 small"><strong>Resolved By : </strong> ${item.resolvedUser}</p>
-                                            <p class="mb-0 small"><strong>Remark : </strong> ${item.resolvedRemark}</p>
+                                    <p class="mb-0 small"><strong>Resolved By : </strong> ${item.resolvedUser}</p>
+                                    <p class="mb-0 small"><strong>Remark : </strong> ${item.resolvedRemark}</p>
+
                                     <div class="small opacity-75 mt-1">${resolvedDate}</div>
+
                                 </div>
-                              </div>
+                            </div>
                             `;
+                        }else{
+                            if(jk != undefined){                                                                        
+                                Bodyhtml += `
+                                    <div class="timeline-item">
+                                        <div class="timeline-node"></div>
+                                        <div class="timeline-card">
+                                            <h5 class="mb-1">Complaint assigned to ${DepName} </h5>
+                                            <p class="mb-0 small"><strong>Forwarder Name : </strong> ${jk.forwordUser}</p>
+                                            <p class="mb-0 small"><strong>Forwarder Remark : </strong> ${jk.remark}</p>
+                                            <div class="small opacity-75 mt-1">${formattedDate}</div>
+                                            <br/>
+                                            <p class="mb-0 small"><strong>Status : </strong> Proceed</p>
+                                        </div>
+                                    </div>
+                                `;
+                            }else{                                                                        
+                                Bodyhtml += `
+                                    <div class="timeline-item">
+                                        <div class="timeline-node"></div>
+                                        <div class="timeline-card">
+                                            <h5 class="mb-1">Complaint assigned to ${DepName} </h5>
+                                            <p class="mb-0 small"><strong>Forwarder Name : </strong> </p>
+                                            <p class="mb-0 small"><strong>Forwarder Remark : </strong></p>
+                                            <div class="small opacity-75 mt-1">${formattedDate}</div>
+                                            <br/>
+                                            <p class="mb-0 small"><strong>Status : </strong> pending</p>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+
                         }
-                    }
+                               
+                    }        
+                    if(forloopNo == 1){                                              
+                        html += `        
+                        <div class="timeline-item">        
+                            <div class="timeline-node"></div>        
+                            <div class="timeline-card">        
+                                <h5 class="mb-1">${titleText}</h5>        
+                                <p class="mb-0 small"><strong>Complaint Refference : </strong> ${item.refference}</p>        
+                                <p class="mb-0 small"><strong>Complaint Branch : </strong> ${item.branch}</p>        
+                                <p class="mb-0 small"><strong>Complaint Department : </strong> ${item.departmentName}</p>        
+                                <p class="mb-0 small"><strong>Complaint : </strong> ${item.complaint}</p>        
+                                <br/>        
+                                <p class="mb-0 small"><strong>Customer Refference : </strong> ${item.cus_Refference}</p>        
+                                <br/>        
+                                <p class="mb-0 small"><strong>Created User : </strong> ${item.forwordUser}</p>        
+                                <p class="mb-0 small"><strong>User Department : </strong> ${item.dep}</p>        
+                                <div class="small opacity-75 mt-1">${formattedDate}</div>        
+                            </div>        
+                        </div>        
+                        `;
+        
+                        // ----------------------------------------------------------------------------------
 
-
+                        // var lastItem = data[data.length - 1];        
+                        //  if (lastItem.isResolved) {        
+                        //     var resolvedDate = lastItem.resolvedDateTime ? lastItem.resolvedDateTime.replace("T", "  ") : "";        
+                        //     Compleathtml += `        
+                        //         <div class="timeline-item">        
+                        //          <div class="timeline-node"></div>        
+                        //             <div class="timeline-card">        
+                        //                     <h5 class="mb-1">Complaint Resolved</h5>        
+                        //                     <p class="mb-0 small"><strong>Resolved By : </strong> ${item.resolvedUser}</p>        
+                        //                    <p class="mb-0 small"><strong>Remark : </strong> ${item.resolvedRemark}</p>        
+                        //             <div class="small opacity-75 mt-1">${resolvedDate}</div>        
+                        //         </div>        
+                        //       </div>        
+                        //     `;        
+                        // }        
+                    }        
                 });
 
-
-
-                $("#timelineList").html(html + Bodyhtml + Compleathtml);
-                ApplyTimelineColors();
+                $("#timelineList").html(html + Bodyhtml + Compleathtml);        
+                ApplyTimelineColors();        
             },
-            error: function (xhr, status, error) {
-                console.error("Error:", xhr.responseText);
-                alert("Error while loading history!");
-            }
+        
+            error: function (xhr, status, error) {        
+                console.error("Error:", xhr.responseText);        
+                alert("Error while loading history!");        
+            }        
         });
-    }
-
-
-
-
-        function ApplyTimelineColors() {
-
+    }        
+    function ApplyTimelineColors() {
         const palette = [
             { from: "#36d1dc", to: "#5b86e5", node: "#36d1dc" },
             { from: "#ff9a9e", to: "#fad0c4", node: "#ff9a9e" },

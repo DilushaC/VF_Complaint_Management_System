@@ -649,7 +649,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                 {
                     ForwordUser = x.ForwordUser,
                     Dep = x.Dep,
-                    CreatedDate = x.CreatedDate,
+                    CreatedDate = x.CreatedDate.ToString("dd/MM/yyyy"),
                     MatrixOrder = x.MatrixOrder,
                     IsResolved = x.IsResolved,
                     ResolvedDateTime = x.ResolvedDateTime,
@@ -658,7 +658,14 @@ namespace ComplaignManagementSystem.Presentation.Controllers
                     DepartmentName = x.DepartmentName,
                     IsSentDep = x.IsSentDep,
                     IsSentCentral = x.IsSentCentral,
-                    Remark = x.Remark
+                    Remark = x.Remark,
+                    Refference = x.Refference,
+                    Complaint = x.Complaint,
+                    Nature = x.Nature,
+                    Method = x.ComplaintMethod,
+                    Branch = x.Branch,
+                    Cus_Refference = x.Cus_Refference,
+                    StatusName = x.StatusName,
                 }).ToList();
 
                 return Json(result);

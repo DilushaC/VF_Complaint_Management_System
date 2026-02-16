@@ -51,29 +51,12 @@ namespace ComplaignManagementSystem.EmailService
                         break;
                 }
                 itemA.DiffDays = diffDays;
-                //if (itemA.CreatedDate.Date < systemDate)
-                //{
-                //    itemA.ApproverName = resPerson.DepResName;
-                //    //itemA.ApproverName = resPerson.DepHeadName;
-                //    toEmail = resPerson.DepHeadEmail + resBPerson.BranchEmail;
-                //}
-                //else
-                //{
-                //    itemA.ApproverName = resPerson.DepResName;
-                //    toEmail = resPerson.DepResEmail;
-                //}
+
                 itemA.ApproverName = resPerson.DepResName;
                 toEmail = resPerson.DepResEmail + "," + resBPerson.BranchEmail;
                 EmailRequest request = new EmailRequest();
                 if (diffDays < 2)
                 {
-                    //var ccEmailsModel = ccEmails.Result.Select(a => a.Email).ToList();
-                    //if (!string.IsNullOrWhiteSpace(resBPerson.BranchEmail) &&
-                    //    !ccEmailsModel.Any(e =>
-                    //        e.Equals(resBPerson.BranchEmail, StringComparison.OrdinalIgnoreCase)))
-                    //{
-                    //    ccEmailsModel.Add(resBPerson.BranchEmail);
-                    //}
                     request = new EmailRequest
                     {
                         To = toEmail,
@@ -112,6 +95,71 @@ namespace ComplaignManagementSystem.EmailService
                                     "email-log.txt",
                                     $"Email job ran at {DateTime.Now}{Environment.NewLine}");
 
+            }
+        }
+
+        public async Task SendEmail1()
+        {
+            try
+            {
+                Console.WriteLine("Enter Email");
+                var ComplaintList = _comManageProcess.getCreatedCentralComplainLists().Result.ToList();
+                Console.WriteLine("success getting list");
+
+                var ccEmails = _comManageProcess.getCcEmails();
+                //var DepIdDistint = ComplaintList.Select(a => a.Dep_Id).Distinct().ToList();
+
+                Console.WriteLine("before foreach");
+
+                foreach (var itemA in ComplaintList)
+                {
+                    string toEmail;
+                    DateTime systemDate;
+                    int diffDays;
+                    var resPerson = _comManageProcess.getCentralResPersons().Result.ToList();
+                    switch (itemA.Priority)
+                    {
+                        case "High":
+                            systemDate = DateTime.Now.AddDays(-3).Date;
+                            diffDays = (itemA.CreatedDate.Date.AddDays(3) - DateTime.Now.Date).Days;
+                            break;
+                        case "Medium":
+                            systemDate = DateTime.Now.AddDays(-5).Date;
+                            diffDays = (itemA.CreatedDate.Date.AddDays(5) - DateTime.Now.Date).Days;
+                            break;
+                        default:
+                            systemDate = DateTime.Now.AddDays(-7).Date;
+                            diffDays = (itemA.CreatedDate.Date.AddDays(7) - DateTime.Now.Date).Days;
+                            break;
+                    }
+                    toEmail = string.Join(",", resPerson.Where(x => !string.IsNullOrWhiteSpace(x.Email)).Select(x => x.Email.Trim()));
+                    EmailRequest request = new EmailRequest();
+                    request = new EmailRequest
+                    {
+                        To = toEmail,
+                        //To = toEmail,
+                        Subject = "COMPLAINT MANAGEMENT | Pending Approval Notification Central",
+                        TemplateName = "CentralTemplate",
+                        Model = itemA,
+                        //ccEmailsModel = ccEmails.Result.Where(a => a.Status == 1)
+                        //                    .Select(a => a.Email)
+                        //                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                        //                    .ToList()
+                    };
+                    //request.ccEmailsModel.AddRange(resBPerson.BranchEmail);
+                    Console.WriteLine("Success send data to email service.");
+                    await _emailService.SendAsync(request);
+                    Console.WriteLine("Successfully send.");
+                    File.AppendAllText(
+                                        "email-log.txt",
+                                        $"Email job ran at {DateTime.Now}{Environment.NewLine}");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
             }
         }
 

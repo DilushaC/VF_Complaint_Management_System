@@ -55,24 +55,24 @@ namespace ComplaignManagementSystem.EmailService
             try
             {
 
-                string Time;
-                Time = "03:02 PM";
-                string currentTime = DateTime.Now.ToString("hh:mm tt");
-
+                //string Time;
+                //Time = "03:02 PM";
+                //string currentTime = DateTime.Now.ToString("hh:mm tt");
 
                 var console = serviceProvider.GetRequiredService<ComplaintEmailService>();
-                //console.InsertToMiddle();
-
-                //console.createBuildReport();
+                Console.WriteLine("start sendEmail!");
                 console.SendEmail();
+                Console.WriteLine("start sendEmail1!");
+                console.SendEmail1();
+
                 //console.SendEmail2();
 
-                if (Time == System.DateTime.Now.ToString("hh:mm tt"))
-                    console.SendEmail();
+                //if (Time == System.DateTime.Now.ToString("hh:mm tt"))
+                //    console.SendEmail();
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
                 throw;
             }
         }

@@ -38,6 +38,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<List<ComplaintMaster>> getCusNotifiedCompNoList();
         public void DeleteComplaint(int id);
         public Task<List<Complaint_ManageProcessModel>> getCreatedComplainLists();
+        public Task<List<Complaint_ManageProcessModel>> getCreatedCentralComplainLists();
+        public Task<List<UserModel>> getCentralResPersons();
         public Task<Complaint_ManageProcessModel> getCreatedComplainListsId(int id);
         public Task<List<EmailModel>> getEmails();
         public Complaint_Department_MasterModel getDepResPerson(int depId);
