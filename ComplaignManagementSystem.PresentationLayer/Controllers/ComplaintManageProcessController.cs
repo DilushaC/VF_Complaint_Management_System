@@ -151,6 +151,11 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             // SQL query to retrieve the master data for the given complaint ID
 
             ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
+            List<SendDepartmentModel> sendModel = await _complainProcess.getSendDepList(id);
+
+            ViewBag.SendDepDetailListCount = sendModel.Count();
+            ViewBag.SendDepDetailList = sendModel;
+
             if (complaintData == null)
             {
                 return NotFound(); // Or return an error partial view

@@ -627,6 +627,43 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
             }
         }
 
+        public async Task<List<SendDepartmentModel>> getSendDepList(int ProcessId)
+        {
+            try
+            {
+                string Query = $"SELECT SD.Id,SD.ComplaintMngProcess_Id,SD.Dep_Id,DP.Name AS DepartmentName,SD.EscalatiomMatrix,SD.Status AS Status, " +
+                            $"SD.ForwardUser,SD.Remark,SD.CreatedDate FROM Complaint_Send_Departments AS SD " +
+                            $"INNER JOIN Complaint_Department_Master AS DP ON DP.Id = SD.Dep_Id " +
+                            $"WHERE SD.Active=1 AND SD.ComplaintMngProcess_Id={ProcessId}" +
+                            $"ORDER BY SD.EscalatiomMatrix";
+                var Data = _connection.Return(Query);
+                List<SendDepartmentModel> depList = new List<SendDepartmentModel>();
+                for (int i = 0; i < Data.Rows.Count; i++)
+                {
+                    var BRow = Data.Rows[i];
+                    SendDepartmentModel bModel = new SendDepartmentModel()
+                    {
+                        Id = Convert.ToInt32(BRow["Id"]),
+                        ComplaintMngProcess_Id = Convert.ToInt32(BRow["ComplaintMngProcess_Id"]),
+                        Dep_Id = Convert.ToInt32(BRow["Dep_Id"]),
+                        EscalatiomMatrix = Convert.ToInt32(BRow["EscalatiomMatrix"]),
+                        DepartmentName = BRow["DepartmentName"].ToString(),
+                        ForwardUser = BRow["ForwardUser"].ToString(),
+                        Remark = BRow["Remark"].ToString(),
+                        Status = Convert.ToBoolean(BRow["Status"]),
+                        CreatedDate = Convert.ToDateTime(BRow["CreatedDate"]),
+                    };
+                    depList.Add(bModel);
+                }
+                return depList.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         public async Task<Complaint_ManageProcessModel> getComplainMasterUsingId(int Id)
         {
             try
@@ -1142,7 +1179,8 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                                     CreatedDate,
                                     Status
                                 FROM PagedResults
-                                WHERE RowNum > @Offset AND RowNum <= @EndRow;
+                                WHERE RowNum > @Offset AND RowNum <= @EndRow
+                                ORDER BY Refference DESC;
 
                                 -- The COUNT query also needs to be updated to use the full join, just like the CTE
                                 -- to ensure the count is accurate with filtering

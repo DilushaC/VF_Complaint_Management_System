@@ -23,6 +23,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<PaginationResultsModel<ComplaintMaster>> getDepComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id = null, string priority = null);
         public Task<PaginationResultsModel<ComplaintMaster>> getCentralComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id = null, string priority = null);
         public Task<ComplaintMaster> getComplainUsingId(int Id);
+        public Task<List<SendDepartmentModel>> getSendDepList(int ProcessId);
         public Task<Complaint_ManageProcessModel> getComplainMasterUsingId(int Id);
         public Complaint_ManageProcessModel getComplainProcessUsingId(int Id);
         public void UpdateForwardToCentral(int CompId, string remark);

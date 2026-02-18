@@ -1,5 +1,5 @@
-﻿@model ComplaignManagementSystem.Data.Models.ComplaintMaster // Change this to your actual model namespace
-
+﻿@using ComplaignManagementSystem.Data.Models
+@model ComplaignManagementSystem.Data.Models.ComplaintMaster // Change this to your actual model namespace
 
 <hr />
 <div class="row">
@@ -8,7 +8,7 @@
             <div class="col-md-3">
                 <strong>Refference</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 :  @Html.DisplayFor(m => m.Refference)
             </div>
         </div>
@@ -24,7 +24,7 @@
             <div class="col-md-3">
                 <strong>Complaint Branch</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 :  @Html.DisplayFor(m => m.ComBranch)
             </div>
         </div>
@@ -32,7 +32,7 @@
             <div class="col-md-3">
                 <strong>Complaint Department</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 :  @Html.DisplayFor(m => m.Department)
             </div>
         </div>
@@ -40,7 +40,7 @@
             <div class="col-md-3">
                 <strong>Nature of the Complaint</strong>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-8">
                 :  @Html.DisplayFor(m => m.Nature)
             </div>
         </div>
@@ -48,7 +48,7 @@
             <div class="col-md-3">
                 <strong>Complaint</strong>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-8">
                 :  @Html.DisplayFor(m => m.Complaint)
             </div>
         </div>
@@ -73,7 +73,7 @@
             <div class="col-md-3">
                 <strong>Created Branch</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 :  @Html.DisplayFor(m => m.Branch)
             </div>
         </div>
@@ -81,7 +81,7 @@
             <div class="col-md-3">
                 <strong>Created User Name</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 :  @Html.DisplayFor(m => m.CreatedUser)
             </div>
         </div>
@@ -94,7 +94,7 @@
                 <div class="col-md-3">
                     <strong>Customer Name</strong>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     :  @Html.DisplayFor(m => m.Cus_Name)
                 </div>
             </div>
@@ -103,7 +103,7 @@
             <div class="col-md-3">
                 <strong>Customer NIC</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 :  @Html.DisplayFor(m => m.Cus_Nic)
             </div>
         </div>
@@ -111,7 +111,7 @@
             <div class="col-md-3">
                 <strong>Customer Mobile</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 :  @Html.DisplayFor(m => m.Cus_MobileNumber)
             </div>
         </div>
@@ -128,6 +128,50 @@
         }
     </div>
 </div>
+
+@if (ViewBag.SendDepDetailListCount != 0)
+{
+    string lastDep;        
+    var list = ViewBag.SendDepDetailList as List<SendDepartmentModel>;
+    int i = 1;
+    @foreach (var item in ViewBag.SendDepDetailList)
+    {        
+        if (item.EscalatiomMatrix > 1)
+        {
+            <hr />
+            int LastMatrix = item.EscalatiomMatrix - 1;
+            string LastDepartment = list?.Where(a => a.EscalatiomMatrix == LastMatrix).Select(a => a.DepartmentName).FirstOrDefault();
+
+            <h3>@i.ToString("00")) Forward from @LastDepartment to @item.DepartmentName</h3>
+            <div class="row" style="margin-top:15px">
+                <div class="col-md-3">
+                    <strong>Frowarder Remark</strong>
+                </div>
+                <div class="col-md-8">
+                    :  @item.Remark
+                </div>
+            </div>
+            <div class="row" style="margin-top:7px">
+                <div class="col-md-3">
+                    <strong>Frowarder User</strong>
+                </div>
+                <div class="col-md-8">
+                    :  @item.ForwardUser
+                </div>
+            </div>
+            <div class="row" style="margin-top:7px">
+                <div class="col-md-3">
+                    <strong>Froward Date</strong>
+                </div>
+                <div class="col-md-8">
+                    :  @item.CreatedDate.ToString("dd/mm/yyyy")
+                </div>
+            </div>
+            i++;
+        }
+    }
+}
+
 
 @if (Model.Status == "Resolved")
 {
@@ -152,14 +196,14 @@
             <div class="col-md-3">
                 <strong>Central Comment</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-8">
                 :  @Html.DisplayFor(m => m.CentralComment)
             </div>
         </div>
         <hr />
     }
 }
-
+<br />
 <div class="modal-footer">
     <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
 </div>

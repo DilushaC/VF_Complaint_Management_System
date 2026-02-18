@@ -6,9 +6,6 @@
     ViewData["MenuTab"] = "ComplaintHistoryProcessMenu";
     ViewData["SubMenuTab"] = "ComplaintHistoryProcessMenu";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-
-
 }
 
 <link href="~/plugins/demo/chameleon-admin-template/app-assets/select2/css/select2.min.css" rel="stylesheet" />
@@ -74,11 +71,7 @@
         z-index: 2;
         border: 4px solid #fff;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    }
-
-    
-
-   
+    }   
 </style>
 
 
@@ -94,7 +87,6 @@
                         </h4>
                         <hr>
                         <br>
-
                         <div class="col-md-6">
 
                             <label for="Complaint">Complain Number</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
@@ -106,13 +98,8 @@
                             <div class="form-actions">
                                 <button type="button" class="btn btn-danger mr-1" onclick="ViewHistory()">Show Details</button>
                             </div>
-
                         </div>
-
-
                         @* ===================================================================== *@
-
-
                         <div class="container py-5">
                             <div class="timeline" id="timelineList">
                             </div>
@@ -123,10 +110,7 @@
             </div>
         </div>
     </div>
-
 </div>
-
-
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/tables/jquery.datatables.min.js"></script>
@@ -136,8 +120,6 @@
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/js/scripts/extensions/sweet-alerts.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/select2/js/select2.min.js"></script>
 <script src="~/plugins/demo/chameleon-admin-template/app-assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-
 <script>        
     $("#Complaint").select2({
       allowClear:true,
@@ -157,15 +139,12 @@
                 var Bodyhtml = ``;        
                 var html = ``;        
                 var forloopNo = 0;        
-
                 $.each(data, function (index, item) {        
                     forloopNo++;        
                     var titleText = (item.matrixOrder == 1) ? "Complaint Registered": "Complaint Assigned";        
-                    var formattedDate = item.createdDate.replace("T", "  ");        
+                    var formattedDate = item.createdDate.replace("T", "  ");      
                     var DepName = item.departmentName; 
-                    
                     var jk = data[index + 1];
-
                     if(item.isSentDep == 1){        
                         console.log(DepName);        
                         if(DepName != "Central"){                          
@@ -173,22 +152,18 @@
                         }    
                         var lastItem = data[data.length - 1];                                                
                         var lastItemCount = data.length - 1;
-
                         if(lastItem.isResolved == true && lastItemCount == (forloopNo - 1)){
                             var resolvedDate = lastItem.resolvedDateTime ? lastItem.resolvedDateTime.replace("T", "  ") : "";
                             Bodyhtml += `
-                            <div class="timeline-item">
-                                <div class="timeline-node"></div>
-                                <div class="timeline-card">
-                                    <h5 class="mb-1">Complaint Resolved by ${DepName} </h5>
-
-                                    <p class="mb-0 small"><strong>Resolved By : </strong> ${item.resolvedUser}</p>
-                                    <p class="mb-0 small"><strong>Remark : </strong> ${item.resolvedRemark}</p>
-
-                                    <div class="small opacity-75 mt-1">${resolvedDate}</div>
-
-                                </div>
-                            </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-node"></div>
+                                        <div class="timeline-card">
+                                            <h5 class="mb-1">Complaint Resolved by ${DepName} </h5>
+                                            <p class="mb-0 small"><strong>Resolved By : </strong> ${item.resolvedUser}</p>
+                                            <p class="mb-0 small"><strong>Remark : </strong> ${item.resolvedRemark}</p>
+                                            <div class="small opacity-75 mt-1">${resolvedDate}</div>
+                                        </div>
+                                    </div>
                             `;
                         }else{
                             if(jk != undefined){                                                                        
@@ -220,9 +195,7 @@
                                     </div>
                                 `;
                             }
-
-                        }
-                               
+                        }                               
                     }        
                     if(forloopNo == 1){                                              
                         html += `        
@@ -242,32 +215,12 @@
                                 <div class="small opacity-75 mt-1">${formattedDate}</div>        
                             </div>        
                         </div>        
-                        `;
-        
-                        // ----------------------------------------------------------------------------------
-
-                        // var lastItem = data[data.length - 1];        
-                        //  if (lastItem.isResolved) {        
-                        //     var resolvedDate = lastItem.resolvedDateTime ? lastItem.resolvedDateTime.replace("T", "  ") : "";        
-                        //     Compleathtml += `        
-                        //         <div class="timeline-item">        
-                        //          <div class="timeline-node"></div>        
-                        //             <div class="timeline-card">        
-                        //                     <h5 class="mb-1">Complaint Resolved</h5>        
-                        //                     <p class="mb-0 small"><strong>Resolved By : </strong> ${item.resolvedUser}</p>        
-                        //                    <p class="mb-0 small"><strong>Remark : </strong> ${item.resolvedRemark}</p>        
-                        //             <div class="small opacity-75 mt-1">${resolvedDate}</div>        
-                        //         </div>        
-                        //       </div>        
-                        //     `;        
-                        // }        
+                        `;      
                     }        
                 });
-
                 $("#timelineList").html(html + Bodyhtml + Compleathtml);        
                 ApplyTimelineColors();        
-            },
-        
+            },        
             error: function (xhr, status, error) {        
                 console.error("Error:", xhr.responseText);        
                 alert("Error while loading history!");        
@@ -282,14 +235,11 @@
             { from: "#84fab0", to: "#8fd3f4", node: "#84fab0" },
             { from: "#a18cd1", to: "#fbc2eb", node: "#a18cd1" }
         ];
-
         const items = document.querySelectorAll(".timeline-item");
-
         items.forEach((item, idx) => {
             const set = palette[idx % palette.length];
             const card = item.querySelector(".timeline-card");
             const node = item.querySelector(".timeline-node");
-
             if (card) {
                 card.style.background = `linear-gradient(135deg, ${set.from}, ${set.to})`;
                 card.style.borderLeftColor = set.from;
@@ -301,9 +251,4 @@
             }
         });
     }
-
-
-
-
-
 </script>

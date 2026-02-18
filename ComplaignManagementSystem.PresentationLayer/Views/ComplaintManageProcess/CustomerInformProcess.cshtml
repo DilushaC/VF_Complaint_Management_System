@@ -58,7 +58,7 @@
                         <div class="row" style="margin-top:2%" id="otherDiv">
                             <div class="col-md-6">
                                 <label for="notification">Customer informed status</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                                <select id="notification" name="notification" class="form-control" asp-items="ViewBag.notification">
+                                <select id="notification" name="notification" class="form-control" asp-items="ViewBag.notification" style="width:100%">
                                     <option value="">-- Select --</option>
                                 </select>
                                 <span id="error-message-Status"></span>
@@ -75,8 +75,8 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group" style="margin-top:10px">
-                                    <label for="Complaint">Other</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
-                                    <textarea id="Complaint" rows="5" class="form-control" name="Complaint" placeholder="Other"></textarea>
+                                    <label for="Complaint">Remark</label><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                                    <textarea id="Complaint" rows="5" class="form-control" name="Complaint" placeholder="Remark"></textarea>
                                     <span id="error-message-complaint"></span>
                                 </div>
                             </div>
