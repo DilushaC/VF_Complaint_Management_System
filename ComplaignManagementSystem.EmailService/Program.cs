@@ -60,10 +60,10 @@ namespace ComplaignManagementSystem.EmailService
                 //string currentTime = DateTime.Now.ToString("hh:mm tt");
 
                 var console = serviceProvider.GetRequiredService<ComplaintEmailService>();
-                Console.WriteLine("start sendEmail!");
-                console.SendEmail();
-                Console.WriteLine("start sendEmail1!");
-                console.SendEmail1();
+                Console.WriteLine("start send Approval Email!");
+                console.SendApprovalEmail();
+                Console.WriteLine("start send Centrail Email!");
+                console.SendCentrailEmail();
 
                 //console.SendEmail2();
 

@@ -432,8 +432,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
-
-
         [HttpPost]
         public JsonResult Delete(int id)
         {
@@ -679,7 +677,7 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             {
                 return Json(new { error = ex.Message });
             }
-        }
+        } 
 
         //------------------------ Customer inform ------------------------------------>    
         [HttpGet]
@@ -813,7 +811,6 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             viewResult.View.RenderAsync(viewContext).GetAwaiter().GetResult();
             return sw.ToString();
         }
-
 
         [HttpPost]
         public ActionResult UpdateCustomerInformDetails(int ComplainNo, int NotifiID, string Complaint, bool isNotified, IFormFile file)

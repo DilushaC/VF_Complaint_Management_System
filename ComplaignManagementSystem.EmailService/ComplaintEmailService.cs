@@ -23,7 +23,7 @@ namespace ComplaignManagementSystem.EmailService
             _comManageProcess = complaintManage;
         }
 
-        public async Task SendEmail()
+        public async Task SendApprovalEmail()
         {
             var ComplaintList = _comManageProcess.getCreatedComplainLists().Result.ToList();
             //var DepIdDistint = ComplaintList.Select(a => a.Dep_Id).Distinct().ToList();
@@ -98,7 +98,7 @@ namespace ComplaignManagementSystem.EmailService
             }
         }
 
-        public async Task SendEmail1()
+        public async Task SendCentrailEmail()
         {
             try
             {
@@ -132,7 +132,7 @@ namespace ComplaignManagementSystem.EmailService
                             diffDays = (itemA.CreatedDate.Date.AddDays(7) - DateTime.Now.Date).Days;
                             break;
                     }
-                    toEmail = string.Join(",", resPerson.Where(x => !string.IsNullOrWhiteSpace(x.Email)).Select(x => x.Email.Trim()));
+                    toEmail = string.Join(",", ccEmails.Result.Where(x => !string.IsNullOrWhiteSpace(x.Email)).Select(x => x.Email.Trim()));
                     EmailRequest request = new EmailRequest();
                     request = new EmailRequest
                     {

@@ -57,7 +57,16 @@
 
         <div class="content">
             <p>Dear @Model?.ApproverName,</p>
-            <p>We kindly request you to take actions on the Customer Complaint and provide us with feedback explaining the cause of the complaint and the solution to rectify if within @Model?.DiffDays days.</p>
+            @if (Model?.DiffDays > 0)
+            {
+                <p>We kindly request you to take actions on the Customer Complaint and provide us with feedback explaining the cause of the complaint and the solution to rectify if within @Model?.DiffDays days.</p>
+            }
+            else
+            {
+                <p>Please note that the resolution time for the customer complaint @Model?.Refference has exceeded the allowed timeline. Kindly review and take immediate action to resolve the matter.</p>
+            }
+
+
             @*<p>The following complaint requires your approval:</p>*@ 
             <table style="width:100%; border-collapse: collapse;">
                 <tr>
