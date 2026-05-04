@@ -36,14 +36,7 @@
                 :  @Html.DisplayFor(m => m.Department)
             </div>
         </div>
-        <div class="row" style="margin-top:7px">
-            <div class="col-md-3">
-                <strong>Nature of the Complaint</strong>
-            </div>
-            <div class="col-md-8">
-                :  @Html.DisplayFor(m => m.Nature)
-            </div>
-        </div>
+
         <div class="row" style="margin-top:7px">
             <div class="col-md-3">
                 <strong>Complaint</strong>
@@ -58,7 +51,7 @@
             </div>
             <div class="col-md-3">
                 : @if (!string.IsNullOrEmpty(Model.AttachmentPath))
-                {
+                                {
                     <a href="@Url.Action("DownloadAttachment", "ComplaintManageProcess", new { fileName = Model.AttachmentPath })" target="_blank" style="margin-top:10px">
                         <i class="fa-regular fa-file-pdf" style="height:25px; width:25px"></i>
                     </a>
@@ -131,11 +124,11 @@
 
 @if (ViewBag.SendDepDetailListCount != 0)
 {
-    string lastDep;        
+    string lastDep;
     var list = ViewBag.SendDepDetailList as List<SendDepartmentModel>;
     int i = 1;
     @foreach (var item in ViewBag.SendDepDetailList)
-    {        
+    {
         if (item.EscalatiomMatrix > 1)
         {
             <hr />
@@ -172,8 +165,54 @@
     }
 }
 
+@if (ViewBag.PendingDetailListCount != 0)
+{
+    int i = 1;
+    <hr />
+    <h4>Pending Comment Details</h4>
+    @foreach (var item in ViewBag.PendingDetailList)
+    {
+        <div class="row" style="margin-top:15px">
+            <div class="col-md-3">
+                <strong>@i.ToString("00")) Pending Remark</strong>
+            </div>
+            <div class="col-md-8">
+                :  @item.Remark
+            </div>
+        </div>
+        i++;
+    }
+}
+
 @if (Model.Status == "Resolved")
 {
+    <hr />
+    <h4>Resolved Details</h4>
+    <br />
+    <div class="row" style="margin-top:7px">
+        <div class="col-md-3">
+            <strong>Resolved User</strong>
+        </div>
+        <div class="col-md-6">
+            :  @Html.DisplayFor(m => m.ResolvedUser)
+        </div>
+    </div>
+    <div class="row" style="margin-top:7px">
+        <div class="col-md-3">
+            <strong>Resolved Date</strong>
+        </div>
+        <div class="col-md-6">
+            :  @Html.DisplayFor(m => m.ResolvedDateTime)
+        </div>
+    </div>
+    <div class="row" style="margin-top:7px">
+        <div class="col-md-3">
+            <strong>Remark</strong>
+        </div>
+        <div class="col-md-6">
+            :  @Html.DisplayFor(m => m.ResolvedRemark)
+        </div>
+    </div>
     if (Model.IsCentralComment == false)
     {
         <hr />
@@ -201,7 +240,29 @@
         </div>
         <hr />
     }
+
+
+
 }
+
+@if (Context.Session.GetString("UserPermission") == "Central User" || Context.Session.GetString("UserPermission") == "Admin ")
+{
+    @if (Model.Status != "Resolved")
+    {
+        <hr />
+        <div class="row" style="margin-top:17px">
+            <div class="col-md-12">
+                <strong>Pending Remark :</strong><span class="text-uppercase text-danger" style="margin-left:5px">*</span>
+                <textarea id="PendingRemark" class="form-control" placeholder="Remark." name="PendingRemark" rows="6" cols="100" style="margin-top:10px"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn grey btn-success" onclick="AddPeningComment('@Model.Id')">Save</button>
+        </div>
+    }
+}
+
+<hr />
 <br />
 <div class="modal-footer">
     <button type="button" class="btn grey btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -224,6 +285,52 @@
                 url: '@Url.Action("CentralCommentUpdate", "ComplaintManageProcess")',
                 type: 'POST',
                 data: { id: complaintId, CentralComment:remark },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Successfully Saved Complaint.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '@Url.Action("CentralProcess", "ComplaintManageProcess")';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message || 'Complain Resolve Failed.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error Complain Resolve.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+    }
+    function AddPeningComment(complaintId) {
+        //alert();
+        var remark = document.getElementById("PendingRemark").value;
+        if (remark.trim() === "") {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'Comment is a required field. Please enter a remark.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        }else{
+            $.ajax({
+                url: '@Url.Action("CentralPeningCommentUpdate", "ComplaintManageProcess")',
+                type: 'POST',
+                data: { id: complaintId, CentralPendingComment:remark },
                 success: function (response) {
                     if (response.success) {
                         Swal.fire({

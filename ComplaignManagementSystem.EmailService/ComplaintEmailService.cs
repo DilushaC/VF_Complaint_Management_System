@@ -55,6 +55,7 @@ namespace ComplaignManagementSystem.EmailService
                 itemA.ApproverName = resPerson.DepResName;
                 toEmail = resPerson.DepResEmail + "," + resBPerson.BranchEmail;
                 EmailRequest request = new EmailRequest();
+
                 if (diffDays < 2)
                 {
                     request = new EmailRequest
@@ -74,6 +75,17 @@ namespace ComplaignManagementSystem.EmailService
                 }
                 else
                 {
+                    var Ccemails = ccEmails.Result
+                                .Where(a => a.Status == 1)
+                                .Select(a => a.Email)
+                                .Where(e => !string.IsNullOrWhiteSpace(e))
+                                .ToList();
+
+                    if (!string.Equals(resPerson.DepHeadEmail, resPerson.DepResEmail, StringComparison.OrdinalIgnoreCase))
+                    {
+                        Ccemails.Add(resPerson.DepHeadEmail);
+                    }
+
                     request = new EmailRequest
                     {
                         To = toEmail,
@@ -81,12 +93,7 @@ namespace ComplaignManagementSystem.EmailService
                         Subject = "COMPLAINT MANAGEMENT | Pending Approval Notification",
                         TemplateName = "ApprovalsTemplate",
                         Model = itemA,
-                        ccEmailsModel = ccEmails.Result.Where(a => a.Status == 1)
-                                        .Select(a => a.Email)
-                                        .Append(resPerson.DepHeadEmail)
-                                        .Where(e => !string.IsNullOrWhiteSpace(e))
-                                        .Distinct(StringComparer.OrdinalIgnoreCase)
-                                        .ToList()
+                        ccEmailsModel = Ccemails.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
                     };
                 }
                 //request.ccEmailsModel.AddRange(resBPerson.BranchEmail);

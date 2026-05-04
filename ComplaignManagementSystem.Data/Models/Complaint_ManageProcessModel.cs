@@ -23,6 +23,7 @@ namespace ComplaignManagementSystem.Data.Models
         public string Dep { get; set; }
         public int Nature_Id { get; set; }
         public string Nature { get; set; }
+        public string NatureCode { get; set; }
         public int Branch_Id { get; set; }
         public string Branch { get; set; }
         public string ComBranch { get; set; }
@@ -56,6 +57,8 @@ namespace ComplaignManagementSystem.Data.Models
         public string CusNotification { get; set; }
         public string CusNotificationRemark { get; set; }
         public string CentralComment { get; set; }
+        public string OfficerEPF { get; set; }
+        public string OfficerName { get; set; }
 
 
         //------------

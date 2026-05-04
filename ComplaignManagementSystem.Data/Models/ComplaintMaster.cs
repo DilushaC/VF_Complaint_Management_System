@@ -29,5 +29,9 @@ namespace ComplaignManagementSystem.Data.Models
         public DateTime CreatedDate { get; set; }
         public bool Active { get; set; }
         public string AttachmentPath { get; set; }
+        public bool IsResolved { get; set; }
+        public string ResolvedRemark { get; set; }
+        public string ResolvedUser { get; set; }
+        public DateTime ResolvedDateTime { get; set; }
     }
 }

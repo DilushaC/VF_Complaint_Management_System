@@ -13,8 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using QuestPDF.Fluent;
 using Rotativa.AspNetCore;
+using System.IO;
+using System.Drawing;
 
 namespace ComplaignManagementSystem.Presentation.Controllers
 {
@@ -149,12 +153,18 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         public async Task<IActionResult> ComplaintDetails(int id)
         {
             // SQL query to retrieve the master data for the given complaint ID
-
             ComplaintMaster complaintData = await _complainProcess.getComplainUsingId(id);
             List<SendDepartmentModel> sendModel = await _complainProcess.getSendDepList(id);
+            List<PendingDetailsModel> pendingModel = await _complainProcess.getPendingDetailList(id);
 
             ViewBag.SendDepDetailListCount = sendModel.Count();
             ViewBag.SendDepDetailList = sendModel;
+
+            var count = pendingModel.Count();
+            var lists = pendingModel;
+
+            ViewBag.PendingDetailListCount = pendingModel.Count();
+            ViewBag.PendingDetailList = pendingModel;
 
             if (complaintData == null)
             {
@@ -555,6 +565,25 @@ namespace ComplaignManagementSystem.Presentation.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult CentralPeningCommentUpdate(int Id, string CentralPendingComment)
+        {
+            try
+            {
+                var UserName = HttpContext.Session.GetString("UserName");
+                _complainProcess.ComplainCentralPendingUpdate(Id, CentralPendingComment);
+                TempData["ToastMessage"] = "updateCentralSuccessfully!";
+                log.Info($"Success Central Adding Pending Comment Complaint by : {UserName}. ComplaintId : {Id}.");
+                return Json(new { success = true, message = "Complain Resolve successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error Complain CentralComplainResolved : {ex.Message}. ComplaintId : {Id}.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         public async Task<IActionResult> CentralComplaintResolveDetails(int id)
         {
             // SQL query to retrieve the master data for the given complaint ID
@@ -836,5 +865,105 @@ namespace ComplaignManagementSystem.Presentation.Controllers
         {
             return View();
         }
+
+        //------------------------ Customer inform ------------------------------------>    
+        [HttpGet]
+        public async Task<IActionResult> ReportIndex()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetReportDataAjax(string sDate, string eDate)
+        {
+            List<Complaint_ManageProcessModel> data = await _complainProcess.GetReportData(sDate, eDate);
+            return PartialView("_ReportTablePartial", data ?? new List<Complaint_ManageProcessModel>());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToExcel(string sDate, string eDate)
+        {
+            var data = await _complainProcess.GetReportData(sDate, eDate);
+
+            ExcelPackage.License.SetNonCommercialOrganization("ComplaintManagementSystem");
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Report");
+
+                // Headers
+                worksheet.Cells[1, 1].Value = "Reference";
+                worksheet.Cells[1, 2].Value = "Date Complaint Made";
+                worksheet.Cells[1, 3].Value = "Complaint Received Via";
+                worksheet.Cells[1, 4].Value = "Customer Refference No";
+                worksheet.Cells[1, 5].Value = "Branch";
+                worksheet.Cells[1, 6].Value = "Department";
+                worksheet.Cells[1, 7].Value = "Customer Name";
+                worksheet.Cells[1, 8].Value = "Complaint in breif";
+                worksheet.Cells[1, 9].Value = "Abbreviation letters for complaint";
+                worksheet.Cells[1, 10].Value = "Resolution";
+                worksheet.Cells[1, 11].Value = "Responsible Officer";
+                worksheet.Cells[1, 12].Value = "Resolved Date";
+                worksheet.Cells[1, 13].Value = "Resolution Communicated Via";
+
+                int row = 2;
+
+                foreach (var item in data)
+                {
+                    worksheet.Cells[row, 1].Value = item.Refference;
+                    worksheet.Cells[row, 2].Value = item.CreatedDate.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 3].Value = item.ComplaintMethod;
+                    worksheet.Cells[row, 4].Value = item.Cus_Refference;
+                    worksheet.Cells[row, 5].Value = item.ComBranch;
+                    worksheet.Cells[row, 6].Value = item.Dep;
+                    worksheet.Cells[row, 7].Value = item.Cus_Name;
+                    worksheet.Cells[row, 8].Value = item.Complaint;
+                    worksheet.Cells[row, 9].Value = item.NatureCode;
+                    worksheet.Cells[row, 10].Value = item.ResolvedRemark;
+                    worksheet.Cells[row, 11].Value = item.OfficerEPF + " | " + item.OfficerName;
+                    worksheet.Cells[row, 12].Value = item.ResolvedDateTime?.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 13].Value = item.CusNotification;
+
+                    row++;
+                }
+
+                int lastRow = row - 1;
+                int lastCol = 13;
+
+                var fullRange = worksheet.Cells[1, 1, lastRow, lastCol];
+
+                // Apply borders (ALL cells: header + data)
+                fullRange.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                fullRange.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                fullRange.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                fullRange.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                // Header styling
+                var header = worksheet.Cells[1, 1, 1, lastCol];
+                header.Style.Font.Bold = true;
+                header.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                header.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                var stream = new MemoryStream();
+                package.SaveAs(stream);
+                stream.Position = 0;
+
+                string fileName = $"Complaint_Report_{DateTime.Now:yyyyMMdd}.xlsx";
+
+                return File(stream,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+            }
+        }
+
     }
 }

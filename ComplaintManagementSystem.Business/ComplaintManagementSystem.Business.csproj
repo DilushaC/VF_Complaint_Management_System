@@ -12,6 +12,7 @@
 		</Content>
 		<PackageReference Include="Dapper" Version="2.1.66" />
 		<PackageReference Include="DinkToPdf" Version="1.0.8" />
+		<PackageReference Include="EPPlus" Version="8.5.4" />
 		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
 		<PackageReference Include="IronPdf" Version="2025.12.2" />
 		<PackageReference Include="log4net" Version="3.2.0" />

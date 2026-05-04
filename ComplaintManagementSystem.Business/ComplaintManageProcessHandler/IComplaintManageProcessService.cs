@@ -24,11 +24,13 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public Task<PaginationResultsModel<ComplaintMaster>> getCentralComplaintList(int pageNumber, int pageSize, string searchString, string ComplaintMethod_Id = null, string priority = null);
         public Task<ComplaintMaster> getComplainUsingId(int Id);
         public Task<List<SendDepartmentModel>> getSendDepList(int ProcessId);
+        public Task<List<PendingDetailsModel>> getPendingDetailList(int ProcessId);
         public Task<Complaint_ManageProcessModel> getComplainMasterUsingId(int Id);
         public Complaint_ManageProcessModel getComplainProcessUsingId(int Id);
         public void UpdateForwardToCentral(int CompId, string remark);
         public void ComplainResolve(int Id, string Remark);
         public void ComplainCentralUpdate(int Id, string CentralComment);
+        public void ComplainCentralPendingUpdate(int Id, string CentralPendingComment);
         public void UpdateForwardToDepartment(int CompId, int Department, string remark);        
         public Task<DashboardComplaintCountModel> GetDashboardComplaintCounts();
         public Task<List<ComplaintMaster>> getComplainNumberList();
@@ -47,5 +49,7 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
         public BranchModel getBranchResPerson(int branchId);
         public Task<List<EmailRecipientsModel>> getCcEmails();
         public Task deleteEmail(int EmailId);
+        public Task<List<Complaint_ManageProcessModel>> GetReportData(string sDate, string eDate);
+
     }
 }

@@ -1,0 +1,119 @@
+﻿@using ComplaignManagementSystem.Data.Models
+
+@{
+    ViewData["Title"] = "Report Index";
+    ViewData["MenuTab"] = "ReportMenu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/lib/fontawesome/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/plugins/demo/chameleon-admin-template/app-assets/vendors/css/pickers/daterange/daterangepicker.css" />
+
+<style>
+    .daterangepicker .prev i:before {
+        content: "\f104"; /* left arrow */
+        font-family: FontAwesome;
+    }
+
+    .daterangepicker .next i:before {
+        content: "\f105"; /* right arrow */
+        font-family: FontAwesome;
+    }
+
+    .daterangepicker .calendar i {
+        font-family: FontAwesome;
+        font-size: 12px;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card" style="margin-top:15px">
+            <div class="card-content collapse show">
+                <div class="card-body">
+                    <h3 class="form-section">
+                        <i class="ft-flag"></i> Customer Complaint Data Base
+                    </h3>
+                    <hr />
+
+
+                    <div class="row">
+                        <div class="col-md-5" style="margin-left:20px">
+                            <div class="input-group">
+                                <input type="text" id="daterange" class="form-control" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <span class="ft-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="text-align:right">
+                            <div class="input-group">
+                                <button class="btn btn-success" onclick="exportExcel()">
+                                    Export to Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body card-dashboard">
+                            <div class="table-responsive">
+                                <div id="reportTable">
+                                    @Html.Partial("_ReportTablePartial")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js"></script>
+<script src="~/plugins/demo/chameleon-admin-template/app-assets/vendors/js/pickers/daterange/daterangepicker.js"></script>
+
+<script type="text/javascript">        
+    let selectedStartDate = "";
+    let selectedEndDate = "";
+    $('#daterange').daterangepicker({
+        opens: 'right',
+        autoUpdateInput: true,
+        autoApply: true,
+        locale: {
+            format: 'YYYY-MM-DD'
+        }
+    }, function (start, end) {
+
+        selectedStartDate = start.format('YYYY-MM-DD');
+        selectedEndDate = end.format('YYYY-MM-DD');
+
+        loadReport(selectedStartDate, selectedEndDate);
+    });
+    loadReport(null,null);
+    function loadReport(sDate, eDate) {
+
+        $.ajax({
+            url: '/ComplaintManageProcess/GetReportDataAjax',
+            type: 'GET',
+            data: { sDate: sDate, eDate: eDate },
+            success: function (html) {
+                $('#reportTable').html(html);
+            },    
+            error: function (xhr, status, error) {    
+                console.log(xhr.responseText);    
+                alert('Error loading data: ' + error);    
+            }
+        });
+    }
+        
+    function exportExcel() {    
+        let sDate = selectedStartDate;    
+        let eDate = selectedEndDate;
+        window.location.href = '/ComplaintManageProcess/ExportToExcel?sDate=' + sDate + '&eDate=' + eDate;
+    }
+</script>

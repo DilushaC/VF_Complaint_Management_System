@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Principal;
 
 namespace ComplaignManagementSystem.EmailService
 {
@@ -25,11 +26,18 @@ namespace ComplaignManagementSystem.EmailService
         public static void Main(string[] args)
         {
 
-            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Welcome to Complaint Management System Mail Service!");
+
+            //var builder = new ConfigurationBuilder();
+            //builder.SetBasePath(Directory.GetCurrentDirectory())
+            //   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            //IConfiguration config = builder.Build();
 
             var builder = new ConfigurationBuilder();
-            builder.SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            builder.SetBasePath(AppContext.BaseDirectory)   // ✅ FIXED
+                   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
             IConfiguration config = builder.Build();
 
             var serviceProvider = new ServiceCollection()
@@ -54,24 +62,18 @@ namespace ComplaignManagementSystem.EmailService
 
             try
             {
-
-                //string Time;
-                //Time = "03:02 PM";
-                //string currentTime = DateTime.Now.ToString("hh:mm tt");
-
                 var console = serviceProvider.GetRequiredService<ComplaintEmailService>();
-                Console.WriteLine("start send Approval Email!");
+
                 console.SendApprovalEmail();
-                Console.WriteLine("start send Centrail Email!");
                 console.SendCentrailEmail();
 
-                //console.SendEmail2();
+                //var user = WindowsIdentity.GetCurrent().Name;
+                //Console.WriteLine(user);
 
-                //if (Time == System.DateTime.Now.ToString("hh:mm tt"))
-                //    console.SendEmail();
             }
             catch (Exception ex)
             {
+                File.AppendAllText("log.txt", $"Error: {ex}\n");
                 Console.WriteLine(ex);
                 throw;
             }
