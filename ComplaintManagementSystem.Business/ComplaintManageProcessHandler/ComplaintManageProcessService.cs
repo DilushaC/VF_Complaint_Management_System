@@ -628,8 +628,9 @@ namespace ComplaintManagementSystem.Business.ComplaintManageProcessHandler
                 complainModel.Status = row["Status"].ToString();
                 complainModel.ResolvedRemark = row["ResolvedRemark"].ToString();
                 complainModel.ResolvedUser = row["ResolvedUser"].ToString();
-                complainModel.ResolvedDateTime = Convert.ToDateTime(row["ResolvedDateTime"]);
-                complainModel.IsResolved = Convert.ToBoolean(row["IsResolved"]);
+                complainModel.ResolvedDateTime = row["ResolvedDateTime"] == DBNull.Value ? null : (DateTime?)Convert.ToDateTime(row["ResolvedDateTime"]);
+                //complainModel.ResolvedDateTime = Convert.ToDateTime(row["ResolvedDateTime"]);
+                complainModel.IsResolved = row["IsResolved"] == DBNull.Value ? false : Convert.ToBoolean(row["IsResolved"]);
 
                 string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Attachments");
                 string physicalPath = Path.Combine(rootPath, $"_{Id}.pdf");

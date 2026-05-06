@@ -32,6 +32,6 @@ namespace ComplaignManagementSystem.Data.Models
         public bool IsResolved { get; set; }
         public string ResolvedRemark { get; set; }
         public string ResolvedUser { get; set; }
-        public DateTime ResolvedDateTime { get; set; }
+        public DateTime? ResolvedDateTime { get; set; }
     }
 }
